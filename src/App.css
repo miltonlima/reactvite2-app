@@ -58,6 +58,33 @@
   color: #888;
 }
 
+.lottery-results {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.lottery-results ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.lottery-results li {
+  min-width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #646cff;
+}
+
 .forecast {
   margin-top: 2rem;
   display: flex;
@@ -97,4 +124,9 @@
 .error {
   color: #ff6b6b;
   font-weight: 600;
+}
+
+
+.forecast-button {
+  border: 1px solid #ff0000;
 }
