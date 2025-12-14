@@ -54,15 +54,7 @@ function App6() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Weather Dashboard</h1>
-      <div className="card">
-        <button onClick={() => setCount((value) => value + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App6.jsx</code> and save to test HMR
-        </p>
-      </div>
+      <h1>Weather Dashboard</h1>      
       <section className="forecast">
         {loading && <p>Loading forecast...</p>}
         {error && <p className="error">Failed to load: {error.message}</p>}
