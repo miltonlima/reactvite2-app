@@ -54,7 +54,7 @@ function App6() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Weather Dashboard</h1>      
+      <h1>Painel de Previsão do Tempo</h1>      
       <section className="forecast">
         {loading && <p>Loading forecast...</p>}
         {error && <p className="error">Failed to load: {error.message}</p>}
