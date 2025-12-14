@@ -1,16 +1,65 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## English
 
-Currently, two official plugins are available:
+### Overview
+This project is a React application bootstrapped with Vite, offering fast hot-module replacement and a lean development setup.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Prerequisites
+- Node.js 18 or newer (`node -v` to confirm)
+- npm 9 or newer (bundled with Node.js)
 
-## React Compiler
+### Getting Started
+```bash
+npm install
+npm run dev
+```
+Then open the URL shown in the terminal (default: http://localhost:5173).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Common Scripts
+- `npm run dev` start the development server with HMR.
+- `npm run build` create a production build in the dist folder.
+- `npm run preview` serve the production build locally for inspection.
 
-## Expanding the ESLint configuration
+### Recommended Enhancements
+- Switch to the TypeScript template if you need type-aware linting.
+- Configure Prettier or your preferred formatter for consistent styling.
+- Integrate environment variables via `.env` files for different environments.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Troubleshooting
+- If the dev server fails to start, clear the `node_modules` folder and run `npm install` again.
+- Port conflicts can be resolved by running `npm run dev -- --port 3000`.
+- For lint warnings, add or adjust ESLint rules in `eslint.config.js`.
+
+---
+
+## Português
+
+### Visão Geral
+Este projeto é uma aplicação React criada com Vite, garantindo recarregamento rápido e um ambiente de desenvolvimento leve.
+
+### Pré-requisitos
+- Node.js 18 ou superior (`node -v` para confirmar)
+- npm 9 ou superior (vem com o Node.js)
+
+### Primeiros Passos
+```bash
+npm install
+npm run dev
+```
+Em seguida abra a URL exibida no terminal (padrão: http://localhost:5173).
+
+### Scripts Principais
+- `npm run dev` inicia o servidor de desenvolvimento com HMR.
+- `npm run build` gera o build de produção na pasta dist.
+- `npm run preview` serve o build de produção localmente para validação.
+
+### Aprimoramentos Recomendados
+- Avalie migrar para o template TypeScript se precisar de linting com tipos.
+- Configure o Prettier ou outro formatador para padronizar o código.
+- Utilize variáveis de ambiente em arquivos `.env` conforme cada ambiente de execução.
+
+### Solução de Problemas
+- Se o servidor não iniciar, exclua a pasta `node_modules` e execute `npm install` novamente.
+- Conflitos de porta podem ser resolvidos com `npm run dev -- --port 3000`.
+- Para avisos de lint, ajuste as regras no arquivo `eslint.config.js`.
