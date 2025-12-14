@@ -1,11 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-function App2() {
+function App6() {
   const [count, setCount] = useState(0)
+  const [forecast, setForecast] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    const fetchForecast = async () => {
+      try {
+        const response = await fetch('https://localhost:7006/weatherforecast', {
+          signal: controller.signal,
+        })
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`)
+        }
+        const data = await response.json()
+        setForecast(data)
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          setError(err)
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchForecast()
+
+    return () => controller.abort()
+  }, [])
 
   return (
     <>
@@ -25,20 +54,32 @@ function App2() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Voltei</h1>
+      <h1>Weather Dashboard</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => setCount((value) => value + 1)}>
           count is {count}
         </button>
         <p>
-          Edit <code>src/App2.jsx</code> and save to test HMR
+          Edit <code>src/App6.jsx</code> and save to test HMR
         </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <section className="forecast">
+        {loading && <p>Loading forecast...</p>}
+        {error && <p className="error">Failed to load: {error.message}</p>}
+        {!loading && !error && (
+          <ul className="forecast-list">
+            {forecast.map((item) => (
+              <li key={item.date}>
+                <strong>{item.date}</strong>
+                <span>{item.temperatureC} °C / {item.temperatureF} °F</span>
+                <span>{item.summary}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </>
   )
 }
 
-export default App2
+export default App6

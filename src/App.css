@@ -57,3 +57,44 @@
 .read-the-docs {
   color: #888;
 }
+
+.forecast {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.forecast-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+.forecast-list li {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.forecast-list li strong {
+  font-size: 1.05rem;
+}
+
+.forecast-list li span {
+  font-size: 0.95rem;
+}
+
+.error {
+  color: #ff6b6b;
+  font-weight: 600;
+}
