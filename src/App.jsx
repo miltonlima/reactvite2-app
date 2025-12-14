@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -8,6 +9,10 @@ function App() {
 
   return (
     <>
+      <nav className="menu">
+        <Link to="/">Home</Link>
+        <Link to="/page2">Page 2</Link>
+      </nav>
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
