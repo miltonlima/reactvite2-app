@@ -13,6 +13,7 @@ function App() {
         <Link to="/">Home</Link>
         <Link to="/page2">Page 2</Link>
         <Link to="/page3">Page 3</Link>
+        <Link to="/page4">Page 4</Link>
       </nav>
       <div>
         <a href="https://vite.dev" target="_blank">
