@@ -31,7 +31,7 @@ function App3() {
           count is {count}
         </button>
         <p>
-          Edit <code>src/App2.jsx</code> and save to test HMR
+          Edit <code>src/App3.jsx</code> and save to test HMR
         </p>
       </div>
       <p className="read-the-docs">
@@ -41,4 +41,4 @@ function App3() {
   )
 }
 
-export default App2
+export default App3
