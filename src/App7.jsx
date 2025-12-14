@@ -16,6 +16,7 @@ function App5() {
         <Link to="/page4">Page 4</Link>
         <Link to="/page5">Page 5</Link>
         <Link to="/page6">Page 6</Link>
+        <Link to="/page6">Page 7</Link>
         <Link to="/page7">Page 7</Link>
       </nav>
       <div>
@@ -26,7 +27,7 @@ function App5() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Voltei</h1>
+      <h1>Loteria</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}

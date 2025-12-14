@@ -16,6 +16,7 @@ function App() {
         <Link to="/page4">Page 4</Link>
         <Link to="/page5">Page 5</Link>
         <Link to="/page6">Page 6</Link>
+        <Link to="/page7">Page 7</Link>
       </nav>
       <div>
         <a href="https://vite.dev" target="_blank">
