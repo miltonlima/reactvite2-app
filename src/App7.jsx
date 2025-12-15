@@ -26,9 +26,9 @@ function App7() {
     }
   }
 
-  useEffect(() => {
-    fetchNumbers()
-  }, [])
+  //useEffect(() => {
+  //  fetchNumbers()
+  //}, [])
 
   return (
     <>
