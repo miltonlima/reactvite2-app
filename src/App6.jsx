@@ -14,7 +14,7 @@ function App6() {
     const controller = new AbortController()
     const fetchForecast = async () => {
       try {
-        const response = await fetch('https://localhost:7006/weatherforecast', {
+        const response = await fetch('https://aspnetcore2-api.onrender.com/weatherforecast', {
           signal: controller.signal,
         })
         if (!response.ok) {
