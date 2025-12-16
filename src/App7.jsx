@@ -13,7 +13,8 @@ function App7() {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch('https://localhost:7006/lottery')
+      //const response = await fetch('https://localhost:7006/lottery')
+      const response = await fetch('https://aspnetcore2-api.onrender.com/lottery')
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`)
       }
