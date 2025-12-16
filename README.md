@@ -31,6 +31,9 @@ Then open the URL shown in the terminal (default: http://localhost:5173).
 - Port conflicts can be resolved by running `npm run dev -- --port 3000`.
 - For lint warnings, add or adjust ESLint rules in `eslint.config.js`.
 
+### Online Access
+- Production build: https://reactvite2-app.pages.dev/
+
 ---
 
 ## Português
@@ -63,3 +66,8 @@ Em seguida abra a URL exibida no terminal (padrão: http://localhost:5173).
 - Se o servidor não iniciar, exclua a pasta `node_modules` e execute `npm install` novamente.
 - Conflitos de porta podem ser resolvidos com `npm run dev -- --port 3000`.
 - Para avisos de lint, ajuste as regras no arquivo `eslint.config.js`.
+
+### Acesso Online
+- Build em produção: https://reactvite2-app.pages.dev/
+
+
