@@ -50,7 +50,7 @@ function App5() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Texto da API</h1>
+      <h1>Mensagem da API:</h1>
       <div className="card">
         <div className="lottery-results">
           {error && <p className="error">Falha ao carregar: {error.message}</p>}
