@@ -1,11 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App5() {
-  const [count, setCount] = useState(0)
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const fetchNumbers = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      //const response = await fetch('https://localhost:7006/ping')
+      const response = await fetch('https://aspnetcore2-api.onrender.com/ping')
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`)
+      }
+      const data = await response.text()
+      setMessage(data)
+    } catch (err) {
+      setError(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchNumbers()
+  }, [])
 
   return (
     <>
@@ -26,18 +50,14 @@ function App5() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Voltei</h1>
+      <h1>Texto da API</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App2.jsx</code> and save to test HMR
-        </p>
+        <div className="lottery-results">
+          {error && <p className="error">Falha ao carregar: {error.message}</p>}
+          {!error && message && <p className="api-message">{message}</p>}
+          {!error && !loading && !message && <p>Nenhum texto disponível.</p>}
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
