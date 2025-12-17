@@ -19,7 +19,7 @@ function App4() {
         : 'https://localhost:7006'
 
       // Escolhe qual rota usar; altere a parte do else caso queira um endpoint diferente em desenvolvimento.
-      const endpoint = import.meta.env.PROD ? 'ping' : 'ping'
+      const endpoint = import.meta.env.PROD ? 'texto' : 'texto'
 
       // Realiza a chamada HTTP e lança erro manualmente caso o status não seja 2xx.
       const response = await fetch(`${apiHost}/${endpoint}`)
