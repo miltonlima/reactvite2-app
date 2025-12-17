@@ -58,6 +58,43 @@
   color: #888;
 }
 
+.form-grid {
+  display: grid;
+  gap: 1rem;
+  text-align: left;
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.form-grid input {
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  background: #eeeeee;
+  color: #949393;
+}
+
+.form-grid button {
+  justify-self: flex-start;
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #646cff;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.form-grid button:hover {
+  background-color: #535bf2;
+}
+
 .lottery-results {
   margin-top: 1.5rem;
   display: flex;
@@ -70,13 +107,13 @@
   gap: 1rem;
   padding: 0;
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
 .lottery-results li {
-  min-width: 3rem;
-  height: 3rem;
+  min-width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -128,5 +165,5 @@
 
 
 .forecast-button {
-  border: 1px solid #ff0000;
+  border: 1px solid #ae7373;
 }

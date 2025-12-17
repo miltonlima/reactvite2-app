@@ -4,7 +4,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-function App3() {
+function App8() {
   const [count, setCount] = useState(0)
 
   return (
@@ -29,7 +29,7 @@ function App3() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Cadastro rápido</h1>
+      <h1>Formulário</h1>
       <form className="card form-grid">
         <label>
           Nome completo
@@ -49,4 +49,4 @@ function App3() {
   )
 }
 
-export default App3
+export default App8

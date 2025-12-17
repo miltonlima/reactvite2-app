@@ -9,6 +9,7 @@ import App4 from './App4.jsx'
 import App5 from './App5.jsx'
 import App6 from './App6.jsx'
 import App7 from './App7.jsx'
+import App8 from './App8.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/page5" element={<App5 />} />
         <Route path="/page6" element={<App6 />} />
         <Route path="/page7" element={<App7 />} />
+        <Route path="/page8" element={<App8 />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

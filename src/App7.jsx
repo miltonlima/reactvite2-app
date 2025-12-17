@@ -48,6 +48,7 @@ function App7() {
         <Link to="/page5">Page 5</Link>
         <Link to="/page6">Page 6</Link>
         <Link to="/page7">Page 7</Link>
+        <Link to="/page8">Page 8</Link>
       </nav>
       <div>
         <a href="https://vite.dev" target="_blank">
