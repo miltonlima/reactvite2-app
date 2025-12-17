@@ -3,73 +3,73 @@
 ## English
 
 ### Overview
-This project is a React application bootstrapped with Vite, offering fast hot-module replacement and a lean development setup.
+React + Vite single-page application with hot-module replacement, simple routing and sample API integration against an ASP.NET Core backend.
 
-### Prerequisites
-- Node.js 18 or newer (`node -v` to confirm)
-- npm 9 or newer (bundled with Node.js)
+### Requirements
+- Node.js 18+ (`node -v`)
+- npm 9+ (bundled with Node)
+- Backend available at https://aspnetcore2-api.onrender.com (or local https://localhost:7006)
 
-### Getting Started
+### Local Development
 ```bash
 npm install
 npm run dev
 ```
-Then open the URL shown in the terminal (default: http://localhost:5173).
+Open http://localhost:5173 and keep the backend running (`dotnet run --launch-profile https`).
 
-### Common Scripts
-- `npm run dev` start the development server with HMR.
-- `npm run build` create a production build in the dist folder.
-- `npm run preview` serve the production build locally for inspection.
+### Useful Scripts
+- `npm run dev` start dev server with HMR.
+- `npm run build` output production files to `dist/`.
+- `npm run preview` serve the built app for final checks.
 
-### Recommended Enhancements
-- Switch to the TypeScript template if you need type-aware linting.
-- Configure Prettier or your preferred formatter for consistent styling.
-- Integrate environment variables via `.env` files for different environments.
+### Configuration
+- Create `.env` or `.env.local` with `VITE_API_URL` to point to the desired backend.
+- Update navigation/routes under `src/` as the app grows.
 
 ### Troubleshooting
-- If the dev server fails to start, clear the `node_modules` folder and run `npm install` again.
-- Port conflicts can be resolved by running `npm run dev -- --port 3000`.
-- For lint warnings, add or adjust ESLint rules in `eslint.config.js`.
+- Delete `node_modules` and reinstall if dependencies break.
+- Change the port via `npm run dev -- --port 3000` when 5173 is busy.
+- Run `npm run build` before deployment to Pages/hosting providers.
 
-### Online Access
-- Start the backend first: https://aspnetcore2-api.onrender.com/swagger/index.html
-- Production build: https://reactvite2-app.pages.dev/
+### Deployment
+- Backend Swagger: https://aspnetcore2-api.onrender.com/swagger/index.html (must be online first).
+- Frontend build: https://reactvite2-app.pages.dev/
 
 ---
 
 ## Português
 
 ### Visão Geral
-Este projeto é uma aplicação React criada com Vite, garantindo recarregamento rápido e um ambiente de desenvolvimento leve.
+Aplicação React criada com Vite, roteamento simples e integração de exemplo com um backend ASP.NET Core.
 
-### Pré-requisitos
-- Node.js 18 ou superior (`node -v` para confirmar)
-- npm 9 ou superior (vem com o Node.js)
+### Requisitos
+- Node.js 18+ (`node -v`)
+- npm 9+ (vem com o Node)
+- Backend disponível em https://aspnetcore2-api.onrender.com (ou local https://localhost:7006)
 
-### Primeiros Passos
+### Desenvolvimento Local
 ```bash
 npm install
 npm run dev
 ```
-Em seguida abra a URL exibida no terminal (padrão: http://localhost:5173).
+Abra http://localhost:5173 e mantenha a API executando (`dotnet run --launch-profile https`).
 
 ### Scripts Principais
-- `npm run dev` inicia o servidor de desenvolvimento com HMR.
-- `npm run build` gera o build de produção na pasta dist.
-- `npm run preview` serve o build de produção localmente para validação.
+- `npm run dev` inicia o servidor com HMR.
+- `npm run build` gera o bundle final em `dist/`.
+- `npm run preview` faz o teste do build em ambiente local.
 
-### Aprimoramentos Recomendados
-- Avalie migrar para o template TypeScript se precisar de linting com tipos.
-- Configure o Prettier ou outro formatador para padronizar o código.
-- Utilize variáveis de ambiente em arquivos `.env` conforme cada ambiente de execução.
+### Configuração
+- Crie `.env` ou `.env.local` definindo `VITE_API_URL` para apontar o backend desejado.
+- Ajuste navegação/rotas em `src/` conforme novas páginas forem adicionadas.
 
 ### Solução de Problemas
-- Se o servidor não iniciar, exclua a pasta `node_modules` e execute `npm install` novamente.
-- Conflitos de porta podem ser resolvidos com `npm run dev -- --port 3000`.
-- Para avisos de lint, ajuste as regras no arquivo `eslint.config.js`.
+- Remova `node_modules` e reinstale caso ocorram erros de dependência.
+- Altere a porta com `npm run dev -- --port 3000` se 5173 estiver ocupada.
+- Execute `npm run build` antes de publicar em Pages ou qualquer hosting.
 
-### Acesso Online
-- Inicie o backend antes: https://aspnetcore2-api.onrender.com/swagger/index.html
+### Implantação
+- Swagger do backend: https://aspnetcore2-api.onrender.com/swagger/index.html (ligue primeiro).
 - Build em produção: https://reactvite2-app.pages.dev/
 
 
