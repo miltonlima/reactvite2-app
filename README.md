@@ -32,6 +32,7 @@ Then open the URL shown in the terminal (default: http://localhost:5173).
 - For lint warnings, add or adjust ESLint rules in `eslint.config.js`.
 
 ### Online Access
+- Start the backend first: https://aspnetcore2-api.onrender.com/swagger/index.html
 - Production build: https://reactvite2-app.pages.dev/
 
 ---
@@ -68,6 +69,7 @@ Em seguida abra a URL exibida no terminal (padrão: http://localhost:5173).
 - Para avisos de lint, ajuste as regras no arquivo `eslint.config.js`.
 
 ### Acesso Online
+- Inicie o backend antes: https://aspnetcore2-api.onrender.com/swagger/index.html
 - Build em produção: https://reactvite2-app.pages.dev/
 
 
