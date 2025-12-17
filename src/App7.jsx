@@ -14,10 +14,15 @@ function App7() {
       setLoading(true)
       setError(null)
       //const response = await fetch('https://localhost:7006/lottery')
-      const response = await fetch('https://aspnetcore2-api.onrender.com/lottery')
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`)
-      }
+      const apiHost = import.meta.env.PROD
+        ? 'https://aspnetcore2-api.onrender.com'
+        : 'https://localhost:7006'
+
+      // Escolhe qual rota usar; altere a parte do else caso queira um endpoint diferente em desenvolvimento.
+      const endpoint = import.meta.env.PROD ? 'lottery' : 'lottery'
+
+      // Realiza a chamada HTTP e lança erro manualmente caso o status não seja 2xx.
+      const response = await fetch(`${apiHost}/${endpoint}`)
       const data = await response.json()
       setNumbers(data)
     } catch (err) {
