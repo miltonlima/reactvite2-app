@@ -80,7 +80,7 @@
 }
 
 .form-grid button {
-  justify-self: flex-start;
+  justify-self: center;
   padding: 0.65rem 1.5rem;
   border-radius: 8px;
   border: none;
