@@ -29,20 +29,17 @@ function App3() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Cadastro rápido</h1>
+      <h1>Comparar</h1>
       <form className="card form-grid">
         <label>
-          Nome completo
-          <input type="text" name="name" placeholder="Nome completo" required />
+          Primeiro
+          <input type="text" name="primeiro" placeholder="Número 1" required />
         </label>
         <label>
-          Data de nascimento
-          <input type="date" name="birthDate" required />
+          Segundo
+          <input type="text" name="segundo" placeholder="Número 2" required />
         </label>
-        <label>
-          E-mail
-          <input type="email" name="email" placeholder="seuemail@email.com" required />
-        </label>
+        
         <button type="submit">Enviar</button>
       </form>
     </>
