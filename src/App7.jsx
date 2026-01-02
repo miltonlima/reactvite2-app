@@ -60,11 +60,14 @@ function App7() {
       </div>
       <h1>Loteria</h1>
       <div className="card">
+        {/* Botão que dispara a requisição para gerar números de loteria. */}
         <button type="button" onClick={fetchNumbers} disabled={loading} className="forecast-button" >
-          {loading ? 'Gerando...' : 'Gerar números'}
+          {loading ? 'Gerando...' : 'Gerar números da sorte'}
         </button>
         <div className="lottery-results">
+          {/* Exibe uma mensagem de erro quando a chamada falha. */}
           {error && <p className="error">Falha ao carregar: {error.message}</p>}
+          {/* Lista os números retornados pela API quando disponíveis. */}
           {!error && numbers.length > 0 && (
             <ul>
               {numbers.map((value) => (
@@ -72,6 +75,7 @@ function App7() {
               ))}
             </ul>
           )}
+          {/* Mensagem padrão quando não há números carregados. */}
           {!error && !loading && numbers.length === 0 && <p>Nenhum número disponível.</p>}
         </div>
       </div>
