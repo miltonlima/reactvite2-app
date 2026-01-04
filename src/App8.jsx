@@ -22,7 +22,7 @@ function App8() {
     }
 
     try {
-      const res = await fetch('/validar-pessoa', {
+      const res = await fetch('/validarpessoa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
