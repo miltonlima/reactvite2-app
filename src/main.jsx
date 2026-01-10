@@ -29,6 +29,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/page7" element={<App7 />} />
         <Route path="/page8" element={<App8 />} />
         <Route path="/page9" element={<App9 />} />
+        <Route path="/page9" element={<App9 />} />
         <Route path="/page10" element={<App10 />} />
         <Route path="/page11" element={<App11 />} />
         <Route path="/page12" element={<App12 />} />
