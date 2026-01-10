@@ -32,7 +32,7 @@ function App8() {
     const apiHost = import.meta.env.PROD
       ? 'https://aspnetcore2-api.onrender.com'
       : 'https://localhost:7006'
-    const endpoint = 'validar-pessoa'
+    const endpoint = 'validarpessoa'
 
     try {
       const res = await fetch(`${apiHost}/${endpoint}`,
