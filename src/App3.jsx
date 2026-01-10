@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import Menu from './components/Menu.jsx'
 
 function App3() {
   const [message, setMessage] = useState('')
@@ -41,18 +42,7 @@ function App3() {
 
   return (
     <>
-      <nav className="menu">
-        <Link to="/">Page 1</Link>
-        <Link to="/page2">Page 2</Link>
-        <Link to="/page3">Page 3</Link>
-        <Link to="/page4">Page 4</Link>
-      </nav>
-      <nav className="menu">       
-        <Link to="/page5">Page 5</Link>
-        <Link to="/page6">Page 6</Link>
-        <Link to="/page7">Page 7</Link>
-        <Link to="/page8">Page 8</Link>
-      </nav>
+      <Menu />
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
