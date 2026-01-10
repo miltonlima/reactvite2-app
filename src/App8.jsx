@@ -11,29 +11,46 @@ function App8() {
   const [email, setEmail] = useState('')
   const [response, setResponse] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   async function handleSubmit(e) {
     e.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    // Formata a data de yyyy-MM-dd para dd/MM/yyyy
+    const [year, month, day] = birthDate.split('-')
+    const formattedBirthDate = day && month && year ? `${day}/${month}/${year}` : birthDate
 
     const payload = {
       Name: name,
-      BirthDate: birthDate,
+      BirthDate: formattedBirthDate,
       Email: email
     }
 
-    try {
-      const res = await fetch('/validar-pessoa', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
+    const apiHost = import.meta.env.PROD
+      ? 'https://aspnetcore2-api.onrender.com'
+      : 'https://localhost:7006'
+    const endpoint = 'validar-pessoa'
 
+    try {
+      const res = await fetch(`${apiHost}/${endpoint}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
       const data = await res.json()
       setResponse({ ok: res.ok, status: res.status, body: data })
       setShowModal(true)
+      if (!res.ok) throw new Error(data.mensagem || 'Erro desconhecido')
     } catch (err) {
-      setResponse({ ok: false, status: 0, body: { mensagem: 'Erro de conexão' } })
+      setError(err.message || 'Erro de conexão')
+      setResponse({ ok: false, status: 0, body: { mensagem: err.message || 'Erro de conexão' } })
       setShowModal(true)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -43,6 +60,8 @@ function App8() {
 
   return (
     <>
+      {loading && <div className="loading">Enviando...</div>}
+      {error && <div className="error">Erro: {error}</div>}
       <nav className="menu">
         <Link to="/">Page 1</Link>
         <Link to="/page2">Page 2</Link>
