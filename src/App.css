@@ -206,3 +206,108 @@
   color: #fff;
   cursor: pointer;
 }
+
+/* Resume styles */
+.resume {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+  line-height: 1.6;
+}
+
+.resume-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.resume-header h1 {
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.resume-header h2 {
+  margin-bottom: 1rem;
+  color: #646cff;
+}
+
+.contact-info p {
+  margin: 0.25rem 0;
+}
+
+.resume-section {
+  margin-bottom: 2rem;
+}
+
+.resume-section h3 {
+  border-bottom: 2px solid #646cff;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.skills-grid h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.job {
+  margin-bottom: 1.5rem;
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.job-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.job-dates {
+  font-weight: bold;
+  color: #646cff;
+}
+
+.job-title {
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.education {
+  margin-bottom: 1rem;
+}
+
+.education-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.education-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.education-dates {
+  font-weight: bold;
+  color: #646cff;
+}
+
+.portfolio-list {
+  list-style: none;
+  padding: 0;
+}
+
+.portfolio-list li {
+  margin-bottom: 0.5rem;
+}
