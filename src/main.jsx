@@ -10,6 +10,10 @@ import App5 from './App5.jsx'
 import App6 from './App6.jsx'
 import App7 from './App7.jsx'
 import App8 from './App8.jsx'
+import App9 from './App9.jsx'
+import App10 from './App10.jsx'
+import App11 from './App11.jsx'
+import App12 from './App12.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -24,6 +28,10 @@ createRoot(document.getElementById('root')).render(
         <Route path="/page6" element={<App6 />} />
         <Route path="/page7" element={<App7 />} />
         <Route path="/page8" element={<App8 />} />
+        <Route path="/page9" element={<App9 />} />
+        <Route path="/page10" element={<App10 />} />
+        <Route path="/page11" element={<App11 />} />
+        <Route path="/page12" element={<App12 />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
