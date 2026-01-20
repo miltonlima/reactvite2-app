@@ -7,8 +7,7 @@ import Menu from './components/Menu.jsx'
 
 function App9() {
   return (
-    <>
-      <Menu />
+    <>      
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -148,6 +147,7 @@ function App9() {
             <li><a href="https://jowburger.com.br" target="_blank">https://jowburger.com.br</a></li>
           </ul>
         </section>
+        <Menu />
       </div>
     </>
   )
