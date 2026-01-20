@@ -32,7 +32,7 @@ function App9() {
 
         <section className="resume-section">
           <h3>RESUMO PROFISSIONAL</h3>
-          <p>Desenvolvedor .NET com experiência em C#, ASP.NET Core e APIs REST, atuando no desenvolvimento, integração e sustentação de sistemas corporativos. Vivência com arquitetura BFF, integração de sistemas acadêmicos e desenvolvimento de interfaces web utilizando HTML, CSS e JavaScript. Experiência em ambientes de maior criticidade, com atenção à qualidade, manutenção evolutiva e adoção de boas práticas de desenvolvimento.</p>
+          <p>Desenvolvedor .NET com experiência em C#, ASP.NET Core e APIs REST, com atuação no desenvolvimento, integração e sustentação de sistemas corporativos com 18 anos de experiência. Vivência com arquitetura BFF, integração de sistemas acadêmicos e desenvolvimento de interfaces web utilizando HTML, CSS e JavaScript. Experiência em ambientes de maior criticidade, com atenção à qualidade, manutenção evolutiva e adoção de boas práticas de desenvolvimento.</p>
         </section>
 
         <section className="resume-section">
