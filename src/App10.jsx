@@ -5,11 +5,12 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
 
-function App6() {
+function App10() {
   const [count, setCount] = useState(0)
   const [forecast, setForecast] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [formData, setFormData] = useState({ nome: '', email: '', nascimento: '', cpf: '' })
 
   useEffect(() => {
     const controller = new AbortController()
@@ -57,20 +58,29 @@ function App6() {
       </div>
       <h1>Novo Formulário</h1>
       <section className="crud-container">
-        <div><p>Nome</p>
-          <p>E-mail</p>
-          <p>nascimento</p>
-          <p>CPF</p>
-        </div>
-        <div>
-          <button>Gravar</button>
-        </div>
+        <form className="form-grid" onSubmit={(e) => { e.preventDefault(); console.log(formData); }}>
+          <label>
+            Nome:
+            <input type="text" value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} />
+          </label>
+          <label>
+            CPF:
+            <input type="text" value={formData.cpf} onChange={(e) => setFormData({ ...formData, cpf: e.target.value })} />
+          </label>
+          <label>
+            E-mail:
+            <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+          </label>
+          <label>
+            Nascimento:
+            <input type="date" value={formData.nascimento} onChange={(e) => setFormData({ ...formData, nascimento: e.target.value })} />
+          </label>
 
-
-
+          <button type="submit">Gravar</button>
+        </form>
       </section>
     </>
   )
 }
 
-export default App6
+export default App10
