@@ -16,15 +16,15 @@ function App6() {
     const fetchForecast = async () => {
       try {
         //const response = await fetch('https://localhost:7006/weatherforecast', {
-       const apiHost = import.meta.env.PROD
-        ? 'https://aspnetcore2-api.onrender.com'
-        : 'https://localhost:7006'
+        const apiHost = import.meta.env.PROD
+          ? 'https://aspnetcore2-api.onrender.com'
+          : 'https://localhost:7006'
 
-      // Escolhe qual rota usar; altere a parte do else caso queira um endpoint diferente em desenvolvimento.
-      const endpoint = import.meta.env.PROD ? 'weatherforecast' : 'weatherforecast'
+        // Escolhe qual rota usar; altere a parte do else caso queira um endpoint diferente em desenvolvimento.
+        const endpoint = import.meta.env.PROD ? 'weatherforecast' : 'weatherforecast'
 
-      // Realiza a chamada HTTP e lança erro manualmente caso o status não seja 2xx.
-      const response = await fetch(`${apiHost}/${endpoint}`)
+        // Realiza a chamada HTTP e lança erro manualmente caso o status não seja 2xx.
+        const response = await fetch(`${apiHost}/${endpoint}`)
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`)
         }
@@ -55,21 +55,19 @@ function App6() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Painel de Previsão do Tempo</h1>      
-      <section className="forecast">
-        {loading && <p>Loading forecast...</p>}
-        {error && <p className="error">Failed to load: {error.message}</p>}
-        {!loading && !error && (
-          <ul className="forecast-list">
-            {forecast.map((item) => (
-              <li key={item.date}>
-                <strong>{item.date}</strong>
-                <span>{item.temperatureC} °C / {item.temperatureF} °F</span>
-                <span>{item.summary}</span>
-              </li>
-            ))}
-          </ul>
-        )}
+      <h1>Novo Formulário</h1>
+      <section className="crud-container">
+        <div><p>Nome</p>
+          <p>E-mail</p>
+          <p>nascimento</p>
+          <p>CPF</p>
+        </div>
+        <div>
+          <button>Gravar</button>
+        </div>
+
+
+
       </section>
     </>
   )
