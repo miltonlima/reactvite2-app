@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
 const routes = [
-  { path: "/", label: "Page 1" },
+  { path: "/", label: "Currículo" },
   { path: "/page2", label: "Page 2" },
   { path: "/page3", label: "Page 3" },
   { path: "/page4", label: "Page 4" },
