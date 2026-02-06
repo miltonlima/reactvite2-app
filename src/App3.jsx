@@ -54,7 +54,8 @@ function App3() {
       <h1>Mensagem da API:</h1>
       <div className="card">
         <div className="lottery-results">
-          {error && <p className="error">Falha ao carregar: {error.message}</p>}
+          {loading && <p>Carregando...</p>}
+          {error && <p className="error">Falha ao carregar: {error.message}</p>}          
           {!error && message && <p className="api-message">{message}</p>}
           {!error && !loading && !message && <p>Nenhum texto disponível.</p>}
         </div>
