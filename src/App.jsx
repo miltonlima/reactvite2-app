@@ -5,7 +5,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
 
-function App9() {
+function App() {
   return (
     <>      
       <div>
@@ -153,4 +153,4 @@ function App9() {
   )
 }
 
-export default App9
+export default App
