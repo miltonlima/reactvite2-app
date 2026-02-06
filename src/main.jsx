@@ -25,16 +25,16 @@ const withTitle = (Component, title) => function Wrapped(props) {
 
 const Home = withTitle(App, 'Currículo')
 const Page2 = withTitle(App2, 'Página 2')
-const Page3 = withTitle(App3, 'Página 3')
-const Page4 = withTitle(App4, 'Página 4')
-const Page5 = withTitle(App5, 'Página 5')
-const Page6 = withTitle(App6, 'Página 6')
-const Page7 = withTitle(App7, 'Página 7')
-const Page8 = withTitle(App8, 'Página 8')
+const Page3 = withTitle(App3, 'Vim da Api')
+const Page4 = withTitle(App4, 'Comparar')
+const Page5 = withTitle(App5, 'Soma')
+const Page6 = withTitle(App6, 'Previsão do Tempo')
+const Page7 = withTitle(App7, 'Loteria')
+const Page8 = withTitle(App8, 'Formulário')
 const Page9 = withTitle(App9, 'Página 9')
-const Page10 = withTitle(App10, 'Página 10')
-const Page11 = withTitle(App11, 'Página 11')
-const Page12 = withTitle(App12, 'Página 12')
+const Page10 = withTitle(App10, 'Novo Formulário')
+const Page11 = withTitle(App11, 'Loteria')
+const Page12 = withTitle(App12, 'Soma')
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
