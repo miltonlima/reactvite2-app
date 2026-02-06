@@ -5,7 +5,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
 
-function App7() {
+function App11() {
   const [numbers, setNumbers] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -73,4 +73,4 @@ function App7() {
   )
 }
 
-export default App7
+export default App11
