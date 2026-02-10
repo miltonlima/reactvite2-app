@@ -59,3 +59,24 @@ button:focus-visible {
   outline: 3px solid #bfdbfe;
   outline-offset: 1px;
 }
+
+/* Reafirma tema claro mesmo quando o SO/navegador sinaliza modo escuro (ex.: economia de bateria). */
+@media (prefers-color-scheme: dark) {
+  :root,
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    color-scheme: light;
+  }
+
+  a {
+    color: #2563eb !important;
+  }
+
+  button {
+    background-color: #f3f4f6 !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+  }
+}
