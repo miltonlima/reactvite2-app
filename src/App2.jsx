@@ -11,14 +11,7 @@ function App2() {
   return (
     <>
       <Menu />
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
+      
       <div>
         <p>1. Currículo</p>
         <p>2. Lista</p>
@@ -33,9 +26,16 @@ function App2() {
         <p>11. Loteria</p>
         <p>12. Soma</p>
       </div>
-      
+      <div>
+        <a href="https://vite.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
 
-      
+
     </>
   )
 }
