@@ -19,19 +19,23 @@ function App2() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Hello World</h1>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App2.jsx</code> and save to test HMR
-        </p>
+      <div>
+        <p>1. Currículo</p>
+        <p>2. Lista</p>
+        <p>3. Mensagem da API</p>
+        <p>4. Comparar</p>
+        <p>5. Soma</p>
+        <p>6. Painel de Previsão do Tempo</p>
+        <p>7. Loteria</p>
+        <p>8. Formulário</p>
+        <p>9. Novo Formulário</p>
+        <p>10. Vite + React</p>
+        <p>11. Loteria</p>
+        <p>12. Soma</p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      
+
+      
     </>
   )
 }
