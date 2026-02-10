@@ -13,36 +13,9 @@ function App9() {
   const [formData, setFormData] = useState({ nome: '', email: '', nascimento: '', cpf: '' })
 
   useEffect(() => {
-    const controller = new AbortController()
-    const fetchForecast = async () => {
-      try {
-        //const response = await fetch('https://localhost:7006/weatherforecast', {
-        const apiHost = import.meta.env.PROD
-          ? 'https://aspnetcore2-api.onrender.com'
-          : 'https://localhost:7006'
-
-        // Escolhe qual rota usar; altere a parte do else caso queira um endpoint diferente em desenvolvimento.
-        const endpoint = import.meta.env.PROD ? 'weatherforecast' : 'weatherforecast'
-
-        // Realiza a chamada HTTP e lança erro manualmente caso o status não seja 2xx.
-        const response = await fetch(`${apiHost}/${endpoint}`)
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`)
-        }
-        const data = await response.json()
-        setForecast(data)
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          setError(err)
-        }
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchForecast()
-
-    return () => controller.abort()
+    // Endpoint desativado para evitar erro; apenas finaliza carregamento.
+    setForecast([])
+    setLoading(false)
   }, [])
 
   return (
