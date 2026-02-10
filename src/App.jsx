@@ -18,7 +18,7 @@ function App() {
       </div>
       <div className="card resume">
         <header className="resume-header">
-          <h1>MILTON LIMA1</h1>
+          <h1>MILTON LIMA</h1>
           <h2>Desenvolvedor .NET / Full Stack</h2>
           <div className="contact-info">
             <p>Rio de Janeiro – RJ | Brasil</p>
