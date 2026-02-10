@@ -75,8 +75,8 @@
   padding: 0.65rem 0.8rem;
   border-radius: 8px;
   border: 1px solid #d0d0d0;
-  background: #eeeeee;
-  color: #949393;
+  background: #ffffff;
+  color: #111827;
 }
 
 .form-grid button {
@@ -84,7 +84,7 @@
   padding: 0.65rem 1.5rem;
   border-radius: 8px;
   border: none;
-  background-color: #646cff;
+  background-color: #2563eb;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
@@ -92,7 +92,7 @@
 }
 
 .form-grid button:hover {
-  background-color: #535bf2;
+  background-color: #1d4ed8;
 }
 
 .lottery-results {
@@ -202,7 +202,7 @@
   padding: 0.45rem 0.9rem;
   border-radius: 6px;
   border: none;
-  background: #646cff;
+  background: #2563eb;
   color: #fff;
   cursor: pointer;
 }
@@ -227,7 +227,7 @@
 
 .resume-header h2 {
   margin-bottom: 1rem;
-  color: #646cff;
+  color: #2563eb;
 }
 
 .contact-info p {
@@ -239,7 +239,7 @@
 }
 
 .resume-section h3 {
-  border-bottom: 2px solid #646cff;
+  border-bottom: 2px solid #2563eb;
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
   font-size: 1.5rem;
@@ -274,7 +274,7 @@
 
 .job-dates {
   font-weight: bold;
-  color: #646cff;
+  color: #2563eb;
 }
 
 .job-title {
@@ -300,7 +300,7 @@
 
 .education-dates {
   font-weight: bold;
-  color: #646cff;
+  color: #2563eb;
 }
 
 .portfolio-list {
@@ -319,4 +319,42 @@
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 640px) {
+  #root {
+    padding: 1.25rem;
+  }
+
+  .logo {
+    height: 4.5em;
+    padding: 1em;
+  }
+
+  .resume-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .resume-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .resume-section h3 {
+    font-size: 1.2rem;
+  }
+
+  .job-header,
+  .education-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
 }
