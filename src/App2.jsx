@@ -5,7 +5,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
 
-function App2() {
+function App12() {
   const [count, setCount] = useState(0)
 
   return (
@@ -24,7 +24,7 @@ function App2() {
         <p>9. Novo Formulário</p>
         <p>10. Vite + React</p>
         <p>11. Banco de Dados</p>
-        <p>12. Loteria</p>
+        <p>12. Vite + React</p>
       </div>
       <div>
         <a href="https://vite.dev" target="_blank">
@@ -40,4 +40,4 @@ function App2() {
   )
 }
 
-export default App2
+export default App12
