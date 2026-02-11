@@ -24,7 +24,7 @@ function App2() {
         <p>9. Novo Formulário</p>
         <p>10. Vite + React</p>
         <p>11. Loteria</p>
-        <p>12. Soma</p>
+        <p>12. Banco de Dados</p>
       </div>
       <div>
         <a href="https://vite.dev" target="_blank">
