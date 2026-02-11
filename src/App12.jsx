@@ -93,7 +93,7 @@ function App12() {
       <h2>Instrumentos</h2>
       <ul>
         {instruments.map((instrument) => (
-          <li key={instrument.name}>{instrument.name}</li>
+          <p key={instrument.name}>{instrument.name}</p>
         ))}
       </ul>
     </>
