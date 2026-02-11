@@ -1,41 +1,26 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+);
 
 function App11() {
-  const [numbers, setNumbers] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [instruments, setInstruments] = useState([]);
 
-  const fetchNumbers = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      //const response = await fetch('https://localhost:7006/lottery')
-      const apiHost = import.meta.env.PROD
-        ? 'https://aspnetcore2-api.onrender.com'
-        : 'https://localhost:7006'
+  useEffect(() => {
+    getInstruments();
+  }, []);
 
-      // Escolhe qual rota usar; altere a parte do else caso queira um endpoint diferente em desenvolvimento.
-      const endpoint = import.meta.env.PROD ? 'lottery' : 'lottery'
-
-      // Realiza a chamada HTTP e lança erro manualmente caso o status não seja 2xx.
-      const response = await fetch(`${apiHost}/${endpoint}`)
-      const data = await response.json()
-      setNumbers(data)
-    } catch (err) {
-      setError(err)
-    } finally {
-      setLoading(false)
-    }
+  async function getInstruments() {
+    const { data } = await supabase.from("instruments").select();
+    setInstruments(data);
   }
-
-  //useEffect(() => {
-  //  fetchNumbers()
-  //}, [])
 
   return (
     <>
@@ -48,27 +33,11 @@ function App11() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Loteria</h1>
-      <div className="card">
-        {/* Botão que dispara a requisição para gerar números de loteria. */}
-        <button type="button" onClick={fetchNumbers} disabled={loading} className="forecast-button" >
-          {loading ? 'Gerando...' : 'Gerar números da sorte'}
-        </button>
-        <div className="lottery-results">
-          {/* Exibe uma mensagem de erro quando a chamada falha. */}
-          {error && <p className="error">Falha ao carregar: {error.message}</p>}
-          {/* Lista os números retornados pela API quando disponíveis. */}
-          {!error && numbers.length > 0 && (
-            <ul>
-              {numbers.map((value) => (
-                <li key={value}>{value}</li>
-              ))}
-            </ul>
-          )}
-          {/* Mensagem padrão quando não há números carregados. */}
-          {!error && !loading && numbers.length === 0 && <p>Nenhum número disponível.</p>}
-        </div>
-      </div>
+      <ul>
+      {instruments.map((instrument) => (
+        <li key={instrument.name}>{instrument.name}</li>
+      ))}
+    </ul>
     </>
   )
 }
