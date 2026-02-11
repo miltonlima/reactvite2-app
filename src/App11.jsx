@@ -35,7 +35,7 @@ function App11() {
       </div>
       <ul>
       {instruments.map((instrument) => (
-        <li key={instrument.name}>{instrument.name}</li>
+        <p key={instrument.name}>{instrument.name}</p>
       ))}
     </ul>
     </>
