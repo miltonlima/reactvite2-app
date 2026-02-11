@@ -24,7 +24,7 @@ function App12() {
         <p>9. Novo Formulário</p>
         <p>10. Vite + React</p>
         <p>11. Banco de Dados</p>
-        <p>12. Vite + React</p>
+        <p>12. Insert</p>
       </div>
       <div>
         <a href="https://vite.dev" target="_blank">
