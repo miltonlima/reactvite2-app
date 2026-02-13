@@ -3,12 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
-);
+import supabase from './lib/supabaseClient.js'
 
 function App11() {
   const [instruments, setInstruments] = useState([]);
@@ -18,8 +13,10 @@ function App11() {
   }, []);
 
   async function getInstruments() {
-    const { data } = await supabase.from("instruments").select();
-    setInstruments(data);
+    const { data } = await supabase
+      .from("instruments")
+      .select("id, name");
+    setInstruments(data ?? []);
   }
 
   return (

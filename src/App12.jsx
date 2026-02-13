@@ -3,17 +3,13 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
-);
+import supabase from './lib/supabaseClient.js'
 
 function App12() {
   const [instruments, setInstruments] = useState([]);
   const [instrumentName, setInstrumentName] = useState('');
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState('');
 
@@ -22,7 +18,9 @@ function App12() {
   }, []);
 
   async function getInstruments() {
-    const { data, error: fetchError } = await supabase.from("instruments").select();
+    const { data, error: fetchError } = await supabase
+      .from("instruments")
+      .select("id, name");
     if (fetchError) {
       setError(fetchError);
       return;
@@ -50,6 +48,26 @@ function App12() {
       setError(err);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDelete(id) {
+    if (!id) return;
+    setError(null);
+    setSuccess('');
+    try {
+      setDeletingId(id);
+      const { error: deleteError } = await supabase
+        .from("instruments")
+        .delete()
+        .eq("id", id);
+      if (deleteError) throw deleteError;
+      setSuccess('Instrumento removido.');
+      await getInstruments();
+    } catch (err) {
+      setError(err);
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -93,7 +111,19 @@ function App12() {
       <h2>Instrumentos</h2>
       <ul>
         {instruments.map((instrument) => (
-          <p key={instrument.name}>{instrument.name}</p>
+          <li
+            key={instrument.id ?? instrument.name}
+            className="instrument-item"
+          >
+            <span>{instrument.name}</span>
+            <button
+              type="button"
+              onClick={() => handleDelete(instrument.id)}
+              disabled={saving || deletingId === instrument.id}
+            >
+              {deletingId === instrument.id ? 'Excluindo...' : 'Excluir'}
+            </button>
+          </li>
         ))}
       </ul>
     </>
