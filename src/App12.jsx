@@ -182,15 +182,19 @@ function App12() {
               </form>
             ) : (
               <>
-                <span>{instrument.name}</span>
+
                 <div className="actions">
+                  {instrument.name}
+                  &nbsp;
                   <button
                     type="button"
                     onClick={() => startEdit(instrument.id, instrument.name)}
                     disabled={saving || deletingId === instrument.id}
                   >
+
                     Editar
                   </button>
+                  &nbsp;
                   <button
                     type="button"
                     onClick={() => confirmDelete(instrument.id, instrument.name)}
