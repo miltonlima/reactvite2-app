@@ -5,7 +5,7 @@ import './App.css'
 import Menu from './components/Menu.jsx'
 
 // Backend API base (ASP.NET). Picks VITE_API_BASE_URL (or VITE_API_URL), falls back to local HTTPS, and strips trailing slash.
-const API_URL = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://localhost:7243').replace(/\/$/, '');
+const API_URL = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://localhost:7006').replace(/\/$/, '');
 
 
 function App9() {
