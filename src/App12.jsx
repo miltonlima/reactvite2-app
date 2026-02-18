@@ -51,6 +51,13 @@ function App12() {
     }
   }
 
+  function confirmDelete(id, name) {
+    if (!id) return;
+    const ok = window.confirm(`Excluir "${name}"?`);
+    if (!ok) return;
+    handleDelete(id);
+  }
+
   async function handleDelete(id) {
     if (!id) return;
     setError(null);
@@ -121,7 +128,7 @@ function App12() {
             <span>{instrument.name}</span>
             <button
               type="button"
-              onClick={() => handleDelete(instrument.id)}
+              onClick={() => confirmDelete(instrument.id, instrument.name)}
               disabled={saving || deletingId === instrument.id}
             >
               {deletingId === instrument.id ? 'Excluindo...' : 'Excluir'}
