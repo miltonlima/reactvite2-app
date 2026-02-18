@@ -126,6 +126,7 @@ function App12() {
             className="instrument-item"
           >
             <span>{instrument.name}</span>
+            &nbsp;
             <button
               type="button"
               onClick={() => confirmDelete(instrument.id, instrument.name)}
