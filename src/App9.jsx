@@ -4,7 +4,9 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5258';
+// Backend API base (ASP.NET). Picks VITE_API_BASE_URL (or VITE_API_URL), falls back to local HTTPS, and strips trailing slash.
+const API_URL = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://localhost:7243').replace(/\/$/, '');
+
 
 function App9() {
   const [instruments, setInstruments] = useState([]);
