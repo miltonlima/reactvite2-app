@@ -10,6 +10,8 @@ function App12() {
   const [instrumentName, setInstrumentName] = useState('');
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editingName, setEditingName] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState('');
 
@@ -44,6 +46,42 @@ function App12() {
       setInstrumentName('');
       setSuccess('Instrumento inserido com sucesso.');
       await getInstruments();
+    } catch (err) {
+      setError(err);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function startEdit(id, name) {
+    setEditingId(id);
+    setEditingName(name ?? '');
+    setError(null);
+    setSuccess('');
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditingName('');
+  }
+
+  async function handleUpdate(event) {
+    event.preventDefault();
+    if (!editingId) return;
+    const name = editingName.trim();
+    if (!name) return;
+    setError(null);
+    setSuccess('');
+    try {
+      setSaving(true);
+      const { error: updateError } = await supabase
+        .from("instruments")
+        .update({ name })
+        .eq("id", editingId);
+      if (updateError) throw updateError;
+      setSuccess('Instrumento atualizado.');
+      await getInstruments();
+      cancelEdit();
     } catch (err) {
       setError(err);
     } finally {
@@ -119,24 +157,53 @@ function App12() {
       {success && <p className="success">{success}</p>}
 
       <h2>Instrumentos</h2>
-      <ul>
-        {instruments.map((instrument) => (
-          <li
+
+      {instruments.map((instrument) => {
+        const isEditing = editingId === instrument.id;
+        return (
+          <div
             key={instrument.id ?? instrument.name}
             className="instrument-item"
           >
-            <span>{instrument.name}</span>
-            &nbsp;
-            <button
-              type="button"
-              onClick={() => confirmDelete(instrument.id, instrument.name)}
-              disabled={saving || deletingId === instrument.id}
-            >
-              {deletingId === instrument.id ? 'Excluindo...' : 'Excluir'}
-            </button>
-          </li>
-        ))}
-      </ul>
+            {isEditing ? (
+              <form onSubmit={handleUpdate} className="form-inline">
+                <input
+                  type="text"
+                  value={editingName}
+                  onChange={(e) => setEditingName(e.target.value)}
+                  disabled={saving}
+                />
+                <button type="submit" disabled={saving || !editingName.trim()}>
+                  {saving ? 'Salvando...' : 'Salvar'}
+                </button>
+                <button type="button" onClick={cancelEdit} disabled={saving}>
+                  Cancelar
+                </button>
+              </form>
+            ) : (
+              <>
+                <span>{instrument.name}</span>
+                <div className="actions">
+                  <button
+                    type="button"
+                    onClick={() => startEdit(instrument.id, instrument.name)}
+                    disabled={saving || deletingId === instrument.id}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => confirmDelete(instrument.id, instrument.name)}
+                    disabled={saving || deletingId === instrument.id}
+                  >
+                    {deletingId === instrument.id ? 'Excluindo...' : 'Excluir'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        );
+      })}
     </>
   )
 }
