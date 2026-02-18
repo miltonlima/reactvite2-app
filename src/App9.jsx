@@ -4,8 +4,8 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
 
-// Backend API base (ASP.NET). Picks VITE_API_BASE_URL (or VITE_API_URL), falls back to local HTTPS, and strips trailing slash.
-const API_URL = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://localhost:7006').replace(/\/$/, '');
+// Backend API base (ASP.NET) apontando para a API publicada.
+const API_URL = 'https://aspnetcore2-api.onrender.com';
 
 
 function App9() {
