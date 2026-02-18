@@ -3,7 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
-import supabase from './lib/supabaseClient.js'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5258';
 
 function App9() {
   const [instruments, setInstruments] = useState([]);
@@ -19,16 +20,27 @@ function App9() {
     getInstruments();
   }, []);
 
-  async function getInstruments() {
-    const { data, error: fetchError } = await supabase
-      .from("instruments")
-      .select("id, name")
-      .order("id", { ascending: true });
-    if (fetchError) {
-      setError(fetchError);
-      return;
+  async function request(path, options = {}) {
+    const response = await fetch(`${API_URL}${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      ...options,
+    });
+    const isJson = response.headers.get('content-type')?.includes('application/json');
+    const body = isJson ? await response.json() : null;
+    if (!response.ok) {
+      const message = body?.mensagem || body?.message || response.statusText;
+      throw new Error(message);
     }
-    setInstruments(data ?? []);
+    return body;
+  }
+
+  async function getInstruments() {
+    try {
+      const data = await request('/api/instruments');
+      setInstruments(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(err);
+    }
   }
 
   async function handleSubmit(event) {
@@ -40,13 +52,13 @@ function App9() {
 
     try {
       setSaving(true);
-      const { error: insertError } = await supabase
-        .from("instruments")
-        .insert({ name });
-      if (insertError) throw insertError;
+      const created = await request('/api/instruments', {
+        method: 'POST',
+        body: JSON.stringify({ name }),
+      });
       setInstrumentName('');
       setSuccess('Instrumento inserido com sucesso.');
-      await getInstruments();
+      setInstruments((current) => [...current, created]);
     } catch (err) {
       setError(err);
     } finally {
@@ -75,15 +87,14 @@ function App9() {
     setSuccess('');
     try {
       setSaving(true);
-      const { error: updateError } = await supabase
-        .from("instruments")
-        .update({ name })
-        .eq("id", editingId);
-      if (updateError) throw updateError;
+      const updated = await request(`/api/instruments/${editingId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ name }),
+      });
       setSuccess('Instrumento atualizado.');
       setInstruments((current) =>
         current.map((inst) =>
-          inst.id === editingId ? { ...inst, name } : inst
+          inst.id === editingId ? updated : inst
         )
       );
       cancelEdit();
@@ -109,13 +120,8 @@ function App9() {
     try {
       setDeletingId(id);
       setInstruments((current) => current.filter((inst) => inst.id !== id));
-      const { error: deleteError } = await supabase
-        .from("instruments")
-        .delete()
-        .eq("id", id);
-      if (deleteError) throw deleteError;
+      await request(`/api/instruments/${id}`, { method: 'DELETE' });
       setSuccess('Instrumento removido.');
-      await getInstruments();
     } catch (err) {
       setError(err);
       setInstruments(previous);
