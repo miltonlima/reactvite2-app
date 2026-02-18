@@ -22,7 +22,8 @@ function App12() {
   async function getInstruments() {
     const { data, error: fetchError } = await supabase
       .from("instruments")
-      .select("id, name");
+      .select("id, name")
+      .order("id", { ascending: true });
     if (fetchError) {
       setError(fetchError);
       return;
@@ -80,7 +81,11 @@ function App12() {
         .eq("id", editingId);
       if (updateError) throw updateError;
       setSuccess('Instrumento atualizado.');
-      await getInstruments();
+      setInstruments((current) =>
+        current.map((inst) =>
+          inst.id === editingId ? { ...inst, name } : inst
+        )
+      );
       cancelEdit();
     } catch (err) {
       setError(err);
