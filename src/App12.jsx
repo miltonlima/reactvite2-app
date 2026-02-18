@@ -55,8 +55,10 @@ function App12() {
     if (!id) return;
     setError(null);
     setSuccess('');
+    const previous = instruments; // keep current list to restore on failure
     try {
       setDeletingId(id);
+      setInstruments((current) => current.filter((inst) => inst.id !== id));
       const { error: deleteError } = await supabase
         .from("instruments")
         .delete()
@@ -66,6 +68,7 @@ function App12() {
       await getInstruments();
     } catch (err) {
       setError(err);
+      setInstruments(previous);
     } finally {
       setDeletingId(null);
     }
