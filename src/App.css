@@ -88,6 +88,14 @@
   color: #111827;
 }
 
+.form-grid select {
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  background: #ffffff;
+  color: #111827;
+}
+
 .form-grid button {
   justify-self: center;
   padding: 0.65rem 1.5rem;
