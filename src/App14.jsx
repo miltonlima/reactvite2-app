@@ -25,7 +25,7 @@ function App14() {
 
   return (
     <>
-      <Menu />
+      
 
       <div className="auth-card">
         <h2>Entrar</h2>
@@ -62,6 +62,7 @@ function App14() {
           Ainda não tem conta? <Link to="/page10">Cadastre-se</Link>
         </p>
       </div>
+      <Menu />
     </>
   )
 }
