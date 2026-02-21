@@ -342,6 +342,30 @@
   min-width: 92px;
 }
 
+.auth-card {
+  max-width: 420px;
+  margin: 24px auto;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+
+.auth-card h2 {
+  margin: 0 0 0.35rem 0;
+}
+
+.auth-subtitle {
+  margin: 0 0 1.25rem 0;
+  color: #4b5563;
+}
+
+.success {
+  color: #16a34a;
+  font-weight: 600;
+}
+
 @media (max-width: 640px) {
   #root {
     padding: 1.25rem;

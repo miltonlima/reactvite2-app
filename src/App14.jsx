@@ -1,38 +1,64 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
 
-function App10() {
-  const [count, setCount] = useState(0)
+function App14() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    setMessage('')
+    setError('')
+
+    if (!email.trim() || !password.trim()) {
+      setError('Informe e-mail e senha.')
+      return
+    }
+
+    // Aqui você poderia chamar sua API de autenticação.
+    setMessage('Login enviado (mock).')
+  }
 
   return (
     <>
       <Menu />
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+
+      <div className="auth-card">
+        <h2>Entrar</h2>
+        <p className="auth-subtitle">Informe e-mail e senha para continuar.</p>
+
+        <form className="form-grid" onSubmit={handleSubmit}>
+          <label>
+            E-mail
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="seuemail@exemplo.com"
+            />
+          </label>
+
+          <label>
+            Senha
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+            />
+          </label>
+
+          <button type="submit">Entrar</button>
+        </form>
+
+        {error && <p className="error">{error}</p>}
+        {message && <p className="success">{message}</p>}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App10.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
 
-export default App10
+export default App14
