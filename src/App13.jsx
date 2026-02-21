@@ -180,18 +180,20 @@ function App13() {
           >
             {isEditing ? (
               <form onSubmit={handleUpdate} className="form-inline">
-                <input
-                  type="text"
-                  value={editingName}
-                  onChange={(e) => setEditingName(e.target.value)}
-                  disabled={saving}
-                />
-                <button type="submit" disabled={saving || !editingName.trim()}>
-                  {saving ? 'Salvando...' : 'Salvar'}
-                </button>
-                <button type="button" onClick={cancelEdit} disabled={saving}>
-                  Cancelar
-                </button>
+                <div>
+                    <input
+                    type="text"
+                    value={editingName}
+                    onChange={(e) => setEditingName(e.target.value)}
+                    disabled={saving}
+                    />
+                    <button type="submit" disabled={saving || !editingName.trim()}>
+                    {saving ? 'Salvando...' : 'Salvar'}
+                    </button>
+                    <button type="button" onClick={cancelEdit} disabled={saving}>
+                    Cancelar
+                    </button>
+                </div>
               </form>
             ) : (
               <>
