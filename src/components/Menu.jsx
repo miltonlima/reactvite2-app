@@ -13,14 +13,15 @@ const routes = [
   { path: "/page10", label: "Page 10" },
   { path: "/page11", label: "Page 11" },
   { path: "/page12", label: "Page 12" },  
-  { path: "/page13", label: "Page 13" }  
+  { path: "/page13", label: "Page 13" },  
+  { path: "/page14", label: "Page 14" }  
 ]
 
 function Menu() {
   const firstRow = routes.slice(0, 4)
   const secondRow = routes.slice(4,8)
   const thirdRow = routes.slice(8,12)
-  const fourthRow = routes.slice(12,13)
+  const fourthRow = routes.slice(12,14)
   return (
     <>
       <nav className="menu">

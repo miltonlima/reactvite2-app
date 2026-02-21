@@ -15,6 +15,8 @@ import App10 from './App10.jsx'
 import App11 from './App11.jsx'
 import App12 from './App12.jsx'
 import App13 from './App13.jsx'
+import App14 from './App14.jsx'
+
 
 // Higher-order component para atribuir título personalizado por página.
 const withTitle = (Component, title) => function Wrapped(props) {
@@ -37,6 +39,7 @@ const Page10 = withTitle(App10, 'Novo Formulário')
 const Page11 = withTitle(App11, 'Loteria')
 const Page12 = withTitle(App12, 'Soma')
 const Page13 = withTitle(App13, 'Página 13')
+const Page14 = withTitle(App14, 'Página 14')
 
 
 createRoot(document.getElementById('root')).render(
@@ -56,6 +59,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/page11" element={<Page11 />} />
         <Route path="/page12" element={<Page12 />} />
         <Route path="/page13" element={<Page13 />} />
+        <Route path="/page14" element={<Page14 />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
