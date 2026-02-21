@@ -334,8 +334,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.50rem;
-  padding: 0.5rem 0;
+  gap: 0.30rem;
+  padding: 0.30rem 0;
 }
 
 .actions button {

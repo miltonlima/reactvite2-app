@@ -169,7 +169,7 @@ function App13() {
       {error && <p className="error">Erro: {error.message}</p>}
       {success && <p className="success">{success}</p>}
 
-      <h2>Instrumentos1</h2>
+      <h2>Instrumentos</h2>
 
       {instruments.map((instrument) => {
         const isEditing = editingId === instrument.id;
