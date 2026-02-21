@@ -105,6 +105,10 @@ function App16() {
         {error && <p className="error">{error}</p>}
         {message && <p className="success">{message}</p>}
 
+        <div className="auth-actions">
+          <Link className="secondary-link" to="/page15">Voltar</Link>
+        </div>
+
       </div>
     </>
   )
