@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import Menu from './components/Menu.jsx'
+import { Link } from 'react-router-dom'
 
 function App14() {
   const [email, setEmail] = useState('')
@@ -56,6 +57,10 @@ function App14() {
 
         {error && <p className="error">{error}</p>}
         {message && <p className="success">{message}</p>}
+
+        <p className="auth-subtitle">
+          Ainda não tem conta? <Link to="/page10">Cadastre-se</Link>
+        </p>
       </div>
     </>
   )
