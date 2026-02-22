@@ -60,7 +60,7 @@ function App16() {
           </label>
 
           <label>
-            Sexo
+            Gênero
             <select value={sex} onChange={(e) => setSex(e.target.value)}>
               <option value="">Selecione</option>
               <option value="F">Feminino</option>
