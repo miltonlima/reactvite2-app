@@ -3,7 +3,9 @@ import './App.css'
 import Menu from './components/Menu.jsx'
 import { Link, useNavigate } from 'react-router-dom'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://localhost:7006'
+// Em produção, use o endpoint público da API; ajuste VITE_API_BASE no deploy.
+// Em dev local, pode ser http://localhost:5151 ou https://localhost:7006.
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://aspnetcore2-api.onrender.com'
 
 function App15() {
   const [email, setEmail] = useState('')
