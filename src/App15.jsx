@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'https://localhost:7006'
 
-function App14() {
+function App15() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
@@ -101,4 +101,4 @@ function App14() {
   )
 }
 
-export default App14
+export default App15
