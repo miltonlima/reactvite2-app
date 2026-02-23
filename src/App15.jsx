@@ -3,7 +3,7 @@ import './App.css'
 import Menu from './components/Menu.jsx'
 import { Link, useNavigate } from 'react-router-dom'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:7006'
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://localhost:7006'
 
 function App14() {
   const [email, setEmail] = useState('')
