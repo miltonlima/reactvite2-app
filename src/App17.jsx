@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -10,7 +9,6 @@ function App17() {
 
   return (
     <>
-      <Menu />
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -25,7 +23,7 @@ function App17() {
           count is {count}
         </button>
         <p>
-          Edit <code>src/App10.jsx</code> and save to test HMR
+          Edit <code>src/App17.jsx</code> and save to test HMR
         </p>
       </div>
       <p className="read-the-docs">

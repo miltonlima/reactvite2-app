@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 import Menu from './components/Menu.jsx'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
 import { Link, useNavigate } from 'react-router-dom'
 
 // Em produção, use o endpoint público da API; ajuste VITE_API_BASE no deploy.
@@ -60,7 +62,15 @@ function App15() {
 
   return (
     <>
-      
+
+      <div>
+        <a href="https://vite.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
 
       <div className="auth-card">
         <h2>Entrar</h2>
