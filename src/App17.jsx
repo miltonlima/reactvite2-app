@@ -70,11 +70,13 @@ function App17() {
       <header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 20 }}>
         <img src={viteLogo} style={{ height: 36 }} alt="Vite" />
         <h1 style={{ margin: 0 }}>Dashboard</h1>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
-          <img src={reactLogo} style={{ height: 28 }} alt="React" />
-          <button onClick={() => setCount(c => c + 1)} style={{ padding: '6px 12px' }}>Clicks: {count}</button>
-        </div>
       </header>
+
+      {/* Div alinhada abaixo do cabeçalho com logo React e botão */}
+      <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '0 20px 12px 20px', gap: 8 }}>
+        <img src={reactLogo} style={{ height: 28 }} alt="React" />
+        <button onClick={() => setCount(c => c + 1)} style={{ padding: '6px 12px' }}>Clicks: {count}</button>
+      </div>
 
       <main style={{ padding: 20 }}>
         {/* Linha superior de estatísticas */}
