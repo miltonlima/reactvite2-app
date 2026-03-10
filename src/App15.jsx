@@ -58,7 +58,12 @@ function App15() {
     } finally {
       setLoading(false)
     }
+  }  var passwordHashOrdinal = reader.GetOrdinal("password_hash");
+  if (reader.IsDBNull(passwordHashOrdinal))  // ✅ Verifica se é NULL
+  {
+      return Results.Unauthorized();
   }
+  var dbPassword = reader.GetString(passwordHashOrdinal);
 
   return (
     <>
