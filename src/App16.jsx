@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import './App.css'
 import Menu from './components/Menu.jsx'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+
+// Em produção, use o endpoint público da API; ajuste VITE_API_BASE no deploy.
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://aspnetcore2-api.onrender.com'
 
 function App16() {
   const [fullName, setFullName] = useState('')
@@ -12,8 +15,10 @@ function App16() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     setMessage('')
     setError('')
@@ -28,8 +33,44 @@ function App16() {
       return
     }
 
-    // Aqui você poderia chamar sua API de cadastro.
-    setMessage('Cadastro enviado (mock).')
+    setLoading(true)
+
+    try {
+      const response = await fetch(`${API_BASE}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          fullName: fullName.trim(),
+          birthDate,
+          sex,
+          email: email.trim(),
+          password,
+          confirmPassword
+        }),
+      })
+
+      const data = await response.json().catch(() => null)
+
+      if (response.ok) {
+        setMessage(data?.mensagem ?? 'Cadastro realizado com sucesso.')
+        setTimeout(() => navigate('/page15'), 2000)
+        return
+      }
+
+      if (response.status === 400) {
+        setError(data?.mensagem ?? 'Dados inválidos.')
+        return
+      }
+
+      setError(data?.mensagem ?? 'Falha ao criar conta. Tente novamente.')
+    } catch (err) {
+      console.error('Erro ao cadastrar:', err)
+      setError('Erro ao conectar à API de cadastro.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -99,7 +140,9 @@ function App16() {
             />
           </label>
 
-          <button type="submit">Criar conta</button>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Criando conta...' : 'Criar conta'}
+          </button>
         </form>
 
         {error && <p className="error">{error}</p>}
