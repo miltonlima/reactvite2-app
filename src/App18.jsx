@@ -51,7 +51,7 @@ function ChartPlaceholder({ width = '100%', height = 160 }) {
 
 // Componente dashboard com dados mockados. Em produção, busque dados de endpoints da API.
 // Diferente do App17.jsx, este componente NÃO possui proteção de autenticação.
-function App17() {
+function App18() {
   const [count, setCount] = useState(0)
 
   // Dados de estatísticas mockados. Substitua por chamadas à API em produção.
@@ -113,4 +113,4 @@ function App17() {
   )
 }
 
-export default App17
+export default App18
