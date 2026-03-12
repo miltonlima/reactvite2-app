@@ -88,56 +88,79 @@ function App17() {
   ]
 
   return (
-    <>
-
-      {/* Cabeçalho da página com logos, título e botão de logout */}
-      <header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 20, justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img src={viteLogo} style={{ height: 36 }} alt="Vite" />
-          <h1 style={{ margin: 0 }}>Dashboard</h1>
+    <div style={{ display: 'flex', height: '100vh', fontFamily: 'sans-serif' }}>
+      {/* Sidebar vertical */}
+      <aside style={{ width: 240, background: '#1e293b', color: '#fff', display: 'flex', flexDirection: 'column', padding: 24 }}>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <div style={{
+            width: 72,
+            height: 72,
+            borderRadius: '50%',
+            background: '#64748b',
+            margin: '0 auto 12px'
+          }}></div>
+          <div style={{ fontWeight: 700 }}>John Don</div>
+          <div style={{ fontSize: 12, opacity: 0.8 }}>johndon@company.com</div>
         </div>
-        <button onClick={handleLogout} style={{ padding: '8px 16px', background: '#f44336', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-          Sair
-        </button>
-      </header>
+        <nav style={{ flex: 1 }}>
+          {[
+            { name: 'home', icon: '🏠' },
+            { name: 'Arquivo', icon: '📁' },
+            { name: 'Mensagens', icon: '✉️' },
+            { name: 'Notificação', icon: '🔔' },
+            { name: 'Localização', icon: '📍' },
+            { name: 'Gráfico', icon: '📊' }
+          ].map(item => (
+            <div key={item.name} style={{ padding: '8px 0', display: 'flex', alignItems: 'center', cursor: 'pointer', opacity: 0.9 }}>
+              <span style={{ width: 24, textAlign: 'center' }}>{item.icon}</span>
+              <span style={{ marginLeft: 8, fontSize: 14, textTransform: 'capitalize' }}>{item.name}</span>
+            </div>
+          ))}
+        </nav>
+      </aside>
 
-      {/* Seção com logo React e botão incrementador de cliques para demonstração */}
-      <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '0 20px 12px 20px', gap: 8 }}>
-        <img src={reactLogo} style={{ height: 28 }} alt="React" />
-        <button onClick={() => setCount(c => c + 1)} style={{ padding: '6px 12px' }}>Clicks: {count}</button>
-      </div>
+      {/* Área principal */}
+      <div style={{ flex: 1, overflowY: 'auto', background: '#f1f5f9' }}>
+        <header style={{ padding: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ margin: 0 }}>Dashboard User</h2>
+          <button onClick={handleLogout} style={{ padding: '8px 16px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: 4 }}>Sair</button>
+        </header>
 
-      <main style={{ padding: 20 }}>
-        {/* Seção superior: três cartões com estatísticas principais (usuários totais, ativos e novos) */}
-        <section style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-          <StatCard title="Total users" value={stats.totalUsers} diff={2.4} />
-          <StatCard title="Active now" value={stats.activeUsers} diff={-1.2} />
-          <StatCard title="New today" value={stats.newToday} diff={2.4} />
-        </section>
-
-        {/* Seção principal: gráfico de engajamento à esquerda e lista de atividades recentes à direita */}
-        <section style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
-          <div>
-            <h3 style={{ marginTop: 0 }}>Engagement (last 7 days)</h3>
-            <ChartPlaceholder />
+        <section style={{ padding: 20 }}>
+          {/* cartões grandes de métricas */}
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            <div style={{ background: '#0ea5e9', color: '#fff', padding: 20, borderRadius: 8, flex: '1 1 200px' }}>
+              <div>Earning</div>
+              <div style={{ fontSize: 32, fontWeight: 700 }}>$ 628</div>
+            </div>
+            <div style={{ background: '#fff', padding: 20, borderRadius: 8, flex: '1 1 200px' }}>
+              <div>Share</div>
+              <div style={{ fontSize: 32, fontWeight: 700 }}>2434</div>
+            </div>
+            <div style={{ background: '#fff', padding: 20, borderRadius: 8, flex: '1 1 200px' }}>
+              <div>Likes</div>
+              <div style={{ fontSize: 32, fontWeight: 700 }}>1259</div>
+            </div>
+            <div style={{ background: '#fff', padding: 20, borderRadius: 8, flex: '1 1 200px' }}>
+              <div>Rating</div>
+              <div style={{ fontSize: 32, fontWeight: 700 }}>8,5</div>
+            </div>
           </div>
 
-          <div>
-            <h3 style={{ marginTop: 0 }}>Recent activity</h3>
-            <div style={{ background: '#fff', borderRadius: 8, padding: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {recent.map(r => (
-                  <li key={r.id} style={{ padding: '8px 6px', borderBottom: '1px solid #f0f0f0' }}>
-                    <div style={{ fontWeight: 600 }}>{r.user}</div>
-                    <div style={{ fontSize: 12, color: '#666' }}>{r.action} · {r.when}</div>
-                  </li>
-                ))}
-              </ul>
+          {/* gráficos de exemplo */}
+          <div style={{ display: 'flex', gap: 16, marginTop: 24, flexWrap: 'wrap' }}>
+            <div style={{ background: '#fff', borderRadius: 8, padding: 16, flex: '2 1 500px' }}>
+              <h3>Engagement Chart</h3>
+              <ChartPlaceholder />
+            </div>
+            <div style={{ background: '#fff', borderRadius: 8, padding: 16, flex: '1 1 250px' }}>
+              <h3>Activity</h3>
+              <div style={{ width: '100%', height: 150, background: '#e5e7eb' }}></div>
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </div>
+    </div>
   )
 }
 
