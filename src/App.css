@@ -290,7 +290,7 @@ body {
 .dashboard-activity-full {
   margin-top: 32px;
   background: #fff;
-  padding: 16px;
+  padding: 0rem;
   border-radius: 8px;
   width: 100%;
 }
@@ -327,6 +327,49 @@ body {
   font-size: 32px;
   font-weight: 700;
 }
+
+/* helper classes for App17 dashboard */
+.dashboard-content {
+  padding: 20px;
+}
+
+.stat-card {
+  flex: 1;
+  padding: 16px;
+  margin: 8px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.stat-card .title {
+  font-size: 12px;
+  color: #666;
+}
+.stat-card .value {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+.stat-card .diff {
+  margin-top: 6px;
+  font-size: 12px;
+}
+.stat-card .diff.positive { color: #0a0; }
+.stat-card .diff.negative { color: #a00; }
+
+.chart-placeholder {
+  padding: 12px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.dashboard-header h2 { margin: 0; }
+
+.dashboard-sidebar .profile .name { font-weight: 700; }
+.dashboard-sidebar .profile .email { font-size: 12px; opacity: 0.8; }
+
+.item-label { margin-left: 8px; font-size: 14px; text-transform: capitalize; }
 
 /* Modal styles for API response */
 .modal-overlay {
