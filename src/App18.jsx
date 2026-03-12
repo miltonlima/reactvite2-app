@@ -1,16 +1,17 @@
-// Página de dashboard: mostra estatísticas simples, um gráfico placeholder e atividade recente.
-// Este arquivo usa estilos inline para um protótipo rápido; considere mover os estilos para `App.css`.
+// Página de dashboard: exibe estatísticas, um gráfico de engajamento e atividade recente.
+// Este arquivo usa estilos inline para prototipagem rápida; migre para `App.css` em produção.
+// Nota: Este componente NÃO possui proteção de rota. Use App17.jsx para versão autenticada.
 import { useState, useMemo } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
 
-// Pequeno componente reutilizável de cartão de estatística usado no cabeçalho do dashboard.
+// Cartão reutilizável de estatística para exibição de métricas principais no dashboard.
 // Props:
-// - title: rótulo exibido acima do valor
-// - value: valor principal/número da estatística
-// - diff: variação percentual opcional (positiva ou negativa)
+// - title: rótulo descritivo exibido acima do valor
+// - value: número ou valor da métrica
+// - diff: variação percentual opcional (positiva em verde, negativa em vermelho)
 function StatCard({ title, value, diff }) {
   return (
     <div style={{
@@ -32,8 +33,8 @@ function StatCard({ title, value, diff }) {
   )
 }
 
-// Placeholder leve de gráfico de barras em SVG para visualização rápida.
-// Substitua por uma biblioteca de gráficos real (Chart.js, Recharts, etc.) quando necessário.
+// Gráfico de barras simples em SVG para visualização rápida de dados.
+// Use bibliotecas profissionais (Chart.js, Recharts, etc.) para dashboards em produção.
 function ChartPlaceholder({ width = '100%', height = 160 }) {
   const bars = [50, 80, 40, 120, 90, 60, 100, 30, 10, 10, 50, 80, 120]
   const max = Math.max(...bars)
@@ -48,15 +49,15 @@ function ChartPlaceholder({ width = '100%', height = 160 }) {
   )
 }
 
-// Componente principal do dashboard. Usa dados mock locais (`stats` e `recent`).
-// Substitua useMemo/useState por chamadas à API quando os endpoints estiverem prontos.
+// Componente dashboard com dados mockados. Em produção, busque dados de endpoints da API.
+// Diferente do App17.jsx, este componente NÃO possui proteção de autenticação.
 function App17() {
   const [count, setCount] = useState(0)
 
-  // Mocked stats object; in a real app fetch these from an endpoint.
+  // Dados de estatísticas mockados. Substitua por chamadas à API em produção.
   const stats = useMemo(() => ({ totalUsers: 1240, activeUsers: 312, newToday: 8 }), [])
 
-  // Mock recent activity list.
+  // Lista mockada de atividades recentes dos usuários. Busque da API em produção.
   const recent = [
     { id: 1, user: 'Ana Silva', action: 'login', when: '10:12' },
     { id: 2, user: 'Carlos Souza', action: 'signup', when: '09:48' },
@@ -66,27 +67,27 @@ function App17() {
   return (
     <>
 
-      {/* Cabeçalho da página com logos e um botão de interação */}
+      {/* Cabeçalho com logos e título do dashboard */}
       <header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 20 }}>
         <img src={viteLogo} style={{ height: 36 }} alt="Vite" />
         <h1 style={{ margin: 0 }}>Dashboard</h1>
       </header>
 
-      {/* Div alinhada abaixo do cabeçalho com logo React e botão */}
+      {/* Seção com logo React e botão incrementador de cliques para demonstração */}
       <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '0 20px 12px 20px', gap: 8 }}>
         <img src={reactLogo} style={{ height: 28 }} alt="React" />
         <button onClick={() => setCount(c => c + 1)} style={{ padding: '6px 12px' }}>Clicks: {count}</button>
       </div>
 
       <main style={{ padding: 20 }}>
-        {/* Linha superior de estatísticas */}
+        {/* Seção superior: três cartões com estatísticas principais (total, em atividade, novos usuários) */}
         <section style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
           <StatCard title="Total users" value={stats.totalUsers} diff={2.4} />
           <StatCard title="Active now" value={stats.activeUsers} diff={-1.2} />
           <StatCard title="New today" value={stats.newToday} diff={2.4} />
         </section>
 
-        {/* Conteúdo principal: gráfico à esquerda, atividade recente à direita */}
+        {/* Seção principal: gráfico de engajamento à esquerda e lista de atividades recentes à direita */}
         <section style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
           <div>
             <h3 style={{ marginTop: 0 }}>Engagement (last 7 days)</h3>
