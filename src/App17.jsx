@@ -1,6 +1,7 @@
 // Página de dashboard: mostra estatísticas simples, um gráfico placeholder e atividade recente.
 // Este arquivo usa estilos inline para um protótipo rápido; considere mover os estilos para `App.css`.
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -52,9 +53,24 @@ function ChartPlaceholder({ width = '100%', height = 160 }) {
 // Substitua useMemo/useState por chamadas à API quando os endpoints estiverem prontos.
 function App17() {
   const [count, setCount] = useState(0)
+  const navigate = useNavigate()
+
+  // Protege a página: redireciona para login se usuário não estiver autenticado
+  useEffect(() => {
+    const user = localStorage.getItem('user')
+    if (!user) {
+      navigate('/page15')
+    }
+  }, [navigate])
 
   // Mocked stats object; in a real app fetch these from an endpoint.
   const stats = useMemo(() => ({ totalUsers: 1240, activeUsers: 312, newToday: 8 }), [])
+
+  // Função de logout: limpa dados do usuário e redireciona para login
+  function handleLogout() {
+    localStorage.removeItem('user')
+    navigate('/page15')
+  }
 
   // Mock recent activity list.
   const recent = [
@@ -67,9 +83,14 @@ function App17() {
     <>
 
       {/* Cabeçalho da página com logos e um botão de interação */}
-      <header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 20 }}>
-        <img src={viteLogo} style={{ height: 36 }} alt="Vite" />
-        <h1 style={{ margin: 0 }}>Dashboard</h1>
+      <header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 20, justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <img src={viteLogo} style={{ height: 36 }} alt="Vite" />
+          <h1 style={{ margin: 0 }}>Dashboard</h1>
+        </div>
+        <button onClick={handleLogout} style={{ padding: '8px 16px', background: '#f44336', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+          Sair
+        </button>
       </header>
 
       {/* Div alinhada abaixo do cabeçalho com logo React e botão */}

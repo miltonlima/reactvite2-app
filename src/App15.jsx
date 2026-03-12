@@ -42,6 +42,8 @@ function App15() {
 
       if (response.ok) {
         setMessage(data?.mensagem ?? 'Login validado com sucesso.')
+        // Armazena dados do usuário em localStorage para proteção de rotas
+        localStorage.setItem('user', JSON.stringify(data.usuario))
         navigate('/page17')
         return
       }
