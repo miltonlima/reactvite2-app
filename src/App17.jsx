@@ -66,13 +66,13 @@ function App17() {
     }
   }, [navigate])
 
+  // Dados de estatísticas mockados. Em produção, buscar esses dados de um endpoint da API.
+  const stats = useMemo(() => ({ totalUsers: 1240, activeUsers: 312, newToday: 8 }), [])
+
   // Se não estiver autenticado, não renderiza nenhum conteúdo da página
   if (!isAuthenticated) {
     return null
   }
-
-  // Dados de estatísticas mockados. Em produção, buscar esses dados de um endpoint da API.
-  const stats = useMemo(() => ({ totalUsers: 1240, activeUsers: 312, newToday: 8 }), [])
 
   // Função de logout: remove dados do usuário do localStorage e redireciona para a página de login
   function handleLogout() {
