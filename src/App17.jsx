@@ -88,9 +88,9 @@ function App17() {
   ]
 
   return (
-    <div style={{ display: 'flex', height: '100vh', fontFamily: 'sans-serif' }}>
+    <div style={{ display: 'flex', flexDirection: 'row', minHeight: '100vh', fontFamily: 'sans-serif', flexWrap: 'wrap' }}>
       {/* Sidebar vertical */}
-      <aside style={{ width: 240, background: '#1e293b', color: '#fff', display: 'flex', flexDirection: 'column', padding: 24 }}>
+      <aside style={{ minWidth: 240, maxWidth: '25%', background: '#1e293b', color: '#fff', display: 'flex', flexDirection: 'column', padding: 24 }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <div style={{
             width: 72,
@@ -120,7 +120,7 @@ function App17() {
       </aside>
 
       {/* Área principal */}
-      <div style={{ flex: 1, overflowY: 'auto', background: '#f1f5f9' }}>
+      <div style={{ flex: 1, overflowY: 'auto', background: '#f1f5f9', minWidth: 0 }}>
         <header style={{ padding: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 style={{ margin: 0 }}>Dashboard User</h2>
           <button onClick={handleLogout} style={{ padding: '8px 16px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: 4 }}>Sair</button>
@@ -153,10 +153,19 @@ function App17() {
               <h3>Engagement Chart</h3>
               <ChartPlaceholder />
             </div>
-            <div style={{ background: '#fff', borderRadius: 8, padding: 16, flex: '1 1 250px' }}>
-              <h3>Activity</h3>
-              <div style={{ width: '100%', height: 150, background: '#e5e7eb' }}></div>
-            </div>
+          </div>
+
+          {/* Atividade recente em largura total abaixo dos gráficos */}
+          <div style={{ marginTop: 32, background: '#fff', padding: 0, borderRadius: 8, width: '100%' }}>
+            <h3>Recent activity</h3>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              {recent.map(r => (
+                <li key={r.id} style={{ padding: '8px 6px', borderBottom: '1px solid #f0f0f0' }}>
+                  <div style={{ fontWeight: 600 }}>{r.user}</div>
+                  <div style={{ fontSize: 12, color: '#666' }}>{r.action} · {r.when}</div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       </div>
