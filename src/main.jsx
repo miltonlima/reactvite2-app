@@ -19,6 +19,7 @@ import App14 from './App14.jsx'
 import App15 from './App15.jsx'
 import App16 from './App16.jsx'
 import App17 from './App17.jsx'
+import App18 from './App18.jsx'
 
 
 
@@ -47,6 +48,7 @@ const Page14 = withTitle(App14, 'Página 14')
 const Page15 = withTitle(App15, 'Página 15')
 const Page16 = withTitle(App16, 'Página 16')
 const Page17 = withTitle(App17, 'Página 17')
+const Page18 = withTitle(App18, 'Página 18')
 
 
 createRoot(document.getElementById('root')).render(
@@ -70,6 +72,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/page15" element={<Page15 />} />
         <Route path="/page16" element={<Page16 />} />
         <Route path="/page17" element={<Page17 />} />
+        <Route path="/page18" element={<Page18 />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

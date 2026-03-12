@@ -1,17 +1,16 @@
 // Página de dashboard: mostra estatísticas simples, um gráfico placeholder e atividade recente.
 // Este arquivo usa estilos inline para um protótipo rápido; considere mover os estilos para `App.css`.
-import { useState, useMemo, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useMemo } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
 
-// Pequeno componente reutilizável de cartão de estatística exibido no cabeçalho do dashboard.
+// Pequeno componente reutilizável de cartão de estatística usado no cabeçalho do dashboard.
 // Props:
-// - title: rótulo exibido acima do valor principal
-// - value: número ou valor principal da estatística
-// - diff: variação percentual opcional (positiva verde, negativa vermelha)
+// - title: rótulo exibido acima do valor
+// - value: valor principal/número da estatística
+// - diff: variação percentual opcional (positiva ou negativa)
 function StatCard({ title, value, diff }) {
   return (
     <div style={{
@@ -33,8 +32,8 @@ function StatCard({ title, value, diff }) {
   )
 }
 
-// Gráfico de barras simples em SVG para visualização rápida de dados.
-// Substitua por uma biblioteca de gráficos profissional (Chart.js, Recharts, etc.) em produção.
+// Placeholder leve de gráfico de barras em SVG para visualização rápida.
+// Substitua por uma biblioteca de gráficos real (Chart.js, Recharts, etc.) quando necessário.
 function ChartPlaceholder({ width = '100%', height = 160 }) {
   const bars = [50, 80, 40, 120, 90, 60, 100, 30, 10, 10, 50, 80, 120]
   const max = Math.max(...bars)
@@ -53,34 +52,11 @@ function ChartPlaceholder({ width = '100%', height = 160 }) {
 // Substitua useMemo/useState por chamadas à API quando os endpoints estiverem prontos.
 function App17() {
   const [count, setCount] = useState(0)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const navigate = useNavigate()
 
-  // Protege a página: redireciona para login se usuário não estiver autenticado
-  useEffect(() => {
-    const user = localStorage.getItem('user')
-    if (!user) {
-      navigate('/page15')
-    } else {
-      setIsAuthenticated(true)
-    }
-  }, [navigate])
-
-  // Se não estiver autenticado, não renderiza nenhum conteúdo da página
-  if (!isAuthenticated) {
-    return null
-  }
-
-  // Dados de estatísticas mockados. Em produção, buscar esses dados de um endpoint da API.
+  // Mocked stats object; in a real app fetch these from an endpoint.
   const stats = useMemo(() => ({ totalUsers: 1240, activeUsers: 312, newToday: 8 }), [])
 
-  // Função de logout: remove dados do usuário do localStorage e redireciona para a página de login
-  function handleLogout() {
-    localStorage.removeItem('user')
-    navigate('/page15')
-  }
-
-  // Lista mockada de atividade recente. Em produção, buscar da API.
+  // Mock recent activity list.
   const recent = [
     { id: 1, user: 'Ana Silva', action: 'login', when: '10:12' },
     { id: 2, user: 'Carlos Souza', action: 'signup', when: '09:48' },
@@ -90,32 +66,27 @@ function App17() {
   return (
     <>
 
-      {/* Cabeçalho da página com logos, título e botão de logout */}
-      <header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 20, justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img src={viteLogo} style={{ height: 36 }} alt="Vite" />
-          <h1 style={{ margin: 0 }}>Dashboard</h1>
-        </div>
-        <button onClick={handleLogout} style={{ padding: '8px 16px', background: '#f44336', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-          Sair
-        </button>
+      {/* Cabeçalho da página com logos e um botão de interação */}
+      <header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 20 }}>
+        <img src={viteLogo} style={{ height: 36 }} alt="Vite" />
+        <h1 style={{ margin: 0 }}>Dashboard</h1>
       </header>
 
-      {/* Seção com logo React e botão incrementador de cliques para demonstração */}
+      {/* Div alinhada abaixo do cabeçalho com logo React e botão */}
       <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '0 20px 12px 20px', gap: 8 }}>
         <img src={reactLogo} style={{ height: 28 }} alt="React" />
         <button onClick={() => setCount(c => c + 1)} style={{ padding: '6px 12px' }}>Clicks: {count}</button>
       </div>
 
       <main style={{ padding: 20 }}>
-        {/* Seção superior: três cartões com estatísticas principais (usuários totais, ativos e novos) */}
+        {/* Linha superior de estatísticas */}
         <section style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
           <StatCard title="Total users" value={stats.totalUsers} diff={2.4} />
           <StatCard title="Active now" value={stats.activeUsers} diff={-1.2} />
           <StatCard title="New today" value={stats.newToday} diff={2.4} />
         </section>
 
-        {/* Seção principal: gráfico de engajamento à esquerda e lista de atividades recentes à direita */}
+        {/* Conteúdo principal: gráfico à esquerda, atividade recente à direita */}
         <section style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
           <div>
             <h3 style={{ marginTop: 0 }}>Engagement (last 7 days)</h3>
