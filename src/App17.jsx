@@ -88,21 +88,15 @@ function App17() {
   ]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', minHeight: '100vh', fontFamily: 'sans-serif', flexWrap: 'wrap' }}>
+    <div className="dashboard">
       {/* Sidebar vertical */}
-      <aside style={{ minWidth: 240, maxWidth: '25%', background: '#1e293b', color: '#fff', display: 'flex', flexDirection: 'column', padding: 24 }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{
-            width: 72,
-            height: 72,
-            borderRadius: '50%',
-            background: '#64748b',
-            margin: '0 auto 12px'
-          }}></div>
+      <aside className="dashboard-sidebar">
+        <div className="profile">
+          <div className="avatar"></div>
           <div style={{ fontWeight: 700 }}>John Don</div>
           <div style={{ fontSize: 12, opacity: 0.8 }}>johndon@company.com</div>
         </div>
-        <nav style={{ flex: 1 }}>
+        <nav>
           {[
             { name: 'home', icon: '🏠' },
             { name: 'Arquivo', icon: '📁' },
@@ -111,8 +105,8 @@ function App17() {
             { name: 'Localização', icon: '📍' },
             { name: 'Gráfico', icon: '📊' }
           ].map(item => (
-            <div key={item.name} style={{ padding: '8px 0', display: 'flex', alignItems: 'center', cursor: 'pointer', opacity: 0.9 }}>
-              <span style={{ width: 24, textAlign: 'center' }}>{item.icon}</span>
+            <div key={item.name} className="item">
+              <span className="icon">{item.icon}</span>
               <span style={{ marginLeft: 8, fontSize: 14, textTransform: 'capitalize' }}>{item.name}</span>
             </div>
           ))}
@@ -120,36 +114,36 @@ function App17() {
       </aside>
 
       {/* Área principal */}
-      <div style={{ flex: 1, overflowY: 'auto', background: '#f1f5f9', minWidth: 0 }}>
-        <header style={{ padding: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="dashboard-main">
+        <header className="dashboard-header">
           <h2 style={{ margin: 0 }}>Dashboard User</h2>
-          <button onClick={handleLogout} style={{ padding: '8px 16px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: 4 }}>Sair</button>
+          <button onClick={handleLogout} className="logout-button">Sair</button>
         </header>
 
         <section style={{ padding: 20 }}>
           {/* cartões grandes de métricas */}
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-            <div style={{ background: '#0ea5e9', color: '#fff', padding: 20, borderRadius: 8, flex: '1 1 200px' }}>
+          <div className="dashboard-stats">
+            <div className="card primary">
               <div>Earning</div>
-              <div style={{ fontSize: 32, fontWeight: 700 }}>$ 628</div>
+              <div className="card-value">$ 628</div>
             </div>
             <div style={{ background: '#fff', padding: 20, borderRadius: 8, flex: '1 1 200px' }}>
               <div>Share</div>
-              <div style={{ fontSize: 32, fontWeight: 700 }}>2434</div>
+              <div className="card-value">2434</div>
             </div>
             <div style={{ background: '#fff', padding: 20, borderRadius: 8, flex: '1 1 200px' }}>
               <div>Likes</div>
-              <div style={{ fontSize: 32, fontWeight: 700 }}>1259</div>
+              <div className="card-value">1259</div>
             </div>
             <div style={{ background: '#fff', padding: 20, borderRadius: 8, flex: '1 1 200px' }}>
               <div>Rating</div>
-              <div style={{ fontSize: 32, fontWeight: 700 }}>8,5</div>
+              <div className="card-value">8,5</div>
             </div>
           </div>
 
           {/* gráficos de exemplo */}
-          <div style={{ display: 'flex', gap: 16, marginTop: 24, flexWrap: 'wrap' }}>
-            <div style={{ background: '#fff', borderRadius: 8, padding: 16, flex: '2 1 500px' }}>
+          <div className="dashboard-graphs">
+            <div className="graph">
               <h3>Engagement Chart</h3>
               <ChartPlaceholder />
             </div>
