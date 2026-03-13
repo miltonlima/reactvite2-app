@@ -6,6 +6,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Menu from './components/Menu.jsx'
+import SidebarMenu from './components/SidebarMenu.jsx';
 
 // Pequeno componente reutilizável de cartão de estatística exibido no cabeçalho do dashboard.
 // Props:
@@ -89,28 +90,7 @@ function App17() {
   return (
     <div className="dashboard">
       {/* Sidebar vertical */}
-      <aside className="dashboard-sidebar">
-        <div className="profile">
-          <div className="avatar"></div>
-          <div className="name">{userName}</div>
-          <div className="email">{userEmail}</div>
-        </div>
-        <nav>
-          {[
-            { name: 'home', icon: '🏠' },
-            { name: 'Arquivo', icon: '📁' },
-            { name: 'Mensagens', icon: '✉️' },
-            { name: 'Notificação', icon: '🔔' },
-            { name: 'Localização', icon: '📍' },
-            { name: 'Gráfico', icon: '📊' }
-          ].map(item => (
-            <div key={item.name} className="item">
-              <span className="icon">{item.icon}</span>
-              <span className="item-label">{item.name}</span>
-            </div>
-          ))}
-        </nav>
-      </aside>
+      <SidebarMenu userName={userName} userEmail={userEmail} />
 
       {/* Área principal */}
       <div className="dashboard-main">
