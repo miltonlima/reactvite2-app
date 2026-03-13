@@ -262,6 +262,13 @@ body {
   flex-wrap: wrap;
 }
 
+.dashboard-stats .card-metric {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  flex: 1 1 200px;
+}
+
 .dashboard-stats .card {
   padding: 20px;
   border-radius: 8px;
@@ -295,6 +302,10 @@ body {
   width: 100%;
 }
 
+.dashboard-activity-full h3 {
+  padding: 12px;
+}
+
 .dashboard-activity-full ul {
   list-style: none;
   padding: 0;
@@ -302,15 +313,19 @@ body {
 }
 
 .dashboard-activity-full li {
-  padding: 8px 6px;
+  padding: 8px 12px;
   border-bottom: 1px solid #f0f0f0;
 }
 
-.dashboard-activity-full li .user {
+.dashboard-activity-full li:last-child {
+  border-bottom: none;
+}
+
+.dashboard-activity-full .user-name {
   font-weight: 600;
 }
 
-.dashboard-activity-full li .when {
+.dashboard-activity-full .user-action {
   font-size: 12px;
   color: #666;
 }
@@ -321,6 +336,7 @@ body {
   color: #fff;
   border: none;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .card-value {
