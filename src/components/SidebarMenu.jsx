@@ -1,17 +1,18 @@
 // src/components/SidebarMenu.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 // O menu da barra lateral é um componente de apresentação simples.
 // Ele recebe `userName` e `userEmail` como props para exibir os detalhes do perfil.
-// Os itens de navegação são atualmente dados estáticos.
+// Os itens de navegação são agora links que usam React Router.
 function SidebarMenu({ userName, userEmail }) {
   const menuItems = [
-    { name: 'home', icon: '🏠' },
-    { name: 'Arquivo', icon: '📁' },
-    { name: 'Mensagens', icon: '✉️' },
-    { name: 'Notificação', icon: '🔔' },
-    { name: 'Localização', icon: '📍' },
-    { name: 'Gráfico', icon: '📊' }
+    { name: 'home', icon: '🏠', path: '/page17' },
+    { name: 'Arquivo', icon: '📁', path: '/arquivo' },
+    { name: 'Mensagens', icon: '✉️', path: '#' },
+    { name: 'Notificação', icon: '🔔', path: '#' },
+    { name: 'Localização', icon: '📍', path: '#' },
+    { name: 'Gráfico', icon: '📊', path: '#' }
   ];
 
   return (
@@ -23,10 +24,10 @@ function SidebarMenu({ userName, userEmail }) {
       </div>
       <nav>
         {menuItems.map(item => (
-          <div key={item.name} className="item">
+          <Link to={item.path} key={item.name} className="item" style={{ textDecoration: 'none', color: 'inherit' }}>
             <span className="icon">{item.icon}</span>
             <span className="item-label">{item.name}</span>
-          </div>
+          </Link>
         ))}
       </nav>
     </aside>
