@@ -9,7 +9,7 @@ function SidebarMenu({ userName, userEmail }) {
   const menuItems = [
     { name: 'home', icon: '🏠', path: '/page17' },
     { name: 'Arquivo', icon: '📁', path: '/arquivo' },
-    { name: 'Mensagens', icon: '✉️', path: '#' },
+    { name: 'Mensagens', icon: '✉️', path: '/mensagem' },
     { name: 'Notificação', icon: '🔔', path: '#' },
     { name: 'Localização', icon: '📍', path: '#' },
     { name: 'Gráfico', icon: '📊', path: '#' }

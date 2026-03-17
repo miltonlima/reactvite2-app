@@ -21,6 +21,8 @@ import App16 from './App16.jsx'
 import App17 from './App17.jsx'
 import App18 from './App18.jsx'
 import Arquivo from './Arquivo.jsx';
+import Mensagem from './Mensagem.jsx';
+import Layout from './components/Layout.jsx';
 
 
 
@@ -50,13 +52,15 @@ const Page15 = withTitle(App15, 'Página 15')
 const Page16 = withTitle(App16, 'Página 16')
 const Page17 = withTitle(App17, 'Página 17')
 const Page18 = withTitle(App18, 'Página 18')
-const ArquivoPage = withTitle(Arquivo, 'Arquivos');
+const ArquivoPage = withTitle(Arquivo, 'Arquivos')
+const MensagemPage = withTitle(Mensagem, 'Mensagens');
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
+        {/* Rotas renderizadas fora do layout principal */}
         <Route path="/" element={<Home />} />
         <Route path="/page2" element={<Page2 />} />
         <Route path="/page3" element={<Page3 />} />
@@ -73,9 +77,14 @@ createRoot(document.getElementById('root')).render(
         <Route path="/page14" element={<Page14 />} />
         <Route path="/page15" element={<Page15 />} />
         <Route path="/page16" element={<Page16 />} />
-        <Route path="/page17" element={<Page17 />} />
         <Route path="/page18" element={<Page18 />} />
-        <Route path="/arquivo" element={<ArquivoPage />} />
+
+        {/* Rotas aninhadas que usam o Layout com a barra lateral */}
+        <Route element={<Layout />}>
+          <Route path="/page17" element={<Page17 />} />
+          <Route path="/arquivo" element={<ArquivoPage />} />
+          <Route path="/mensagem" element={<MensagemPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>,
