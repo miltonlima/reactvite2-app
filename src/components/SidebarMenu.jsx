@@ -8,7 +8,10 @@ import { Link } from 'react-router-dom';
 function SidebarMenu({ userName, userEmail }) {
   const menuItems = [
     { name: 'home', icon: '🏠', path: '/page17' },
-    { name: 'Modalidade', icon: '🏠', path: '/modalidade' },
+    { name: 'Aluno', icon: '🔎', path: '/aluno' },
+    { name: 'Modalidade', icon: '📝', path: '/modalidade' },
+    { name: 'Turma', icon: '📗', path: '/turma' },
+    { name: 'Avaliação', icon: '🎓', path: '/avaliacao' },
     { name: 'Arquivo', icon: '📁', path: '/arquivo' },
     { name: 'Mensagens', icon: '✉️', path: '/mensagem' },
     { name: 'Notificação', icon: '🔔', path: '#' },
