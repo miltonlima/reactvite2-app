@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import { AuthContext } from './components/Layout';
+
 
 // ... (definições de StatCard e ChartPlaceholder permanecem as mesmas) ...
 
@@ -39,8 +38,6 @@ function ChartPlaceholder({ width = '100%', height = 160 }) {
 }
 
 function App17() {
-  const { handleLogout } = useContext(AuthContext);
-
   const recent = [
     { id: 1, user: 'Ana Silva', action: 'login', when: '10:12' },
     { id: 2, user: 'Carlos Souza', action: 'signup', when: '09:48' },
@@ -48,13 +45,8 @@ function App17() {
   ];
 
   return (
-    <div className="dashboard-main">
-      <header className="dashboard-header">
-        <h2>Dashboard User</h2>
-        <button onClick={handleLogout} className="logout-button">Sair</button>
-      </header>
-
-      <section className="dashboard-content">
+    <>
+      <div style={{ padding: '20px' }}>
         {/* ... (resto do conteúdo do dashboard permanece o mesmo) ... */}
         <div className="dashboard-stats">
             <div className="card primary">
@@ -93,8 +85,8 @@ function App17() {
               ))}
             </ul>
           </div>
-      </section>
-    </div>
+        </div>
+    </>
   );
 }
 

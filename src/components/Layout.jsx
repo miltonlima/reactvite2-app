@@ -37,8 +37,14 @@ function Layout() {
     <AuthContext.Provider value={{ handleLogout }}>
       <div className="dashboard">
         <SidebarMenu userName={userName} userEmail={userEmail} />
-        {/* O Outlet renderiza o componente filho (ex: App17) diretamente aqui */}
-        <Outlet />
+        <main className="dashboard-main">
+          <header className="dashboard-header">
+            <h2>Dashboard User</h2>
+            <button onClick={handleLogout} className="logout-button">Sair</button>
+          </header>
+          {/* O Outlet renderiza o componente filho (ex: App17) diretamente aqui */}
+          <Outlet />
+        </main>
       </div>
     </AuthContext.Provider>
   );
