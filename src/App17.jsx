@@ -19,7 +19,7 @@ function StatCard({ title, value, diff }) {
 
 // Gráfico de barras simples em SVG para visualização rápida de dados.
 function ChartPlaceholder({ width = '100%', height = 160 }) {
-  const bars = [50, 80, 40, 120, 90, 60, 100, 30, 10, 10, 50, 80, 120];
+  const bars = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140];
   const max = Math.max(...bars);
   return (
     <div className="chart-placeholder">
@@ -40,8 +40,8 @@ function ChartPlaceholder({ width = '100%', height = 160 }) {
 function App17() {
   const recent = [
     { id: 1, user: 'Ana Silva', action: 'login', when: '10:12' },
-    { id: 2, user: 'Carlos Souza', action: 'signup', when: '09:48' },
-    { id: 3, user: 'Mariana', action: 'password reset', when: '08:30' }
+    { id: 2, user: 'Carlos Souza', action: 'inscrição', when: '09:48' },
+    { id: 3, user: 'Mariana', action: 'redefinição de senha', when: '08:30' }
   ];
 
   return (
@@ -50,32 +50,32 @@ function App17() {
         {/* ... (resto do conteúdo do dashboard permanece o mesmo) ... */}
         <div className="dashboard-stats">
             <div className="card primary">
-              <div>Earning</div>
-              <div className="card-value">$ 628</div>
+              <div>Alunos</div>
+              <div className="card-value">628</div>
             </div>
             <div className="card-metric">
-              <div>Share</div>
+              <div>Modalidades</div>
               <div className="card-value">2434</div>
             </div>
             <div className="card-metric">
-              <div>Likes</div>
+              <div>Turmas</div>
               <div className="card-value">1259</div>
             </div>
             <div className="card-metric">
-              <div>Rating</div>
+              <div>Avaliações</div>
               <div className="card-value">8,5</div>
             </div>
           </div>
 
           <div className="dashboard-graphs">
             <div className="graph">
-              <h3>Engagement Chart</h3>
+              <h3>Faturamento Mensal</h3>
               <ChartPlaceholder />
             </div>
           </div>
 
           <div className="dashboard-activity-full">
-            <h3>Recent activity</h3>
+            <h3>Atividade Recente</h3>
             <ul>
               {recent.map(r => (
                 <li key={r.id}>
