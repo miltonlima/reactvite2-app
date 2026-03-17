@@ -73,6 +73,7 @@ function App15() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
+      <h2>Sistema de Atividades Educacionais</h2>
 
       <div className="auth-card">
         <h2>Entrar</h2>
