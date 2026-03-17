@@ -22,6 +22,9 @@ import App17 from './App17.jsx'
 import App18 from './App18.jsx'
 import Arquivo from './Arquivo.jsx'
 import Mensagem from './Mensagem.jsx'
+import Aluno from './Aluno.jsx'
+import Modalidade from './Modalidade.jsx'
+import Turma from './Turma.jsx'
 import Layout from './components/Layout.jsx';
 
 
@@ -53,7 +56,10 @@ const Page16 = withTitle(App16, 'Página 16')
 const Page17 = withTitle(App17, 'Página 17')
 const Page18 = withTitle(App18, 'Página 18')
 const ArquivoPage = withTitle(Arquivo, 'Arquivos')
-const MensagemPage = withTitle(Mensagem, 'Mensagens');
+const MensagemPage = withTitle(Mensagem, 'Mensagens')
+const AlunoPage = withTitle(Aluno, 'Alunos')
+const ModalidadePage = withTitle(Modalidade, 'Modalidades')
+const TurmaPage = withTitle(Turma, 'Turmas');
 
 
 createRoot(document.getElementById('root')).render(
@@ -84,6 +90,9 @@ createRoot(document.getElementById('root')).render(
           <Route path="/page17" element={<Page17 />} />
           <Route path="/arquivo" element={<ArquivoPage />} />
           <Route path="/mensagem" element={<MensagemPage />} />
+          <Route path="/aluno" element={<AlunoPage />} />
+          <Route path="/modalidade" element={<ModalidadePage />} />
+          <Route path="/turma" element={<TurmaPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
