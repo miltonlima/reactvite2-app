@@ -39,7 +39,7 @@ function Layout() {
         <SidebarMenu userName={userName} userEmail={userEmail} />
         <main className="dashboard-main">
           <header className="dashboard-header">
-            <h2>Dashboard</h2>
+            <h2>Painel</h2>
             <button onClick={handleLogout} className="logout-button">Sair</button>
           </header>
           {/* O Outlet renderiza o componente filho (ex: App17) diretamente aqui */}
