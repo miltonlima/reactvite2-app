@@ -20,8 +20,8 @@ import App15 from './App15.jsx'
 import App16 from './App16.jsx'
 import App17 from './App17.jsx'
 import App18 from './App18.jsx'
-import Arquivo from './Arquivo.jsx';
-import Mensagem from './Mensagem.jsx';
+import Arquivo from './Arquivo.jsx'
+import Mensagem from './Mensagem.jsx'
 import Layout from './components/Layout.jsx';
 
 
