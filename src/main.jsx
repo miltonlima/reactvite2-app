@@ -25,6 +25,7 @@ import Mensagem from './Mensagem.jsx'
 import Aluno from './Aluno.jsx'
 import Modalidade from './Modalidade.jsx'
 import Turma from './Turma.jsx'
+import Avaliacao from './Avaliacao.jsx'
 import Layout from './components/Layout.jsx';
 
 
@@ -59,7 +60,8 @@ const ArquivoPage = withTitle(Arquivo, 'Arquivos')
 const MensagemPage = withTitle(Mensagem, 'Mensagens')
 const AlunoPage = withTitle(Aluno, 'Alunos')
 const ModalidadePage = withTitle(Modalidade, 'Modalidades')
-const TurmaPage = withTitle(Turma, 'Turmas');
+const TurmaPage = withTitle(Turma, 'Turmas')
+const AvaliacaoPage = withTitle(Avaliacao, 'Avaliações');
 
 
 createRoot(document.getElementById('root')).render(
@@ -93,6 +95,8 @@ createRoot(document.getElementById('root')).render(
           <Route path="/aluno" element={<AlunoPage />} />
           <Route path="/modalidade" element={<ModalidadePage />} />
           <Route path="/turma" element={<TurmaPage />} />
+          <Route path="/avaliacao" element={<AvaliacaoPage />} />
+
         </Route>
       </Routes>
     </BrowserRouter>
