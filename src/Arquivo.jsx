@@ -9,7 +9,7 @@ function Arquivo() {
       <div style={{ padding: '20px' }}>
         <h1>Página de Arquivos</h1>
         <p>Esta é a página para gerenciar arquivos.</p>
-        <br />
+        <h1>🎓💼💻🏢🏠📘🗄🖥📝🔒🚀🗺🧪📊🔎✔️📃📗</h1>
         {/* Este link deve levar de volta à página principal do dashboard, que é /page17 */}
         <Link to="/page17">Voltar ao Dashboard</Link>
       </div>
