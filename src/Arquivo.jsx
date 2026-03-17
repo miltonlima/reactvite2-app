@@ -45,7 +45,6 @@ function Arquivo() {
     navigate('/page15')
   }
 
-
   return (
     <div className="dashboard">
       {/* Sidebar vertical */}
