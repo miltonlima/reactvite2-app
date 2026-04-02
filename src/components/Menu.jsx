@@ -16,7 +16,8 @@ const routes = [
   { path: "/page13", label: "Page 13" },  
   { path: "/page14", label: "Page 14" },  
   { path: "/page15", label: "Page 15" },  
-  { path: "/page16", label: "Page 16" }  
+  { path: "/page16", label: "Page 16" },
+  { path: "/story", label: "Story" }
 ]
 
 function Menu() {
@@ -24,6 +25,7 @@ function Menu() {
   const secondRow = routes.slice(4,8)
   const thirdRow = routes.slice(8,12)
   const fourthRow = routes.slice(12,16)
+  const fifthRow = routes.slice(16)
   return (
     <>
       <nav className="menu">
@@ -44,6 +46,11 @@ function Menu() {
       </nav>
       <nav className="menu">
         {fourthRow.map(route => (
+          <Link key={route.path} to={route.path}>{route.label}</Link>
+        ))}
+      </nav>
+      <nav className="menu">
+        {fifthRow.map(route => (
           <Link key={route.path} to={route.path}>{route.label}</Link>
         ))}
       </nav>
