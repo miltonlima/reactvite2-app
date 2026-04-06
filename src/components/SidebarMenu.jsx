@@ -11,6 +11,7 @@ function SidebarMenu({ userName, userEmail }) {
     { name: 'Aluno', icon: '🔎', path: '/aluno' },
     { name: 'Modalidade', icon: '📝', path: '/modalidade' },
     { name: 'Turma', icon: '📗', path: '/turma' },
+    { name: 'Inscrição', icon: '📝', path: '/inscricao' },
     { name: 'Avaliação', icon: '🎓', path: '/avaliacao' },
     { name: 'Arquivo', icon: '📁', path: '/arquivo' },
     { name: 'Mensagens', icon: '✉️', path: '/mensagem' },

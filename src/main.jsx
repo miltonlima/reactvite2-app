@@ -27,6 +27,7 @@ import Aluno from './Aluno.jsx'
 import Modalidade from './Modalidade.jsx'
 import Turma from './Turma.jsx'
 import Avaliacao from './Avaliacao.jsx'
+import Inscricao from './Inscricao.jsx'
 import Layout from './components/Layout.jsx';
 
 
@@ -64,6 +65,7 @@ const AlunoPage = withTitle(Aluno, 'Alunos')
 const ModalidadePage = withTitle(Modalidade, 'Modalidades')
 const TurmaPage = withTitle(Turma, 'Turmas')
 const AvaliacaoPage = withTitle(Avaliacao, 'Avaliações');
+const InscricaoPage = withTitle(Inscricao, 'Inscrições');
 
 
 createRoot(document.getElementById('root')).render(
@@ -99,6 +101,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/modalidade" element={<ModalidadePage />} />
           <Route path="/turma" element={<TurmaPage />} />
           <Route path="/avaliacao" element={<AvaliacaoPage />} />
+          <Route path="/inscricao" element={<InscricaoPage />} />
 
         </Route>
       </Routes>
