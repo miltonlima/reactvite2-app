@@ -1,0 +1,126 @@
+.alunos-page {
+  padding: 20px;
+  text-align: left;
+}
+
+.alunos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.alunos-header h1 {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+}
+
+.alunos-header p {
+  margin: 0;
+  color: #475569;
+}
+
+.alunos-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+}
+
+.alunos-list-card,
+.alunos-detail-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.08);
+}
+
+.alunos-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.alunos-list-header h2,
+.alunos-detail-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.toggle-inativos {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+}
+
+.alunos-table-wrap {
+  overflow-x: auto;
+}
+
+.alunos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.alunos-table th,
+.alunos-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+.alunos-table thead th {
+  color: #334155;
+  text-align: left;
+  background: #f8fafc;
+}
+
+.alunos-table tr.selected {
+  background: #eff6ff;
+}
+
+.status-active,
+.status-inactive {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  margin-bottom: 14px;
+}
+
+.alunos-form {
+  margin-top: 12px;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1100px) {
+  .alunos-layout {
+    grid-template-columns: 1fr;
+  }
+}
