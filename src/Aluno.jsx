@@ -5,7 +5,7 @@ import './Aluno.css';
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
   import.meta.env.VITE_API_BASE_URL ||
-  'https://aspnetcore2-api.onrender.com';
+  (import.meta.env.DEV ? 'http://localhost:5151' : 'https://aspnetcore2-api.onrender.com');
 
 function toInputDate(value) {
   if (!value) return '';
