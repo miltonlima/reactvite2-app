@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Aluno.css';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://aspnetcore2-api.onrender.com';
+const API_BASE =
+  import.meta.env.VITE_API_BASE ||
+  import.meta.env.VITE_API_BASE_URL ||
+  'https://aspnetcore2-api.onrender.com';
 
 function toInputDate(value) {
   if (!value) return '';
@@ -24,6 +27,12 @@ async function request(path, options = {}) {
   const body = isJson ? await response.json() : null;
 
   if (!response.ok) {
+    if (response.status === 404 && path.startsWith('/api/alunos')) {
+      throw new Error(
+        `Endpoint ${path} não encontrado na API (${API_BASE}). ` +
+          'Publique o backend com os endpoints de alunos ou aponte VITE_API_BASE para sua API local atualizada.'
+      );
+    }
     const message = body?.mensagem || body?.detail || body?.message || response.statusText;
     throw new Error(message);
   }
