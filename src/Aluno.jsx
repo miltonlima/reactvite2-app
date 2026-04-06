@@ -54,6 +54,7 @@ function Aluno() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isInactivating, setIsInactivating] = useState(false);
+  const [isReactivating, setIsReactivating] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
   const [form, setForm] = useState({
@@ -186,6 +187,39 @@ function Aluno() {
       setDetailError(error.message || 'Falha ao inativar aluno.');
     } finally {
       setIsInactivating(false);
+    }
+  }
+
+  async function handleReactivate() {
+    if (!selectedId) return;
+
+    const ok = window.confirm(`Deseja reativar o aluno "${selectedAlunoNome}"?`);
+    if (!ok) return;
+
+    try {
+      setIsReactivating(true);
+      setDetailError('');
+      setSuccessMessage('');
+
+      const response = await request(`/api/alunos/${selectedId}/reativar`, {
+        method: 'POST',
+      });
+
+      setSuccessMessage(response?.mensagem || 'Aluno reativado com sucesso.');
+      setSelectedAluno((current) => {
+        if (!current) return current;
+        return {
+          ...current,
+          isActive: true,
+          inactiveAt: null,
+        };
+      });
+
+      await loadAlunos(includeInactive);
+    } catch (error) {
+      setDetailError(error.message || 'Falha ao reativar aluno.');
+    } finally {
+      setIsReactivating(false);
     }
   }
 
@@ -347,16 +381,23 @@ function Aluno() {
 
               <div className="detail-actions">
                 {!isEditing && (
-                  <button type="button" onClick={() => setIsEditing(true)} disabled={isInactivating}>
+                  <button type="button" onClick={() => setIsEditing(true)} disabled={isInactivating || isReactivating}>
                     Editar
                   </button>
                 )}
                 <button
                   type="button"
                   onClick={handleInactivate}
-                  disabled={isInactivating || !selectedAluno.isActive}
+                  disabled={isInactivating || isReactivating || !selectedAluno.isActive}
                 >
                   {isInactivating ? 'Inativando...' : 'Inativar aluno'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReactivate}
+                  disabled={isReactivating || isInactivating || selectedAluno.isActive}
+                >
+                  {isReactivating ? 'Reativando...' : 'Reativar aluno'}
                 </button>
               </div>
             </>
