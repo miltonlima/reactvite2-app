@@ -1,0 +1,178 @@
+.turma-report-page {
+  padding: 16px;
+  text-align: left;
+}
+
+.turma-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.turma-report-header h1 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.turma-report-header p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.turma-report-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.turma-report-badge {
+  background: #dcfce7;
+  color: #14532d;
+  border: 1px solid #bbf7d0;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.turma-report-create {
+  margin-bottom: 10px;
+}
+
+.turma-create-inline-form {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.9fr 0.9fr auto auto;
+  gap: 8px;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.turma-create-inline-form input,
+.turma-create-inline-form select,
+.inline-edit-input {
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  padding: 0 10px;
+  font-size: 0.9rem;
+  background: #ffffff;
+}
+
+.turma-create-inline-form button,
+.compact-actions button {
+  height: 34px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.turma-create-inline-form button:hover,
+.compact-actions button:hover {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.turma-report-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.turma-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.turma-report-table th,
+.turma-report-table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.turma-report-table thead th {
+  background: #f8fafc;
+  color: #334155;
+  font-weight: 700;
+}
+
+.th-actions {
+  width: 220px;
+}
+
+.compact-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.active-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #0f172a;
+}
+
+.status-active,
+.status-inactive {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.td-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 14px;
+}
+
+.error {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.success {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+@media (max-width: 1200px) {
+  .turma-create-inline-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .turma-report-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .turma-report-header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
