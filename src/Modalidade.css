@@ -1,0 +1,168 @@
+.modalidade-report-page {
+  padding: 16px;
+  text-align: left;
+}
+
+.modalidade-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.modalidade-report-header h1 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.modalidade-report-header p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.modalidade-report-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modalidade-report-badge {
+  background: #dbeafe;
+  color: #1e3a8a;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.modalidade-report-create {
+  margin-bottom: 10px;
+}
+
+.modalidade-create-inline-form {
+  display: grid;
+  grid-template-columns: 160px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.modalidade-create-inline-form label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.modalidade-create-inline-form input,
+.inline-edit-input {
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  padding: 0 10px;
+  font-size: 0.9rem;
+}
+
+.modalidade-create-inline-form button,
+.compact-actions button {
+  height: 34px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.modalidade-create-inline-form button:hover,
+.compact-actions button:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.modalidade-report-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.modalidade-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.modalidade-report-table th,
+.modalidade-report-table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.modalidade-report-table thead th {
+  background: #f8fafc;
+  color: #334155;
+  font-weight: 700;
+}
+
+.modalidade-report-table .th-actions {
+  width: 220px;
+}
+
+.compact-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.td-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 14px;
+}
+
+.secondary-link {
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  color: #1f2937;
+  text-decoration: none;
+  background: #f9fafb;
+}
+
+.secondary-link:hover {
+  background: #eef2f7;
+}
+
+.error {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.success {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+@media (max-width: 920px) {
+  .modalidade-create-inline-form {
+    grid-template-columns: 1fr;
+  }
+
+  .modalidade-report-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .modalidade-report-header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

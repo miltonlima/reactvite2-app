@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import './App.css';
+import './Modalidade.css';
 
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
@@ -22,6 +22,13 @@ async function request(path, options = {}) {
   }
 
   return body;
+}
+
+function formatDate(dateValue) {
+  if (!dateValue) return '-';
+  const parsed = new Date(dateValue);
+  if (Number.isNaN(parsed.getTime())) return '-';
+  return parsed.toLocaleString('pt-BR');
 }
 
 function Modalidade() {
@@ -84,8 +91,7 @@ function Modalidade() {
     setEditingName('');
   }
 
-  async function handleUpdate(event) {
-    event.preventDefault();
+  async function handleUpdate() {
     if (!editingId) return;
     const name = editingName.trim();
     if (!name) return;
@@ -133,85 +139,115 @@ function Modalidade() {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Página de Modalidades</h1>
-      <p>Cadastre, edite e exclua modalidades.</p>
+    <div className="modalidade-report-page">
+      <header className="modalidade-report-header">
+        <div>
+          <h1>Relatório de Modalidades</h1>
+          <p>Cadastro, manutenção e exclusão de modalidades.</p>
+        </div>
+        <div className="modalidade-report-header-right">
+          <span className="modalidade-report-badge">Total: {modalidades.length}</span>
+          <Link to="/page17" className="secondary-link">Voltar ao Dashboard</Link>
+        </div>
+      </header>
 
-      <section className="crud-container">
-        <form onSubmit={handleCreate} className="form-grid">
-          <label>
-            Nome da modalidade
-            <input
-              type="text"
-              value={courseName}
-              onChange={(event) => setCourseName(event.target.value)}
-              placeholder="Ex.: Desenvolvimento Web"
-              disabled={saving}
-            />
-          </label>
-          <div>
-            <button type="submit" disabled={saving || !courseName.trim()}>
-              {saving ? 'Salvando...' : 'Cadastrar'}
-            </button>
-          </div>
+      <section className="modalidade-report-create">
+        <form onSubmit={handleCreate} className="modalidade-create-inline-form">
+          <label htmlFor="courseName">Nova modalidade</label>
+          <input
+            id="courseName"
+            type="text"
+            value={courseName}
+            onChange={(event) => setCourseName(event.target.value)}
+            placeholder="Ex.: Desenvolvimento Web"
+            disabled={saving}
+          />
+          <button type="submit" disabled={saving || !courseName.trim()}>
+            {saving ? 'Salvando...' : 'Cadastrar'}
+          </button>
         </form>
       </section>
 
       {error && <p className="error">Erro: {error}</p>}
       {success && <p className="success">{success}</p>}
 
-      <h2>Modalidades cadastradas</h2>
-
-      {modalidades.length === 0 && <p>Nenhuma modalidade cadastrada.</p>}
-
-      {modalidades.map((item) => {
-        const isEditing = editingId === item.id;
-        return (
-          <div key={item.id} className="crud-container" style={{ marginTop: '12px' }}>
-            {isEditing ? (
-              <form onSubmit={handleUpdate} className="form-grid">
-                <label>
-                  Nome da modalidade
-                  <input
-                    type="text"
-                    value={editingName}
-                    onChange={(event) => setEditingName(event.target.value)}
-                    disabled={saving}
-                  />
-                </label>
-                <div className="actions">
-                  <button type="submit" disabled={saving || !editingName.trim()}>
-                    {saving ? 'Salvando...' : 'Salvar'}
-                  </button>
-                  <button type="button" onClick={cancelEdit} disabled={saving}>
-                    Cancelar
-                  </button>
-                </div>
-              </form>
+      <section className="modalidade-report-table-card">
+        <table className="modalidade-report-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Modalidade</th>
+              <th>Criado em</th>
+              <th className="th-actions">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {modalidades.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="td-empty">Nenhuma modalidade cadastrada.</td>
+              </tr>
             ) : (
-              <div>
-                <p><strong>ID:</strong> {item.id}</p>
-                <p><strong>Nome:</strong> {item.courseName}</p>
-                <div className="actions">
-                  <button type="button" onClick={() => startEdit(item)} disabled={deletingId === item.id || saving}>
-                    Editar
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(item.id, item.courseName)}
-                    disabled={deletingId === item.id || saving}
-                  >
-                    {deletingId === item.id ? 'Excluindo...' : 'Excluir'}
-                  </button>
-                </div>
-              </div>
+              modalidades.map((item) => {
+                const isEditing = editingId === item.id;
+                return (
+                  <tr key={item.id}>
+                    <td>{item.id}</td>
+                    <td>
+                      {isEditing ? (
+                        <input
+                          className="inline-edit-input"
+                          type="text"
+                          value={editingName}
+                          onChange={(event) => setEditingName(event.target.value)}
+                          disabled={saving}
+                        />
+                      ) : (
+                        item.courseName
+                      )}
+                    </td>
+                    <td>{formatDate(item.createdAt)}</td>
+                    <td>
+                      <div className="compact-actions">
+                        {isEditing ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={handleUpdate}
+                              disabled={saving || !editingName.trim()}
+                            >
+                              {saving ? 'Salvando...' : 'Salvar'}
+                            </button>
+                            <button type="button" onClick={cancelEdit} disabled={saving}>
+                              Cancelar
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => startEdit(item)}
+                              disabled={deletingId === item.id || saving}
+                            >
+                              Editar
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(item.id, item.courseName)}
+                              disabled={deletingId === item.id || saving}
+                            >
+                              {deletingId === item.id ? 'Excluindo...' : 'Excluir'}
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
-          </div>
-        );
-      })}
-
-      <br />
-      <Link to="/page17">Voltar ao Dashboard</Link>
+          </tbody>
+        </table>
+      </section>
     </div>
   );
 }
