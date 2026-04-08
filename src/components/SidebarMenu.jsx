@@ -10,7 +10,7 @@ function SidebarMenu({ userName, userEmail }) {
     { name: 'home', icon: '🏠', path: '/page17' },
     { name: 'Aluno', icon: '🔎', path: '/aluno' },
     { name: 'Modalidade', icon: '📝', path: '/modalidade' },
-    { name: 'Turma', icon: '📗', path: '/turma' },
+    { name: 'Curso', icon: '📗', path: '/turma' },
     { name: 'Inscrição', icon: '📝', path: '/inscricao' },
     { name: 'Avaliação', icon: '🎓', path: '/avaliacao' },
     { name: 'Arquivo', icon: '📁', path: '/arquivo' },
