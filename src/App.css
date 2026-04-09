@@ -4,6 +4,7 @@
   margin: 0;
   padding: 0rem;
   text-align: center;
+  min-height: 100dvh;
 }
 
 body {
@@ -196,20 +197,20 @@ body {
 .dashboard {
   display: flex;
   flex-direction: row;
-  min-height: 100vh;
+  min-height: 100dvh;
   font-family: sans-serif;
-  flex-wrap: wrap;
-  width: 100vw;
+  width: 100%;
 }
 
 .dashboard-sidebar {
-  min-width: 240px;
-  max-width: 25%;
+  width: 280px;
+  min-width: 280px;
   background: #1e293b;
   color: #fff;
   display: flex;
   flex-direction: column;
   padding: 24px;
+  box-sizing: border-box;
 }
 
 .dashboard-sidebar .profile {
@@ -230,11 +231,17 @@ body {
 }
 
 .dashboard-sidebar nav .item {
-  padding: 8px 0;
+  padding: 10px 0;
   display: flex;
   align-items: center;
   cursor: pointer;
   opacity: 0.9;
+  border-radius: 8px;
+  padding-left: 8px;
+}
+
+.dashboard-sidebar nav .item:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .dashboard-sidebar nav .item span.icon {
@@ -247,6 +254,7 @@ body {
   overflow-y: auto;
   background: #f1f5f9;
   min-width: 0;
+  padding-bottom: 20px;
 }
 
 .dashboard-header {
@@ -254,6 +262,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+}
+
+.dashboard-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .dashboard-stats {
@@ -386,6 +401,20 @@ body {
 .dashboard-sidebar .profile .email { font-size: 12px; opacity: 0.8; }
 
 .item-label { margin-left: 8px; font-size: 14px; text-transform: capitalize; }
+
+.mobile-menu-toggle {
+  display: none;
+  border: none;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #fff;
+  padding: 8px 12px;
+  font-weight: 700;
+}
+
+.sidebar-overlay {
+  display: none;
+}
 
 /* Modal styles for API response */
 .modal-overlay {
@@ -575,7 +604,7 @@ body {
 }
 
 .auth-card {
-  max-width: 420px;
+  width: min(420px, calc(100% - 24px));
   margin: 48px auto;
   padding: 24px;
   background: #ffffff;
@@ -600,12 +629,12 @@ body {
 
 @media (max-width: 640px) {
   #root {
-    padding: 1.25rem;
+    padding: 0;
   }
 
   .logo {
     height: 4.5em;
-    padding: 1em;
+    padding: 0.75em;
   }
 
   .resume-header h1 {
@@ -633,5 +662,115 @@ body {
 
   .card {
     padding: 1.25rem;
+  }
+
+  .form-grid button {
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  .auth-card {
+    margin: 20px auto;
+    padding: 18px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    display: block;
+  }
+
+  .dashboard-main {
+    min-height: 100dvh;
+  }
+
+  .dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #f1f5f9;
+    padding: 12px 14px;
+  }
+
+  .dashboard-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .mobile-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dashboard-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: min(82vw, 320px);
+    min-width: 0;
+    max-width: none;
+    transform: translateX(-110%);
+    transition: transform 0.25s ease;
+    z-index: 30;
+    overflow-y: auto;
+  }
+
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    border: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 20;
+  }
+
+  .sidebar-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .dashboard-content {
+    padding: 14px;
+  }
+
+  .dashboard-stats {
+    gap: 12px;
+  }
+
+  .dashboard-stats .card,
+  .dashboard-stats .card-metric {
+    flex: 1 1 100%;
+    padding: 14px;
+  }
+
+  .card-value {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-graphs {
+    margin-top: 14px;
+  }
+
+  .dashboard-graphs .graph {
+    flex: 1 1 100%;
+    padding: 12px;
+  }
+
+  .dashboard-activity-full {
+    margin-top: 18px;
+  }
+
+  .logout-button {
+    padding: 7px 12px;
+    font-size: 0.9rem;
   }
 }
