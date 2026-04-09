@@ -12,8 +12,8 @@
 }
 
 html {
-  background: #ffffff;
-  color-scheme: light;
+  background: #ffffff !important;
+  color-scheme: light !important;
 }
 
 a {
@@ -30,16 +30,18 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background: #ffffff !important;
-  color: #111827;
-  color-scheme: light;
+  color: #111827 !important;
+  color-scheme: light !important;
 }
 
 input,
 select,
 textarea {
-  color-scheme: light;
-  background: #ffffff;
-  color: #111827;
+  color-scheme: light !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #d1d5db;
+  -webkit-text-fill-color: #111827 !important;
 }
 
 h1 {
@@ -54,74 +56,18 @@ button {
   font-size: 1em;
   font-weight: 600;
   font-family: inherit;
-  background-color: #f3f4f6;
-  color: #111827;
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease;
+  -webkit-text-fill-color: #111827 !important;
 }
 button:hover {
   border-color: #2563eb;
-  background-color: #e5e7eb;
+  background-color: #e5e7eb !important;
 }
 button:focus,
 button:focus-visible {
   outline: 3px solid #bfdbfe;
   outline-offset: 1px;
-}
-
-/* Reafirma tema claro mesmo quando o SO/navegador sinaliza modo escuro (ex.: economia de bateria). */
-@media (prefers-color-scheme: dark) {
-  :root,
-  html,
-  body {
-    background: #ffffff !important;
-    color: #111827 !important;
-    color-scheme: light;
-  }
-
-  #root,
-  .dashboard-main,
-  .dashboard-content,
-  .auth-card,
-  .modal,
-  .card,
-  .card-metric,
-  .graph,
-  .dashboard-activity-full,
-  table,
-  th,
-  td {
-    background: #ffffff !important;
-    color: #111827 !important;
-  }
-
-  a {
-    color: #2563eb !important;
-  }
-
-  button {
-    background-color: #f3f4f6 !important;
-    color: #111827 !important;
-    border-color: #d1d5db !important;
-  }
-
-  input,
-  select,
-  textarea {
-    color-scheme: light !important;
-    background: #ffffff !important;
-    color: #111827 !important;
-    border-color: #d1d5db !important;
-    -webkit-text-fill-color: #111827 !important;
-  }
-
-  .dashboard-sidebar,
-  .dashboard-sidebar .item,
-  .dashboard-sidebar .name,
-  .dashboard-sidebar .email,
-  .dashboard-sidebar .icon,
-  .dashboard-sidebar .item-label {
-    background: #1e293b !important;
-    color: #ffffff !important;
-  }
 }

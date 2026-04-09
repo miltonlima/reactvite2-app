@@ -347,8 +347,9 @@ body {
 
 .logout-button {
   padding: 8px 16px;
-  background: #ef4444;
-  color: #fff;
+  background: #ef4444 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -406,8 +407,9 @@ body {
   display: none;
   border: none;
   border-radius: 8px;
-  background: #0f172a;
-  color: #fff;
+  background: #0f172a !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
   padding: 8px 12px;
   font-weight: 700;
 }
