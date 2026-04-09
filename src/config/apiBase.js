@@ -8,6 +8,10 @@ function normalizeApiBase(url) {
     .replace(/\/$/, '')
 }
 
+function isLocalApiUrl(url) {
+  return /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\]|::1)(:\d+)?(\/|$)/i.test(url || '')
+}
+
 const envApiBase = normalizeApiBase(import.meta.env.VITE_API_BASE || import.meta.env.VITE_API_BASE_URL || '')
 const isDev = Boolean(import.meta.env.DEV)
 const hostname = typeof window !== 'undefined' ? window.location.hostname : ''
@@ -19,6 +23,10 @@ const devApiBase = isLocalHost
     ? `http://${hostname}:5151`
     : LOCAL_API_BASE
 
+const prodApiBase = normalizeApiBase(envApiBase || PROD_API_BASE)
+
 export const API_BASE = isDev
   ? devApiBase
-  : normalizeApiBase(envApiBase || PROD_API_BASE)
+  : isLocalApiUrl(prodApiBase)
+    ? normalizeApiBase(PROD_API_BASE)
+    : prodApiBase
