@@ -4,10 +4,7 @@ import Menu from './components/Menu.jsx'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import { Link, useNavigate } from 'react-router-dom'
-
-// Em produção, use o endpoint público da API; ajuste VITE_API_BASE no deploy.
-// Em dev local, pode ser http://localhost:5151 ou https://localhost:7006.
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://aspnetcore2-api.onrender.com'
+import { API_BASE } from './config/apiBase'
 
 function App15() {
   const [email, setEmail] = useState('')

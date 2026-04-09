@@ -2,9 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import Menu from './components/Menu.jsx'
 import { Link, useNavigate } from 'react-router-dom'
-
-// Em produção, use o endpoint público da API; ajuste VITE_API_BASE no deploy.
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://aspnetcore2-api.onrender.com'
+import { API_BASE } from './config/apiBase'
 
 function App16() {
   const [fullName, setFullName] = useState('')

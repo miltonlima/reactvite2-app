@@ -1,11 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Aluno.css';
-
-const API_BASE =
-  import.meta.env.VITE_API_BASE ||
-  import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.DEV ? 'http://localhost:5151' : 'https://aspnetcore2-api.onrender.com');
+import { API_BASE } from './config/apiBase';
 
 function toInputDate(value) {
   if (!value) return '';

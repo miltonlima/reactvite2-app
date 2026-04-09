@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Turma.css';
-
-const API_BASE =
-  import.meta.env.VITE_API_BASE ||
-  import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.DEV ? 'http://localhost:5151' : 'https://aspnetcore2-api.onrender.com');
+import { API_BASE } from './config/apiBase';
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
