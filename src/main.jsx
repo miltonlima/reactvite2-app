@@ -30,8 +30,6 @@ import Avaliacao from './Avaliacao.jsx'
 import Inscricao from './Inscricao.jsx'
 import Layout from './components/Layout.jsx';
 
-
-
 // Higher-order component para atribuir título personalizado por página.
 const withTitle = (Component, title) => function Wrapped(props) {
   useEffect(() => {
