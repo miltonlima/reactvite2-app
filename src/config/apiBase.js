@@ -1,18 +1,16 @@
-const PROD_API_BASE = 'https://aspnetcore2-api.onrender.com'
 const LOCAL_API_BASE = 'http://localhost:5151'
+const PROD_API_BASE = 'https://aspnetcore2-api.onrender.com/swagger/index.html'
 
-const envApiBase = (import.meta.env.VITE_API_BASE || import.meta.env.VITE_API_BASE_URL || '').trim()
+function normalizeApiBase(url) {
+  return (url || '')
+    .trim()
+    .replace(/\/swagger\/index\.html\/?$/i, '')
+    .replace(/\/$/, '')
+}
 
-const hostname = typeof window !== 'undefined' ? window.location.hostname : ''
-const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
-const envPointsToLocal = /localhost|127\.0\.0\.1|\[::1\]|::1/.test(envApiBase)
+const envApiBase = normalizeApiBase(import.meta.env.VITE_API_BASE || import.meta.env.VITE_API_BASE_URL || '')
+const isDev = Boolean(import.meta.env.DEV)
 
-export const API_BASE = envApiBase
-  ? isLocalHost
-    ? envApiBase
-    : envPointsToLocal
-      ? PROD_API_BASE
-      : envApiBase
-  : isLocalHost
-    ? LOCAL_API_BASE
-    : PROD_API_BASE
+export const API_BASE = isDev
+  ? LOCAL_API_BASE
+  : normalizeApiBase(envApiBase || PROD_API_BASE)
