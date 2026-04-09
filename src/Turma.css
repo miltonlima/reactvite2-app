@@ -53,6 +53,10 @@
   padding: 10px;
 }
 
+.turma-create-inline-form > * {
+  min-width: 0;
+}
+
 .turma-create-inline-form input,
 .turma-create-inline-form select,
 .inline-edit-input {
@@ -174,5 +178,29 @@
   .turma-report-header-right {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 640px) {
+  .turma-report-page {
+    padding: 12px;
+  }
+
+  .turma-create-inline-form {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .turma-create-inline-form input,
+  .turma-create-inline-form select,
+  .turma-create-inline-form button,
+  .turma-create-inline-form .active-flag {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .turma-create-inline-form .active-flag {
+    justify-content: flex-start;
+    padding: 6px 2px;
   }
 }
