@@ -20,6 +20,7 @@ import App15 from './App15.jsx'
 import App16 from './App16.jsx'
 import App17 from './App17.jsx'
 import App18 from './App18.jsx'
+import Home2 from './Home2.jsx'
 import StoryPage from './StoryPage.jsx'
 import Arquivo from './Arquivo.jsx'
 import Mensagem from './Mensagem.jsx'
@@ -55,6 +56,7 @@ const Page14 = withTitle(App14, 'Página 14')
 const Page15 = withTitle(App15, 'Página 15')
 const Page16 = withTitle(App16, 'Página 16')
 const Page17 = withTitle(App17, 'Página 17')
+const Home2Page = withTitle(Home2, 'Home2')
 const Page18 = withTitle(App18, 'Página 18')
 const Story = withTitle(StoryPage, 'Story')
 const ArquivoPage = withTitle(Arquivo, 'Arquivos')
@@ -93,6 +95,8 @@ createRoot(document.getElementById('root')).render(
         {/* Rotas aninhadas que usam o Layout com a barra lateral */}
         <Route element={<Layout />}>
           <Route path="/page17" element={<Page17 />} />
+          <Route path="/home2" element={<Home2Page />} />
+
           <Route path="/arquivo" element={<ArquivoPage />} />
           <Route path="/mensagem" element={<MensagemPage />} />
           <Route path="/aluno" element={<AlunoPage />} />
