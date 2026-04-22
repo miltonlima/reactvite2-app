@@ -164,10 +164,12 @@ function App17() {
                           textDecoration: 'none',
                           background: '#2563eb',
                           color: '#fff',
+                          border: 'none',
                           borderRadius: 6,
                           padding: '8px 10px',
                           textAlign: 'center',
                           fontWeight: 600,
+                          cursor: 'pointer',
                         }}
                       >
                         Inscrever-se
