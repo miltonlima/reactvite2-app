@@ -3,13 +3,22 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
 
-async function request(path) {
-  const response = await fetch(`${API_BASE}${path}`);
+async function request(path, options = {}) {
+  const hasBody = typeof options.body !== 'undefined';
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: {
+      ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
+      ...(options.headers || {}),
+    },
+  });
   const isJson = response.headers.get('content-type')?.includes('application/json');
   const data = isJson ? await response.json() : null;
 
   if (!response.ok) {
-    throw new Error(data?.mensagem || data?.detail || data?.message || response.statusText);
+    const error = new Error(data?.mensagem || data?.detail || data?.message || response.statusText);
+    error.status = response.status;
+    throw error;
   }
 
   return data;
@@ -27,6 +36,8 @@ function App17() {
   const [turmas, setTurmas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [inscricaoMensagem, setInscricaoMensagem] = useState('');
+  const [inscrevendoTurmaId, setInscrevendoTurmaId] = useState(null);
 
   useEffect(() => {
     loadCatalog();
@@ -66,6 +77,46 @@ function App17() {
     return grouped;
   }, [turmasAtivas]);
 
+  async function handleInscricao(modalidade, turma) {
+    try {
+      setInscricaoMensagem('');
+      setError('');
+
+      const rawUser = localStorage.getItem('user');
+      if (!rawUser) {
+        setError('Faça login para realizar a inscrição.');
+        return;
+      }
+
+      const user = JSON.parse(rawUser);
+      const alunoId = Number(user?.id);
+      if (!alunoId) {
+        setError('Usuário inválido para inscrição. Faça login novamente.');
+        return;
+      }
+
+      setInscrevendoTurmaId(turma.id);
+
+      const data = await request('/api/inscricoes', {
+        method: 'POST',
+        body: JSON.stringify({ alunoId, turmaId: turma.id }),
+      });
+
+      setInscricaoMensagem(
+        data?.mensagem || `Inscrição realizada em ${modalidade.courseName} - ${turma.nomeTurma}.`
+      );
+    } catch (err) {
+      if (err?.status === 409 || /já\s+está\s+inscrito/i.test(err?.message || '')) {
+        setError('');
+        setInscricaoMensagem(`Você já está inscrito em ${turma.nomeTurma}.`);
+      } else {
+        setError(err.message || 'Não foi possível concluir a inscrição.');
+      }
+    } finally {
+      setInscrevendoTurmaId(null);
+    }
+  }
+
   return (
     <div style={{ padding: 20 }}>
       <header style={{ marginBottom: 16 }}>
@@ -95,6 +146,7 @@ function App17() {
 
       {loading && <p>Carregando modalidades e turmas...</p>}
       {error && <p className="error">Erro: {error}</p>}
+      {inscricaoMensagem && <p className="success">{inscricaoMensagem}</p>}
 
       {!loading && !error && modalidades.length === 0 && (
         <p>Nenhuma modalidade cadastrada no momento.</p>
@@ -159,7 +211,12 @@ function App17() {
                       <span>Inicio: {formatDate(turma.dataInicio)}</span>
                       <span>Fim: {formatDate(turma.dataFim)}</span>
                       <Link
-                        to={`/inscricao?modalidadeId=${modalidade.id}&turmaId=${turma.id}`}
+                        to="#"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          if (inscrevendoTurmaId === turma.id) return;
+                          handleInscricao(modalidade, turma);
+                        }}
                         style={{
                           textDecoration: 'none',
                           background: '#2563eb',
@@ -169,10 +226,12 @@ function App17() {
                           padding: '8px 10px',
                           textAlign: 'center',
                           fontWeight: 600,
-                          cursor: 'pointer',
+                          cursor: inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
+                          opacity: inscrevendoTurmaId === turma.id ? 0.75 : 1,
+                          pointerEvents: inscrevendoTurmaId === turma.id ? 'none' : 'auto',
                         }}
                       >
-                        Inscrever-se
+                        {inscrevendoTurmaId === turma.id ? 'Inscrevendo...' : 'Inscrever-se'}
                       </Link>
                     </article>
                   ))}
