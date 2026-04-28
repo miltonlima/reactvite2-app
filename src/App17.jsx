@@ -31,6 +31,18 @@ function formatDate(value) {
   return parsed.toLocaleDateString('pt-BR');
 }
 
+function getAlunoIdFromStorage() {
+  try {
+    const rawUser = localStorage.getItem('user');
+    if (!rawUser) return null;
+    const user = JSON.parse(rawUser);
+    const alunoId = Number(user?.id);
+    return alunoId > 0 ? alunoId : null;
+  } catch {
+    return null;
+  }
+}
+
 function App17() {
   const [modalidades, setModalidades] = useState([]);
   const [turmas, setTurmas] = useState([]);
@@ -38,6 +50,8 @@ function App17() {
   const [error, setError] = useState('');
   const [inscricaoMensagem, setInscricaoMensagem] = useState('');
   const [inscrevendoTurmaId, setInscrevendoTurmaId] = useState(null);
+  const [alunoId, setAlunoId] = useState(null);
+  const [turmasInscritas, setTurmasInscritas] = useState(() => new Set());
 
   useEffect(() => {
     loadCatalog();
@@ -48,6 +62,9 @@ function App17() {
       setLoading(true);
       setError('');
 
+      const currentAlunoId = getAlunoIdFromStorage();
+      setAlunoId(currentAlunoId);
+
       const [modalidadesData, turmasData] = await Promise.all([
         request('/api/modalidades'),
         request('/api/turmas'),
@@ -55,6 +72,18 @@ function App17() {
 
       setModalidades(Array.isArray(modalidadesData) ? modalidadesData : []);
       setTurmas(Array.isArray(turmasData) ? turmasData : []);
+
+      if (currentAlunoId) {
+        const inscricoesData = await request(`/api/inscricoes/aluno/${currentAlunoId}`);
+        const turmaIds = new Set(
+          (Array.isArray(inscricoesData) ? inscricoesData : [])
+            .map((item) => Number(item?.turmaId))
+            .filter((id) => id > 0)
+        );
+        setTurmasInscritas(turmaIds);
+      } else {
+        setTurmasInscritas(new Set());
+      }
     } catch (err) {
       setError(err.message || 'Falha ao carregar catálogo de inscrições.');
     } finally {
@@ -82,16 +111,8 @@ function App17() {
       setInscricaoMensagem('');
       setError('');
 
-      const rawUser = localStorage.getItem('user');
-      if (!rawUser) {
-        setError('Faça login para realizar a inscrição.');
-        return;
-      }
-
-      const user = JSON.parse(rawUser);
-      const alunoId = Number(user?.id);
       if (!alunoId) {
-        setError('Usuário inválido para inscrição. Faça login novamente.');
+        setError('Faça login para realizar a inscrição.');
         return;
       }
 
@@ -105,10 +126,12 @@ function App17() {
       setInscricaoMensagem(
         data?.mensagem || `Inscrição realizada em ${modalidade.courseName} - ${turma.nomeTurma}.`
       );
+      setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
     } catch (err) {
       if (err?.status === 409 || /já\s+está\s+inscrito/i.test(err?.message || '')) {
         setError('');
         setInscricaoMensagem(`Você já está inscrito em ${turma.nomeTurma}.`);
+        setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
       } else {
         setError(err.message || 'Não foi possível concluir a inscrição.');
       }
@@ -195,46 +218,68 @@ function App17() {
                     gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
                   }}
                 >
-                  {cursos.map((turma) => (
-                    <article
-                      key={turma.id}
-                      style={{
-                        border: '1px solid #e5e7eb',
-                        borderRadius: 8,
-                        padding: 12,
-                        display: 'grid',
-                        gap: 8,
-                        background: '#f8fafc',
-                      }}
-                    >
-                      <strong>{turma.nomeTurma}</strong>
-                      <span>Inicio: {formatDate(turma.dataInicio)}</span>
-                      <span>Fim: {formatDate(turma.dataFim)}</span>
-                      <Link
-                        to="#"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          if (inscrevendoTurmaId === turma.id) return;
-                          handleInscricao(modalidade, turma);
-                        }}
+                  {cursos.map((turma) => {
+                    const turmaId = Number(turma.id);
+                    const jaInscrito = turmasInscritas.has(turmaId);
+
+                    return (
+                      <article
+                        key={turma.id}
                         style={{
-                          textDecoration: 'none',
-                          background: '#2563eb',
-                          color: '#fff',
-                          border: 'none',
-                          borderRadius: 6,
-                          padding: '8px 10px',
-                          textAlign: 'center',
-                          fontWeight: 600,
-                          cursor: inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
-                          opacity: inscrevendoTurmaId === turma.id ? 0.75 : 1,
-                          pointerEvents: inscrevendoTurmaId === turma.id ? 'none' : 'auto',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: 8,
+                          padding: 12,
+                          display: 'grid',
+                          gap: 8,
+                          background: '#f8fafc',
                         }}
                       >
-                        {inscrevendoTurmaId === turma.id ? 'Inscrevendo...' : 'Inscrever-se'}
-                      </Link>
-                    </article>
-                  ))}
+                        <strong>{turma.nomeTurma}</strong>
+                        <span>Inicio: {formatDate(turma.dataInicio)}</span>
+                        <span>Fim: {formatDate(turma.dataFim)}</span>
+
+                        {jaInscrito ? (
+                          <Link
+                            to={`/acesso-turma/${turmaId}`}
+                            style={{
+                              textDecoration: 'none',
+                              background: '#2563eb',
+                              color: '#fff',
+                              border: 'none',
+                              borderRadius: 6,
+                              padding: '8px 10px',
+                              textAlign: 'center',
+                              fontWeight: 600,
+                            }}
+                          >
+                            Acessar
+                          </Link>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (inscrevendoTurmaId === turma.id) return;
+                              handleInscricao(modalidade, turma);
+                            }}
+                            style={{
+                              background: '#2563eb',
+                              color: '#fff',
+                              border: 'none',
+                              borderRadius: 6,
+                              padding: '8px 10px',
+                              textAlign: 'center',
+                              fontWeight: 600,
+                              cursor: inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
+                              opacity: inscrevendoTurmaId === turma.id ? 0.75 : 1,
+                            }}
+                            disabled={inscrevendoTurmaId === turma.id}
+                          >
+                            {inscrevendoTurmaId === turma.id ? 'Inscrevendo...' : 'Inscrever-se'}
+                          </button>
+                        )}
+                      </article>
+                    );
+                  })}
                 </div>
               )}
             </div>

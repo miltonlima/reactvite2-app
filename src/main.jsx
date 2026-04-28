@@ -29,6 +29,7 @@ import Modalidade from './Modalidade.jsx'
 import Turma from './Turma.jsx'
 import Avaliacao from './Avaliacao.jsx'
 import Inscricao from './Inscricao.jsx'
+import AcessoTurma from './AcessoTurma.jsx'
 import Layout from './components/Layout.jsx';
 
 // Higher-order component para atribuir título personalizado por página.
@@ -66,6 +67,7 @@ const ModalidadePage = withTitle(Modalidade, 'Modalidades')
 const TurmaPage = withTitle(Turma, 'Turmas')
 const AvaliacaoPage = withTitle(Avaliacao, 'Avaliações');
 const InscricaoPage = withTitle(Inscricao, 'Inscrições');
+const AcessoTurmaPage = withTitle(AcessoTurma, 'Acesso da Turma');
 
 
 createRoot(document.getElementById('root')).render(
@@ -104,6 +106,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/turma" element={<TurmaPage />} />
           <Route path="/avaliacao" element={<AvaliacaoPage />} />
           <Route path="/inscricao" element={<InscricaoPage />} />
+          <Route path="/acesso-turma/:turmaId" element={<AcessoTurmaPage />} />
 
         </Route>
       </Routes>
