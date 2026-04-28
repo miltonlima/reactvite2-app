@@ -116,20 +116,34 @@ function App17() {
     return map;
   }, [dashboard]);
 
-  const continuarAprendendo = useMemo(
-    () => dashboard.filter((item) => Number(item.percentualProgresso || 0) < 100).slice(0, 4),
-    [dashboard]
+  const continuarAprendendo = useMemo(() => {
+    return turmasAtivas
+      .filter((item) => turmasInscritas.has(Number(item.id)))
+      .map((item) => {
+        const progresso = progressoMap.get(Number(item.id));
+        return {
+          turmaId: Number(item.id),
+          turmaNome: item.nomeTurma,
+          modalidadeNome: item.modalidadeNome || '',
+          percentualProgresso: Number(progresso?.percentualProgresso || 0),
+        };
+      });
+  }, [progressoMap, turmasAtivas, turmasInscritas]);
+
+  const turmasNaoInscritas = useMemo(
+    () => turmasAtivas.filter((item) => !turmasInscritas.has(Number(item.id))),
+    [turmasAtivas, turmasInscritas]
   );
 
   const turmasPorModalidade = useMemo(() => {
     const grouped = new Map();
-    for (const turma of turmasAtivas) {
+    for (const turma of turmasNaoInscritas) {
       const key = Number(turma.modalidadeId);
       const current = grouped.get(key) || [];
       grouped.set(key, [...current, turma]);
     }
     return grouped;
-  }, [turmasAtivas]);
+  }, [turmasNaoInscritas]);
 
   async function handleInscricao(modalidade, turma) {
     try {
@@ -218,7 +232,7 @@ function App17() {
         </div>
         <div className="card-metric" style={{ textAlign: 'left' }}>
           <div>Turmas abertas</div>
-          <div className="card-value">{turmasAtivas.length}</div>
+          <div className="card-value">{turmasNaoInscritas.length}</div>
         </div>
         <div className="card-metric" style={{ textAlign: 'left' }}>
           <div>Modalidades</div>
