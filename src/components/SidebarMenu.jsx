@@ -13,6 +13,7 @@ function SidebarMenu({ userName, userEmail, isMobileOpen, onNavigate }) {
     { name: 'Modalidade', icon: '📝', path: '/modalidade' },
     { name: 'Curso', icon: '📗', path: '/turma' },
     { name: 'Inscrição', icon: '📝', path: '/inscricao' },
+    { name: 'Professor', icon: '🧑‍🏫', path: '/professor/conteudo' },
     { name: 'Avaliação', icon: '🎓', path: '/avaliacao' },
     { name: 'Arquivo', icon: '📁', path: '/arquivo' },
     { name: 'Mensagens', icon: '✉️', path: '/mensagem' },

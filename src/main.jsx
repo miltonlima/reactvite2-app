@@ -30,6 +30,7 @@ import Turma from './Turma.jsx'
 import Avaliacao from './Avaliacao.jsx'
 import Inscricao from './Inscricao.jsx'
 import AcessoTurma from './AcessoTurma.jsx'
+import ProfessorConteudo from './ProfessorConteudo.jsx'
 import Layout from './components/Layout.jsx';
 
 // Higher-order component para atribuir título personalizado por página.
@@ -68,6 +69,7 @@ const TurmaPage = withTitle(Turma, 'Turmas')
 const AvaliacaoPage = withTitle(Avaliacao, 'Avaliações');
 const InscricaoPage = withTitle(Inscricao, 'Inscrições');
 const AcessoTurmaPage = withTitle(AcessoTurma, 'Acesso da Turma');
+const ProfessorConteudoPage = withTitle(ProfessorConteudo, 'Professor - Conteúdo');
 
 
 createRoot(document.getElementById('root')).render(
@@ -107,6 +109,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/avaliacao" element={<AvaliacaoPage />} />
           <Route path="/inscricao" element={<InscricaoPage />} />
           <Route path="/acesso-turma/:turmaId" element={<AcessoTurmaPage />} />
+          <Route path="/professor/conteudo" element={<ProfessorConteudoPage />} />
 
         </Route>
       </Routes>
