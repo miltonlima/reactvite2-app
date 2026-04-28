@@ -50,6 +50,9 @@ function AcessoTurma() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [inscricao, setInscricao] = useState(null);
+  const [aulas, setAulas] = useState([]);
+  const [aulaAtualId, setAulaAtualId] = useState(null);
+  const [salvandoProgresso, setSalvandoProgresso] = useState(false);
 
   useEffect(() => {
     loadAcesso();
@@ -81,10 +84,62 @@ function AcessoTurma() {
       }
 
       setInscricao(encontrada);
+
+      const aulasData = await request(`/api/turmas/${turmaIdNumero}/aulas?alunoId=${alunoId}`);
+      const aulasLista = Array.isArray(aulasData) ? aulasData : [];
+      setAulas(aulasLista);
+      setAulaAtualId(aulasLista[0]?.id || null);
     } catch (err) {
       setError(err.message || 'Não foi possível validar o acesso da turma.');
     } finally {
       setLoading(false);
+    }
+  }
+
+  const aulaAtual = useMemo(
+    () => aulas.find((item) => Number(item.id) === Number(aulaAtualId)) || null,
+    [aulas, aulaAtualId]
+  );
+
+  const resumoProgresso = useMemo(() => {
+    const total = aulas.length;
+    const concluidas = aulas.filter((item) => item.concluida).length;
+    const percentual = total > 0 ? Math.round((concluidas * 100) / total) : 0;
+    return { total, concluidas, percentual };
+  }, [aulas]);
+
+  async function marcarConcluida() {
+    if (!aulaAtual || !inscricao) return;
+
+    try {
+      setSalvandoProgresso(true);
+      setError('');
+
+      const alunoId = getAlunoIdFromStorage();
+      if (!alunoId) {
+        setError('Faça login novamente para salvar o progresso.');
+        return;
+      }
+
+      await request(`/api/aulas/${aulaAtual.id}/progresso`, {
+        method: 'POST',
+        body: JSON.stringify({
+          alunoId,
+          turmaId: Number(inscricao.turmaId),
+          percentual: 100,
+          concluida: true,
+        }),
+      });
+
+      setAulas((prev) => prev.map((item) => (
+        Number(item.id) === Number(aulaAtual.id)
+          ? { ...item, concluida: true, percentual: 100 }
+          : item
+      )));
+    } catch (err) {
+      setError(err.message || 'Não foi possível atualizar o progresso da aula.');
+    } finally {
+      setSalvandoProgresso(false);
     }
   }
 
@@ -103,18 +158,148 @@ function AcessoTurma() {
       {!loading && !error && inscricao && (
         <section
           style={{
-            border: '1px solid #d1d5db',
-            borderRadius: 10,
+            border: '1px solid #cbd5e1',
+            borderRadius: 14,
             background: '#fff',
             padding: 16,
             display: 'grid',
-            gap: 8,
+            gap: 14,
           }}
         >
-          <strong style={{ fontSize: 18 }}>{inscricao.turmaNome || `Turma #${inscricao.turmaId}`}</strong>
-          <span>Modalidade: {inscricao.modalidadeNome || 'Não informada'}</span>
-          <span>Status da inscrição: {inscricao.status || 'ATIVA'}</span>
-          <span>Inscrição realizada em: {formatDateTime(inscricao.createdAt)}</span>
+          <div style={{ display: 'grid', gap: 6 }}>
+            <strong style={{ fontSize: 22 }}>{inscricao.turmaNome || `Turma #${inscricao.turmaId}`}</strong>
+            <span>Modalidade: {inscricao.modalidadeNome || 'Não informada'}</span>
+            <span>Status da inscrição: {inscricao.status || 'ATIVA'}</span>
+            <span>Inscrição realizada em: {formatDateTime(inscricao.createdAt)}</span>
+
+            <div
+              style={{
+                marginTop: 6,
+                height: 10,
+                borderRadius: 999,
+                background: '#e2e8f0',
+                overflow: 'hidden',
+                maxWidth: 460,
+              }}
+            >
+              <div style={{ width: `${resumoProgresso.percentual}%`, background: '#2563eb', height: '100%' }} />
+            </div>
+            <span style={{ fontSize: 13 }}>
+              Progresso geral: {resumoProgresso.percentual}% ({resumoProgresso.concluidas}/{resumoProgresso.total} aulas)
+            </span>
+          </div>
+
+          <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'minmax(250px, 330px) 1fr' }}>
+            <aside
+              style={{
+                border: '1px solid #e2e8f0',
+                borderRadius: 10,
+                padding: 10,
+                display: 'grid',
+                gap: 8,
+                maxHeight: 480,
+                overflow: 'auto',
+              }}
+            >
+              <strong>Conteúdo da turma</strong>
+              {aulas.length === 0 && <span>Esta turma ainda não possui aulas cadastradas.</span>}
+              {aulas.map((aula, index) => {
+                const ativa = Number(aulaAtualId) === Number(aula.id);
+                return (
+                  <button
+                    key={aula.id}
+                    type="button"
+                    onClick={() => setAulaAtualId(aula.id)}
+                    style={{
+                      border: ativa ? '1px solid #2563eb' : '1px solid #cbd5e1',
+                      borderRadius: 8,
+                      padding: '8px 10px',
+                      background: ativa ? '#eff6ff' : '#fff',
+                      textAlign: 'left',
+                      color: '#0f172a',
+                    }}
+                  >
+                    <div style={{ fontWeight: 700 }}>Aula {index + 1}: {aula.titulo}</div>
+                    <div style={{ fontSize: 12, opacity: 0.8 }}>
+                      {aula.moduloTitulo} • {aula.duracaoMinutos} min • {aula.concluida ? 'Concluída' : 'Pendente'}
+                    </div>
+                  </button>
+                );
+              })}
+            </aside>
+
+            <article
+              style={{
+                border: '1px solid #e2e8f0',
+                borderRadius: 10,
+                padding: 14,
+                textAlign: 'left',
+                display: 'grid',
+                gap: 10,
+                alignContent: 'start',
+                minHeight: 220,
+              }}
+            >
+              {!aulaAtual ? (
+                <span>Selecione uma aula para iniciar.</span>
+              ) : (
+                <>
+                  <strong style={{ fontSize: 20 }}>{aulaAtual.titulo}</strong>
+                  <span style={{ color: '#334155', fontSize: 13 }}>
+                    {aulaAtual.moduloTitulo} • {aulaAtual.duracaoMinutos} minutos
+                  </span>
+                  <p style={{ margin: 0 }}>{aulaAtual.descricao || 'Sem descrição cadastrada para esta aula.'}</p>
+
+                  {aulaAtual.videoUrl ? (
+                    <a href={aulaAtual.videoUrl} target="_blank" rel="noreferrer">
+                      Abrir aula em vídeo
+                    </a>
+                  ) : (
+                    <span style={{ fontSize: 13, color: '#64748b' }}>Nenhum vídeo vinculado.</span>
+                  )}
+
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      onClick={marcarConcluida}
+                      disabled={salvandoProgresso || aulaAtual.concluida}
+                      style={{
+                        border: 'none',
+                        borderRadius: 8,
+                        background: '#2563eb',
+                        color: '#fff',
+                        padding: '8px 12px',
+                        fontWeight: 700,
+                        opacity: salvandoProgresso || aulaAtual.concluida ? 0.7 : 1,
+                      }}
+                    >
+                      {aulaAtual.concluida ? 'Aula concluída' : (salvandoProgresso ? 'Salvando...' : 'Marcar como concluída')}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const atualIndex = aulas.findIndex((item) => Number(item.id) === Number(aulaAtual.id));
+                        const proxima = aulas[atualIndex + 1];
+                        if (proxima) setAulaAtualId(proxima.id);
+                      }}
+                      disabled={!aulas.some((item) => Number(item.id) === Number(aulaAtual.id))}
+                      style={{
+                        border: '1px solid #2563eb',
+                        borderRadius: 8,
+                        background: '#fff',
+                        color: '#2563eb',
+                        padding: '8px 12px',
+                        fontWeight: 700,
+                      }}
+                    >
+                      Próxima aula
+                    </button>
+                  </div>
+                </>
+              )}
+            </article>
+          </div>
 
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
             <Link
@@ -130,20 +315,6 @@ function AcessoTurma() {
             >
               Voltar para inscrições
             </Link>
-            <button
-              type="button"
-              style={{
-                background: '#0f766e',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 6,
-                padding: '8px 12px',
-                fontWeight: 600,
-                cursor: 'default',
-              }}
-            >
-              Acesso liberado
-            </button>
           </div>
         </section>
       )}
