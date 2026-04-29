@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { API_BASE } from './config/apiBase';
+import './styles/professor-conteudo.css';
 
 async function request(path, options = {}) {
   const hasBody = typeof options.body !== 'undefined';
@@ -145,6 +146,11 @@ function ProfessorConteudo() {
   }
 
   async function deleteModulo(id) {
+    const shouldDelete = window.confirm('Deseja realmente excluir este módulo?');
+    if (!shouldDelete) {
+      return;
+    }
+
     try {
       setSaving(true);
       setError('');
@@ -227,6 +233,11 @@ function ProfessorConteudo() {
   }
 
   async function deleteAula(id) {
+    const shouldDelete = window.confirm('Deseja realmente excluir esta aula?');
+    if (!shouldDelete) {
+      return;
+    }
+
     try {
       setSaving(true);
       setError('');
@@ -246,32 +257,40 @@ function ProfessorConteudo() {
     [turmas, turmaId]
   );
 
+  function formatDate(value) {
+    if (!value) return 'N/I';
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return value;
+    return parsed.toLocaleDateString('pt-BR');
+  }
+
+  const statusMessage = error
+    ? { type: 'error', text: `Erro: ${error}` }
+    : success
+      ? { type: 'success', text: success }
+      : null;
+
   return (
-    <div style={{ padding: 20, textAlign: 'left' }}>
-      <header style={{ marginBottom: 14 }}>
-        <h1 style={{ margin: 0 }}>Professor: Conteúdo da Turma</h1>
-        <p style={{ margin: '8px 0 0' }}>
+    <div className="professor-page">
+      <header className="professor-hero">
+        <span className="professor-kicker">Painel do Professor</span>
+        <h1>Conteúdo da Turma</h1>
+        <p>
           Crie e organize módulos e aulas pela interface, sem precisar editar SQL.
         </p>
       </header>
 
-      {error && <p className="error">Erro: {error}</p>}
-      {success && <p className="success">{success}</p>}
+      {statusMessage && (
+        <p className={`professor-alert ${statusMessage.type}`}>
+          {statusMessage.text}
+        </p>
+      )}
 
-      <section
-        style={{
-          border: '1px solid #d1d5db',
-          borderRadius: 10,
-          padding: 12,
-          background: '#fff',
-          marginBottom: 14,
-          display: 'grid',
-          gap: 10,
-        }}
-      >
-        <label style={{ display: 'grid', gap: 6, maxWidth: 430 }}>
+      <section className="professor-toolbar">
+        <label className="professor-field">
           <span>Turma</span>
-          <select value={turmaId} onChange={(event) => setTurmaId(event.target.value)}>
+          <select value={turmaId} onChange={(event) => setTurmaId(event.target.value)} disabled={loading || saving}>
+            {!turmas.length && <option value="">Nenhuma turma disponível</option>}
             {turmas.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.nomeTurma} - {item.modalidadeNome}
@@ -279,31 +298,33 @@ function ProfessorConteudo() {
             ))}
           </select>
         </label>
+
+        <div className="professor-stats">
+          <article>
+            <span>Módulos</span>
+            <strong>{modulos.length}</strong>
+          </article>
+          <article>
+            <span>Aulas</span>
+            <strong>{aulas.length}</strong>
+          </article>
+        </div>
+
         {turmaAtual && (
-          <small>
-            Turma ativa: {turmaAtual.nomeTurma} | Período: {turmaAtual.dataInicio || 'N/I'} até {turmaAtual.dataFim || 'N/I'}
+          <small className="professor-active-turma">
+            Turma ativa: <strong>{turmaAtual.nomeTurma}</strong> | Período: {formatDate(turmaAtual.dataInicio)} até {formatDate(turmaAtual.dataFim)}
           </small>
         )}
       </section>
 
-      {loading && <p>Carregando conteúdo da turma...</p>}
+      {loading && <p className="professor-loading">Carregando conteúdo da turma...</p>}
 
       {!loading && (
-        <div style={{ display: 'grid', gap: 14, gridTemplateColumns: '1fr 1fr' }}>
-          <section
-            style={{
-              border: '1px solid #d1d5db',
-              borderRadius: 10,
-              padding: 12,
-              background: '#fff',
-              display: 'grid',
-              gap: 10,
-              alignContent: 'start',
-            }}
-          >
-            <h2 style={{ margin: 0, fontSize: 20 }}>Módulos</h2>
+        <div className="professor-content-grid">
+          <section className="professor-column">
+            <h2>Módulos</h2>
 
-            <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 10, display: 'grid', gap: 8 }}>
+            <div className="professor-card create-card">
               <strong>Novo módulo</strong>
               <input
                 placeholder="Título"
@@ -316,15 +337,15 @@ function ProfessorConteudo() {
                 onChange={(event) => setNovoModulo((prev) => ({ ...prev, descricao: event.target.value }))}
                 rows={3}
               />
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="professor-row">
                 <input
                   type="number"
                   min={1}
                   value={novoModulo.ordem}
                   onChange={(event) => setNovoModulo((prev) => ({ ...prev, ordem: Number(event.target.value) || 1 }))}
-                  style={{ maxWidth: 120 }}
+                  className="small-input"
                 />
-                <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <label className="check-label">
                   <input
                     type="checkbox"
                     checked={novoModulo.active}
@@ -333,11 +354,15 @@ function ProfessorConteudo() {
                   Ativo
                 </label>
               </div>
-              <button type="button" onClick={createModulo} disabled={saving}>Criar módulo</button>
+              <button type="button" onClick={createModulo} disabled={saving} className="btn btn-primary">
+                Criar módulo
+              </button>
             </div>
 
+            {!modulos.length && <p className="professor-empty">Nenhum módulo criado ainda para esta turma.</p>}
+
             {modulos.map((modulo) => (
-              <article key={modulo.id} style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 10, display: 'grid', gap: 8 }}>
+              <article key={modulo.id} className="professor-card">
                 <input
                   value={modulo.titulo}
                   onChange={(event) => setModulos((prev) => prev.map((item) => (
@@ -351,7 +376,7 @@ function ProfessorConteudo() {
                     item.id === modulo.id ? { ...item, descricao: event.target.value } : item
                   )))}
                 />
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div className="professor-row">
                   <input
                     type="number"
                     min={1}
@@ -359,9 +384,9 @@ function ProfessorConteudo() {
                     onChange={(event) => setModulos((prev) => prev.map((item) => (
                       item.id === modulo.id ? { ...item, ordem: Number(event.target.value) || 1 } : item
                     )))}
-                    style={{ maxWidth: 110 }}
+                    className="small-input"
                   />
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <label className="check-label">
                     <input
                       type="checkbox"
                       checked={Boolean(modulo.active)}
@@ -372,28 +397,18 @@ function ProfessorConteudo() {
                     Ativo
                   </label>
                 </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button type="button" onClick={() => updateModulo(modulo)} disabled={saving}>Salvar</button>
-                  <button type="button" onClick={() => deleteModulo(modulo.id)} disabled={saving}>Excluir</button>
+                <div className="professor-actions">
+                  <button type="button" onClick={() => updateModulo(modulo)} disabled={saving} className="btn btn-primary">Salvar</button>
+                  <button type="button" onClick={() => deleteModulo(modulo.id)} disabled={saving} className="btn btn-danger">Excluir</button>
                 </div>
               </article>
             ))}
           </section>
 
-          <section
-            style={{
-              border: '1px solid #d1d5db',
-              borderRadius: 10,
-              padding: 12,
-              background: '#fff',
-              display: 'grid',
-              gap: 10,
-              alignContent: 'start',
-            }}
-          >
-            <h2 style={{ margin: 0, fontSize: 20 }}>Aulas</h2>
+          <section className="professor-column">
+            <h2>Aulas</h2>
 
-            <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 10, display: 'grid', gap: 8 }}>
+            <div className="professor-card create-card">
               <strong>Nova aula</strong>
               <input
                 placeholder="Título da aula"
@@ -415,14 +430,14 @@ function ProfessorConteudo() {
                   <option key={item.id} value={item.id}>{item.titulo}</option>
                 ))}
               </select>
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="professor-row wrap-row">
                 <input
                   type="number"
                   min={0}
                   value={novaAula.duracaoMinutos}
                   onChange={(event) => setNovaAula((prev) => ({ ...prev, duracaoMinutos: Number(event.target.value) || 0 }))}
                   placeholder="Duração (min)"
-                  style={{ maxWidth: 130 }}
+                  className="small-input"
                 />
                 <input
                   type="number"
@@ -430,7 +445,7 @@ function ProfessorConteudo() {
                   value={novaAula.ordem}
                   onChange={(event) => setNovaAula((prev) => ({ ...prev, ordem: Number(event.target.value) || 1 }))}
                   placeholder="Ordem"
-                  style={{ maxWidth: 110 }}
+                  className="small-input"
                 />
               </div>
               <input
@@ -438,7 +453,7 @@ function ProfessorConteudo() {
                 value={novaAula.videoUrl}
                 onChange={(event) => setNovaAula((prev) => ({ ...prev, videoUrl: event.target.value }))}
               />
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <label className="check-label">
                 <input
                   type="checkbox"
                   checked={novaAula.active}
@@ -446,11 +461,13 @@ function ProfessorConteudo() {
                 />
                 Ativa
               </label>
-              <button type="button" onClick={createAula} disabled={saving}>Criar aula</button>
+              <button type="button" onClick={createAula} disabled={saving} className="btn btn-primary">Criar aula</button>
             </div>
 
+            {!aulas.length && <p className="professor-empty">Nenhuma aula criada ainda para esta turma.</p>}
+
             {aulas.map((aula) => (
-              <article key={aula.id} style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 10, display: 'grid', gap: 8 }}>
+              <article key={aula.id} className="professor-card">
                 <input
                   value={aula.titulo}
                   onChange={(event) => setAulas((prev) => prev.map((item) => (
@@ -475,7 +492,7 @@ function ProfessorConteudo() {
                     <option key={item.id} value={item.id}>{item.titulo}</option>
                   ))}
                 </select>
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div className="professor-row wrap-row">
                   <input
                     type="number"
                     min={0}
@@ -483,7 +500,7 @@ function ProfessorConteudo() {
                     onChange={(event) => setAulas((prev) => prev.map((item) => (
                       item.id === aula.id ? { ...item, duracaoMinutos: Number(event.target.value) || 0 } : item
                     )))}
-                    style={{ maxWidth: 130 }}
+                    className="small-input"
                   />
                   <input
                     type="number"
@@ -492,7 +509,7 @@ function ProfessorConteudo() {
                     onChange={(event) => setAulas((prev) => prev.map((item) => (
                       item.id === aula.id ? { ...item, ordem: Number(event.target.value) || 1 } : item
                     )))}
-                    style={{ maxWidth: 110 }}
+                    className="small-input"
                   />
                 </div>
                 <input
@@ -501,7 +518,7 @@ function ProfessorConteudo() {
                     item.id === aula.id ? { ...item, videoUrl: event.target.value } : item
                   )))}
                 />
-                <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <label className="check-label">
                   <input
                     type="checkbox"
                     checked={Boolean(aula.active)}
@@ -511,9 +528,9 @@ function ProfessorConteudo() {
                   />
                   Ativa
                 </label>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button type="button" onClick={() => updateAula(aula)} disabled={saving}>Salvar</button>
-                  <button type="button" onClick={() => deleteAula(aula.id)} disabled={saving}>Excluir</button>
+                <div className="professor-actions">
+                  <button type="button" onClick={() => updateAula(aula)} disabled={saving} className="btn btn-primary">Salvar</button>
+                  <button type="button" onClick={() => deleteAula(aula.id)} disabled={saving} className="btn btn-danger">Excluir</button>
                 </div>
               </article>
             ))}
