@@ -3,11 +3,26 @@ import { API_BASE } from './config/apiBase';
 import './styles/professor-conteudo.css';
 
 async function request(path, options = {}) {
+  let actorUserId = '';
+  try {
+    const rawUser = localStorage.getItem('user');
+    if (rawUser) {
+      const parsedUser = JSON.parse(rawUser);
+      const parsedId = Number(parsedUser?.id);
+      if (parsedId > 0) {
+        actorUserId = String(parsedId);
+      }
+    }
+  } catch {
+    actorUserId = '';
+  }
+
   const hasBody = typeof options.body !== 'undefined';
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
       ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
+      ...(actorUserId ? { 'x-user-id': actorUserId } : {}),
       ...(options.headers || {}),
     },
   });
