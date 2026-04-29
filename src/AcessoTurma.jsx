@@ -108,7 +108,7 @@ function AcessoTurma() {
     return { total, concluidas, percentual };
   }, [aulas]);
 
-  async function marcarConcluida() {
+  async function atualizarConclusao(concluir) {
     if (!aulaAtual || !inscricao) return;
 
     try {
@@ -126,14 +126,14 @@ function AcessoTurma() {
         body: JSON.stringify({
           alunoId,
           turmaId: Number(inscricao.turmaId),
-          percentual: 100,
-          concluida: true,
+          percentual: concluir ? 100 : 0,
+          concluida: concluir,
         }),
       });
 
       setAulas((prev) => prev.map((item) => (
         Number(item.id) === Number(aulaAtual.id)
-          ? { ...item, concluida: true, percentual: 100 }
+          ? { ...item, concluida: concluir, percentual: concluir ? 100 : 0 }
           : item
       )));
     } catch (err) {
@@ -261,19 +261,23 @@ function AcessoTurma() {
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     <button
                       type="button"
-                      onClick={marcarConcluida}
-                      disabled={salvandoProgresso || aulaAtual.concluida}
+                      onClick={() => atualizarConclusao(!aulaAtual.concluida)}
+                      disabled={salvandoProgresso}
                       style={{
                         border: 'none',
                         borderRadius: 8,
-                        background: '#2563eb',
+                        background: aulaAtual.concluida ? '#b91c1c' : '#2563eb',
                         color: '#fff',
                         padding: '8px 12px',
                         fontWeight: 700,
-                        opacity: salvandoProgresso || aulaAtual.concluida ? 0.7 : 1,
+                        opacity: salvandoProgresso ? 0.7 : 1,
                       }}
                     >
-                      {aulaAtual.concluida ? 'Aula concluída' : (salvandoProgresso ? 'Salvando...' : 'Marcar como concluída')}
+                      {salvandoProgresso
+                        ? 'Salvando...'
+                        : aulaAtual.concluida
+                          ? 'Desmarcar conclusão'
+                          : 'Marcar como concluída'}
                     </button>
 
                     <button
