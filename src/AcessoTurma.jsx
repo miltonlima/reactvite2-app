@@ -266,8 +266,8 @@ function AcessoTurma() {
                       style={{
                         border: 'none',
                         borderRadius: 8,
-                        background: aulaAtual.concluida ? '#b91c1c' : '#2563eb',
-                        color: '#fff',
+                        background: aulaAtual.concluida ? '#cbd5e1' : '#2563eb',
+                        color: aulaAtual.concluida ? '#0f172a' : '#fff',
                         padding: '8px 12px',
                         fontWeight: 700,
                         opacity: salvandoProgresso ? 0.7 : 1,
