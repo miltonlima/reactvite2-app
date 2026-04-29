@@ -189,6 +189,7 @@ function App17() {
           turmaNome: item.nomeTurma,
           modalidadeNome: item.modalidadeNome || '',
           percentualProgresso: Number(progresso?.percentualProgresso || 0),
+          totalAulas: Number(progresso?.totalAulas || 0),
         };
       });
   }, [progressoMap, turmasAtivas, turmasInscritas]);
@@ -358,7 +359,14 @@ function App17() {
                     }}
                   />
                 </div>
-                <span style={{ fontSize: 13 }}>{Number(item.percentualProgresso || 0)}% concluído</span>
+                <span style={{ fontSize: 13 }}>
+                  {Number(item.percentualProgresso || 0)}% concluído
+                  {item.totalAulas > 0 ? (
+                    <span style={{ color: '#64748b', marginLeft: 6 }}>
+                      • {item.totalAulas} {item.totalAulas === 1 ? 'aula' : 'aulas'}
+                    </span>
+                  ) : null}
+                </span>
                 <Link
                   to={`/acesso-turma/${item.turmaId}`}
                   style={{
