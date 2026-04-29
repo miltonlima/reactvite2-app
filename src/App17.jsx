@@ -1,6 +1,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
 
 let apiCapabilitiesPromise = null;
@@ -94,6 +94,7 @@ function getAlunoIdFromStorage() {
 }
 
 function App17() {
+  const navigate = useNavigate();
   const [modalidades, setModalidades] = useState([]);
   const [turmas, setTurmas] = useState([]);
   const [dashboard, setDashboard] = useState([]);
@@ -367,12 +368,13 @@ function App17() {
                     </span>
                   ) : null}
                 </span>
-                <Link
-                  to={`/acesso-turma/${item.turmaId}`}
+                <button
+                  type="button"
+                  onClick={() => navigate(`/acesso-turma/${item.turmaId}`)}
                   style={{
-                    textDecoration: 'none',
                     background: '#2563eb',
                     color: '#fff',
+                    border: 'none',
                     borderRadius: 8,
                     padding: '8px 10px',
                     textAlign: 'center',
@@ -380,7 +382,7 @@ function App17() {
                   }}
                 >
                   Continuar curso
-                </Link>
+                </button>
               </article>
             ))}
           </div>
