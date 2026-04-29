@@ -26,6 +26,11 @@ function Layout() {
 
   // Função de logout que será compartilhada via Context.
   function handleLogout() {
+    const shouldLogout = window.confirm('Deseja realmente deslogar da plataforma?');
+    if (!shouldLogout) {
+      return;
+    }
+
     localStorage.removeItem('user');
     navigate('/page15');
   }
