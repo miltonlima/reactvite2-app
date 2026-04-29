@@ -38,20 +38,24 @@ async function getApiCapabilities() {
         return {
           hasInscricoesByAluno: false,
           hasAlunoDashboard: false,
+          hasCreateInscricao: false,
         };
       }
 
       const swagger = await response.json();
       const paths = swagger?.paths || {};
+      const inscricoesPath = paths['/api/inscricoes'];
 
       return {
         hasInscricoesByAluno: Boolean(paths['/api/inscricoes/aluno/{alunoId}']),
         hasAlunoDashboard: Boolean(paths['/api/alunos/{alunoId}/dashboard']),
+        hasCreateInscricao: Boolean(inscricoesPath?.post),
       };
     } catch {
       return {
         hasInscricoesByAluno: false,
         hasAlunoDashboard: false,
+        hasCreateInscricao: false,
       };
     }
   })();
@@ -100,6 +104,7 @@ function App17() {
   const [alunoId, setAlunoId] = useState(null);
   const [turmasInscritas, setTurmasInscritas] = useState(() => new Set());
   const [busca, setBusca] = useState('');
+  const [canCreateInscricao, setCanCreateInscricao] = useState(false);
 
   useEffect(() => {
     loadCatalog();
@@ -123,6 +128,7 @@ function App17() {
 
       if (currentAlunoId) {
         const capabilities = await getApiCapabilities();
+        setCanCreateInscricao(Boolean(capabilities.hasCreateInscricao));
 
         const inscricoesPromise = capabilities.hasInscricoesByAluno
           ? requestWithFallback(`/api/inscricoes/aluno/${currentAlunoId}`, [])
@@ -145,6 +151,7 @@ function App17() {
         setTurmasInscritas(turmaIds);
         setDashboard(Array.isArray(dashboardData?.turmas) ? dashboardData.turmas : []);
       } else {
+        setCanCreateInscricao(false);
         setTurmasInscritas(new Set());
         setDashboard([]);
       }
@@ -211,6 +218,11 @@ function App17() {
         return;
       }
 
+      if (!canCreateInscricao) {
+        setError('Inscrições indisponíveis no momento. Atualize a API publicada no Render e tente novamente.');
+        return;
+      }
+
       setInscrevendoTurmaId(turma.id);
 
       const data = await request('/api/inscricoes', {
@@ -224,6 +236,9 @@ function App17() {
       setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
       await loadCatalog();
     } catch (err) {
+      if (err?.status === 404) {
+        setError('Endpoint de inscrição não encontrado em produção. Publique a versão mais recente da API no Render.');
+      } else 
       if (err?.status === 409 || /já\s+está\s+inscrito/i.test(err?.message || '')) {
         setError('');
         setInscricaoMensagem(`Você já está inscrito em ${turma.nomeTurma}.`);
@@ -459,22 +474,26 @@ function App17() {
                             to="#"
                             onClick={(event) => {
                               event.preventDefault();
-                              if (inscrevendoTurmaId === turma.id) return;
+                              if (!canCreateInscricao || inscrevendoTurmaId === turma.id) return;
                               handleInscricao(modalidade, turma);
                             }}
                             style={{
                               textDecoration: 'none',
-                              background: '#2563eb',
+                              background: canCreateInscricao ? '#2563eb' : '#94a3b8',
                               color: '#fff',
                               borderRadius: 6,
                               padding: '8px 10px',
                               textAlign: 'center',
                               fontWeight: 600,
-                              cursor: inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
-                              opacity: inscrevendoTurmaId === turma.id ? 0.75 : 1,
+                              cursor: !canCreateInscricao || inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
+                              opacity: !canCreateInscricao || inscrevendoTurmaId === turma.id ? 0.75 : 1,
                             }}
                           >
-                            {inscrevendoTurmaId === turma.id ? 'Inscrevendo...' : 'Inscrever-se'}
+                            {!canCreateInscricao
+                              ? 'Inscrição indisponível'
+                              : inscrevendoTurmaId === turma.id
+                                ? 'Inscrevendo...'
+                                : 'Inscrever-se'}
                           </Link>
                         )}
                       </article>
