@@ -2,25 +2,25 @@ import { useEffect, useMemo, useState } from 'react';
 import { API_BASE } from './config/apiBase';
 import './styles/professor-conteudo.css';
 
-async function request(path, options = {}) {
-  let actorUserId = '';
+function getActorUserId() {
   try {
     const rawUser = localStorage.getItem('user');
-    if (rawUser) {
-      const parsedUser = JSON.parse(rawUser);
-      const parsedId = Number(
-        parsedUser?.id
-        || parsedUser?.userId
-        || parsedUser?.usuario?.id
-        || parsedUser?.usuarioId
-      );
-      if (parsedId > 0) {
-        actorUserId = String(parsedId);
-      }
-    }
+    if (!rawUser) return '';
+    const parsedUser = JSON.parse(rawUser);
+    const parsedId = Number(
+      parsedUser?.id
+      || parsedUser?.userId
+      || parsedUser?.usuario?.id
+      || parsedUser?.usuarioId
+    );
+    return parsedId > 0 ? String(parsedId) : '';
   } catch {
-    actorUserId = '';
+    return '';
   }
+}
+
+async function request(path, options = {}) {
+  const actorUserId = getActorUserId();
 
   const url = new URL(`${API_BASE}${path}`);
   if (actorUserId) {
@@ -43,10 +43,28 @@ async function request(path, options = {}) {
   if (!response.ok) {
     const error = new Error(data?.mensagem || data?.detail || data?.message || response.statusText);
     error.status = response.status;
+    error.payload = data;
     throw error;
   }
 
   return data;
+}
+
+async function tryBootstrapAdmin() {
+  const actorUserId = getActorUserId();
+  if (!actorUserId) return false;
+
+  // Bootstrap automatico apenas em ambiente local.
+  if (!API_BASE.includes('localhost')) {
+    return false;
+  }
+
+  try {
+    await request('/api/admin/bootstrap-admin', { method: 'POST' });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function ProfessorConteudo() {
@@ -94,6 +112,23 @@ function ProfessorConteudo() {
         setTurmaId(String(lista[0].id));
       }
     } catch (err) {
+      if (err?.status === 403) {
+        const bootstrapped = await tryBootstrapAdmin();
+        if (bootstrapped) {
+          try {
+            const turmasData = await request('/api/professor/turmas');
+            const lista = Array.isArray(turmasData) ? turmasData : [];
+            setTurmas(lista);
+            if (lista[0]?.id) {
+              setTurmaId(String(lista[0].id));
+            }
+            return;
+          } catch {
+            // Mantem a mensagem amigavel abaixo se o retry falhar.
+          }
+        }
+      }
+
       setError(err.message || 'Não foi possível carregar as turmas.');
     } finally {
       setLoading(false);
