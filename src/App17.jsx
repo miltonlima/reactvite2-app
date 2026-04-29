@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
 
+let apiCapabilitiesPromise = null;
+
 async function request(path, options = {}) {
   const hasBody = typeof options.body !== 'undefined';
   const response = await fetch(`${API_BASE}${path}`, {
@@ -22,6 +24,39 @@ async function request(path, options = {}) {
   }
 
   return data;
+}
+
+async function getApiCapabilities() {
+  if (apiCapabilitiesPromise) {
+    return apiCapabilitiesPromise;
+  }
+
+  apiCapabilitiesPromise = (async () => {
+    try {
+      const response = await fetch(`${API_BASE}/swagger/v1/swagger.json`);
+      if (!response.ok) {
+        return {
+          hasInscricoesByAluno: false,
+          hasAlunoDashboard: false,
+        };
+      }
+
+      const swagger = await response.json();
+      const paths = swagger?.paths || {};
+
+      return {
+        hasInscricoesByAluno: Boolean(paths['/api/inscricoes/aluno/{alunoId}']),
+        hasAlunoDashboard: Boolean(paths['/api/alunos/{alunoId}/dashboard']),
+      };
+    } catch {
+      return {
+        hasInscricoesByAluno: false,
+        hasAlunoDashboard: false,
+      };
+    }
+  })();
+
+  return apiCapabilitiesPromise;
 }
 
 async function requestWithFallback(path, fallbackValue, options = {}) {
@@ -87,9 +122,19 @@ function App17() {
       setTurmas(Array.isArray(turmasData) ? turmasData : []);
 
       if (currentAlunoId) {
+        const capabilities = await getApiCapabilities();
+
+        const inscricoesPromise = capabilities.hasInscricoesByAluno
+          ? requestWithFallback(`/api/inscricoes/aluno/${currentAlunoId}`, [])
+          : Promise.resolve([]);
+
+        const dashboardPromise = capabilities.hasAlunoDashboard
+          ? requestWithFallback(`/api/alunos/${currentAlunoId}/dashboard`, null)
+          : Promise.resolve(null);
+
         const [inscricoesData, dashboardData] = await Promise.all([
-          requestWithFallback(`/api/inscricoes/aluno/${currentAlunoId}`, []),
-          requestWithFallback(`/api/alunos/${currentAlunoId}/dashboard`, null),
+          inscricoesPromise,
+          dashboardPromise,
         ]);
 
         const turmaIds = new Set(
