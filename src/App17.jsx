@@ -24,6 +24,17 @@ async function request(path, options = {}) {
   return data;
 }
 
+async function requestWithFallback(path, fallbackValue, options = {}) {
+  try {
+    return await request(path, options);
+  } catch (error) {
+    if (error?.status === 404) {
+      return fallbackValue;
+    }
+    throw error;
+  }
+}
+
 function formatDate(value) {
   if (!value) return 'Sem data definida';
   const parsed = new Date(value);
@@ -77,8 +88,8 @@ function App17() {
 
       if (currentAlunoId) {
         const [inscricoesData, dashboardData] = await Promise.all([
-          request(`/api/inscricoes/aluno/${currentAlunoId}`),
-          request(`/api/alunos/${currentAlunoId}/dashboard`).catch(() => null),
+          requestWithFallback(`/api/inscricoes/aluno/${currentAlunoId}`, []),
+          requestWithFallback(`/api/alunos/${currentAlunoId}/dashboard`, null),
         ]);
 
         const turmaIds = new Set(

@@ -24,6 +24,17 @@ async function request(path, options = {}) {
   return data;
 }
 
+async function requestWithFallback(path, fallbackValue, options = {}) {
+  try {
+    return await request(path, options);
+  } catch (error) {
+    if (error?.status === 404) {
+      return fallbackValue;
+    }
+    throw error;
+  }
+}
+
 function formatDateTime(value) {
   if (!value) return 'Sem registro de data';
   const parsed = new Date(value);
@@ -74,7 +85,12 @@ function AcessoTurma() {
         return;
       }
 
-      const inscricoes = await request(`/api/inscricoes/aluno/${alunoId}`);
+      const inscricoes = await requestWithFallback(`/api/inscricoes/aluno/${alunoId}`, null);
+      if (!inscricoes) {
+        setError('A API em produção ainda não possui o endpoint de inscrições por aluno. Publique a versão mais recente do back-end.');
+        return;
+      }
+
       const lista = Array.isArray(inscricoes) ? inscricoes : [];
       const encontrada = lista.find((item) => Number(item?.turmaId) === turmaIdNumero);
 
@@ -85,7 +101,12 @@ function AcessoTurma() {
 
       setInscricao(encontrada);
 
-      const aulasData = await request(`/api/turmas/${turmaIdNumero}/aulas?alunoId=${alunoId}`);
+      const aulasData = await requestWithFallback(`/api/turmas/${turmaIdNumero}/aulas?alunoId=${alunoId}`, null);
+      if (!aulasData) {
+        setError('A API em produção ainda não possui o endpoint de aulas da turma. Publique a versão mais recente do back-end.');
+        return;
+      }
+
       const aulasLista = Array.isArray(aulasData) ? aulasData : [];
       setAulas(aulasLista);
       setAulaAtualId(aulasLista[0]?.id || null);
