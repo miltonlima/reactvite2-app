@@ -8,7 +8,12 @@ async function request(path, options = {}) {
     const rawUser = localStorage.getItem('user');
     if (rawUser) {
       const parsedUser = JSON.parse(rawUser);
-      const parsedId = Number(parsedUser?.id);
+      const parsedId = Number(
+        parsedUser?.id
+        || parsedUser?.userId
+        || parsedUser?.usuario?.id
+        || parsedUser?.usuarioId
+      );
       if (parsedId > 0) {
         actorUserId = String(parsedId);
       }
@@ -17,8 +22,13 @@ async function request(path, options = {}) {
     actorUserId = '';
   }
 
+  const url = new URL(`${API_BASE}${path}`);
+  if (actorUserId) {
+    url.searchParams.set('userId', actorUserId);
+  }
+
   const hasBody = typeof options.body !== 'undefined';
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(url.toString(), {
     ...options,
     headers: {
       ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
