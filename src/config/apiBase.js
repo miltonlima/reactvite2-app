@@ -18,10 +18,10 @@ const hostname = typeof window !== 'undefined' ? window.location.hostname : ''
 const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
 
 const devApiBase = isLocalHost
-  ? LOCAL_API_BASE
+  ? normalizeApiBase(envApiBase || LOCAL_API_BASE)
   : hostname
-    ? `http://${hostname}:5151`
-    : LOCAL_API_BASE
+    ? normalizeApiBase(envApiBase || `http://${hostname}:5151`)
+    : normalizeApiBase(envApiBase || LOCAL_API_BASE)
 
 const prodApiBase = normalizeApiBase(envApiBase || PROD_API_BASE)
 

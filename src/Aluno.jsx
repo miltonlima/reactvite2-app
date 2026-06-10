@@ -13,6 +13,43 @@ function toInputDate(value) {
   return parsed.toISOString().slice(0, 10);
 }
 
+function getValue(item, ...keys) {
+  for (const key of keys) {
+    if (item?.[key] !== undefined && item?.[key] !== null) {
+      return item[key];
+    }
+  }
+  return undefined;
+}
+
+function normalizeAluno(item) {
+  if (!item) return null;
+
+  return {
+    id: getValue(item, 'id', 'Id'),
+    fullName: getValue(item, 'fullName', 'FullName', 'full_name') || '',
+    birthDate: getValue(item, 'birthDate', 'BirthDate', 'birth_date') || '',
+    sex: getValue(item, 'sex', 'Sex') || '',
+    email: getValue(item, 'email', 'Email') || '',
+    isActive: getValue(item, 'isActive', 'IsActive', 'is_active') !== false,
+    inactiveAt: getValue(item, 'inactiveAt', 'InactiveAt', 'inactive_at') || null,
+  };
+}
+
+function normalizeAlunosResponse(data) {
+  const items = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.alunos)
+      ? data.alunos
+      : Array.isArray(data?.items)
+        ? data.items
+        : Array.isArray(data?.data)
+          ? data.data
+          : [];
+
+  return items.map(normalizeAluno).filter((item) => item?.id !== undefined && item?.id !== null);
+}
+
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -74,9 +111,10 @@ function Aluno() {
       setListError('');
       const query = showInactive ? '?includeInactive=true' : '';
       const data = await request(`/api/alunos${query}`);
-      setAlunos(Array.isArray(data) ? data : []);
+      const normalizedAlunos = normalizeAlunosResponse(data);
+      setAlunos(normalizedAlunos);
 
-      if (selectedId && !data.some((item) => item.id === selectedId)) {
+      if (selectedId && !normalizedAlunos.some((item) => item.id === selectedId)) {
         setSelectedId(null);
         setSelectedAluno(null);
         setIsEditing(false);
@@ -97,12 +135,13 @@ function Aluno() {
       setIsEditing(false);
 
       const data = await request(`/api/alunos/${id}`);
-      setSelectedAluno(data);
+      const aluno = normalizeAluno(data);
+      setSelectedAluno(aluno);
       setForm({
-        fullName: data.fullName || '',
-        birthDate: toInputDate(data.birthDate),
-        sex: data.sex || '',
-        email: data.email || '',
+        fullName: aluno?.fullName || '',
+        birthDate: toInputDate(aluno?.birthDate),
+        sex: aluno?.sex || '',
+        email: aluno?.email || '',
       });
     } catch (error) {
       setSelectedAluno(null);
@@ -138,7 +177,7 @@ function Aluno() {
         body: JSON.stringify(payload),
       });
 
-      const alunoAtualizado = response?.aluno;
+      const alunoAtualizado = normalizeAluno(response?.aluno || response?.Aluno || response);
       if (alunoAtualizado) {
         setSelectedAluno(alunoAtualizado);
       }
