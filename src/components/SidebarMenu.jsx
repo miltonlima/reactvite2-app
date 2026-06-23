@@ -5,7 +5,12 @@ import { Link } from 'react-router-dom';
 // O menu da barra lateral é um componente de apresentação simples.
 // Ele recebe `userName` e `userEmail` como props para exibir os detalhes do perfil.
 // Os itens de navegação são agora links que usam React Router.
-function SidebarMenu({ userName, userEmail, isMobileOpen, onNavigate }) {
+function isAlunoUser(userType) {
+  const normalized = String(userType || '').trim().toLowerCase();
+  return ['aluno', 'student', 'estudante'].includes(normalized);
+}
+
+function SidebarMenu({ userName, userEmail, userType, isMobileOpen, onNavigate }) {
   const menuItems = [
     { name: 'home', icon: '🏠', path: '/page17' },
     { name: 'home2', icon: '🏠', path: '/home2' },
@@ -20,7 +25,7 @@ function SidebarMenu({ userName, userEmail, isMobileOpen, onNavigate }) {
     { name: 'Notificação', icon: '🔔', path: '#' },
     { name: 'Localização', icon: '📍', path: '#' },
     { name: 'Gráfico', icon: '📊', path: '#' }
-  ];
+  ].filter((item) => !(isAlunoUser(userType) && item.path === '/modalidade'));
 
   return (
     <aside className={`dashboard-sidebar ${isMobileOpen ? 'open' : ''}`}>

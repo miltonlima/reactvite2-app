@@ -1,28 +1,58 @@
-import { useEffect, useState, createContext } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 import SidebarMenu from './SidebarMenu';
 
-// Cria um Context para compartilhar a função de logout com componentes filhos.
-export const AuthContext = createContext(null);
+function getUserType(user) {
+  return String(
+    user?.tipo ||
+    user?.tipoUsuario ||
+    user?.tipo_usuario ||
+    user?.userType ||
+    user?.user_type ||
+    user?.perfil ||
+    user?.role ||
+    ''
+  ).trim().toLowerCase();
+}
+
+function isAlunoUser(userType) {
+  return ['aluno', 'student', 'estudante'].includes(userType);
+}
+
+function getStoredUser() {
+  try {
+    const userData = localStorage.getItem('user');
+    if (!userData) return null;
+    return JSON.parse(userData);
+  } catch {
+    localStorage.removeItem('user');
+    return null;
+  }
+}
 
 function Layout() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+  const [user, setUser] = useState(() => getStoredUser());
+  const location = useLocation();
   const navigate = useNavigate();
+  const isAuthenticated = Boolean(user);
+  const userName = user?.full_name || 'Usuário';
+  const userEmail = user?.email || '';
+  const userType = getUserType(user);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
-      navigate('/page15');
-    } else {
-      setIsAuthenticated(true);
-      const user = JSON.parse(userData);
-      setUserName(user.full_name || 'Usuário');
-      setUserEmail(user.email || '');
+    if (!user) {
+      navigate('/page15', { replace: true });
     }
-  }, [navigate]);
+  }, [navigate, user]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    if (isAlunoUser(userType) && location.pathname.startsWith('/modalidade')) {
+      navigate('/page17', { replace: true });
+    }
+  }, [isAuthenticated, location.pathname, navigate, userType]);
 
   // Função de logout que será compartilhada via Context.
   function handleLogout() {
@@ -32,6 +62,7 @@ function Layout() {
     }
 
     localStorage.removeItem('user');
+    setUser(null);
     navigate('/page15');
   }
 
@@ -56,6 +87,7 @@ function Layout() {
         <SidebarMenu
           userName={userName}
           userEmail={userEmail}
+          userType={userType}
           isMobileOpen={sidebarOpen}
           onNavigate={() => setSidebarOpen(false)}
         />
