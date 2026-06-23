@@ -24,6 +24,17 @@ async function request(path, options = {}) {
   return data;
 }
 
+async function requestWithFallback(path, fallbackValue, options = {}) {
+  try {
+    return await request(path, options);
+  } catch (error) {
+    if (error?.status === 404) {
+      return fallbackValue;
+    }
+    throw error;
+  }
+}
+
 function formatDate(value) {
   if (!value) return 'Sem data definida';
   const parsed = new Date(value);
@@ -42,6 +53,7 @@ function Inscricao() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [inscrevendoTurmaId, setInscrevendoTurmaId] = useState(null);
+  const [turmasInscritas, setTurmasInscritas] = useState(() => new Set());
 
   useEffect(() => {
     loadCatalog();
@@ -59,6 +71,27 @@ function Inscricao() {
 
       setModalidades(Array.isArray(modalidadesData) ? modalidadesData : []);
       setTurmas(Array.isArray(turmasData) ? turmasData : []);
+
+      const rawUser = localStorage.getItem('user');
+      if (!rawUser) {
+        setTurmasInscritas(new Set());
+        return;
+      }
+
+      const user = JSON.parse(rawUser);
+      const alunoId = Number(user?.id);
+      if (!alunoId) {
+        setTurmasInscritas(new Set());
+        return;
+      }
+
+      const inscricoesData = await requestWithFallback(`/api/inscricoes/aluno/${alunoId}`, []);
+      const turmaIds = new Set(
+        (Array.isArray(inscricoesData) ? inscricoesData : [])
+          .map((item) => Number(item?.turmaId))
+          .filter((id) => id > 0)
+      );
+      setTurmasInscritas(turmaIds);
     } catch (err) {
       setError(err.message || 'Falha ao carregar cursos disponíveis para inscrição.');
     } finally {
@@ -109,10 +142,12 @@ function Inscricao() {
       });
 
       setSuccess(data?.mensagem || `Inscrição realizada com sucesso em ${turma.nomeTurma}.`);
+      setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
     } catch (err) {
       if (err?.status === 409 || /já\s+está\s+inscrito/i.test(err?.message || '')) {
         setError('');
         setSuccess(`Você já está inscrito em ${turma.nomeTurma}.`);
+        setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
       } else {
         setError(err.message || 'Não foi possível concluir a inscrição.');
       }
@@ -186,6 +221,7 @@ function Inscricao() {
                 >
                   {cursos.map((turma) => {
                     const destacado = selectedTurmaId === turma.id;
+                    const jaInscrito = turmasInscritas.has(Number(turma.id));
                     return (
                       <article
                         key={turma.id}
@@ -204,20 +240,24 @@ function Inscricao() {
                         <button
                           type="button"
                           onClick={() => handleInscricao(turma)}
-                          disabled={inscrevendoTurmaId === turma.id}
+                          disabled={jaInscrito || inscrevendoTurmaId === turma.id}
                           style={{
-                            background: '#2563eb',
-                            color: '#fff',
-                            border: 'none',
+                            background: jaInscrito ? '#dcfce7' : '#2563eb',
+                            color: jaInscrito ? '#166534' : '#fff',
+                            border: jaInscrito ? '1px solid #bbf7d0' : 'none',
                             borderRadius: 6,
                             padding: '8px 10px',
                             textAlign: 'center',
                             fontWeight: 600,
-                            cursor: inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
+                            cursor: jaInscrito || inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
                             opacity: inscrevendoTurmaId === turma.id ? 0.75 : 1,
                           }}
                         >
-                          {inscrevendoTurmaId === turma.id ? 'Inscrevendo...' : 'Inscrever-se'}
+                          {jaInscrito
+                            ? 'Inscrito'
+                            : inscrevendoTurmaId === turma.id
+                              ? 'Inscrevendo...'
+                              : 'Inscrever-se'}
                         </button>
                       </article>
                     );
