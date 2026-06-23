@@ -156,6 +156,15 @@ function Aluno() {
     setForm((current) => ({ ...current, [name]: value }));
   }
 
+  function handleCloseModal() {
+    if (isSaving || isInactivating || isReactivating) return;
+    setSelectedId(null);
+    setSelectedAluno(null);
+    setDetailError('');
+    setSuccessMessage('');
+    setIsEditing(false);
+  }
+
   async function handleSave(event) {
     event.preventDefault();
     if (!selectedId) return;
@@ -329,116 +338,139 @@ function Aluno() {
           )}
         </section>
 
-        <section className="alunos-detail-card">
-          <h2>Cadastro detalhado</h2>
-
-          {!selectedId && <p>Selecione um aluno para visualizar os detalhes.</p>}
-          {loadingDetail && <p>Carregando detalhes...</p>}
-          {detailError && <p className="error">Erro: {detailError}</p>}
-          {successMessage && <p className="success">{successMessage}</p>}
-
-          {selectedAluno && !loadingDetail && (
-            <>
-              {!isEditing ? (
-                <div className="detail-grid">
-                  <div><strong>ID:</strong> {selectedAluno.id}</div>
-                  <div><strong>Nome:</strong> {selectedAluno.fullName}</div>
-                  <div><strong>E-mail:</strong> {selectedAluno.email}</div>
-                  <div><strong>Sexo:</strong> {selectedAluno.sex}</div>
-                  <div><strong>Nascimento:</strong> {toInputDate(selectedAluno.birthDate)}</div>
-                  <div>
-                    <strong>Status:</strong>{' '}
-                    <span className={selectedAluno.isActive ? 'status-active' : 'status-inactive'}>
-                      {selectedAluno.isActive ? 'Ativo' : 'Inativo'}
-                    </span>
-                  </div>
-                  {selectedAluno.inactiveAt && (
-                    <div><strong>Inativado em:</strong> {new Date(selectedAluno.inactiveAt).toLocaleString('pt-BR')}</div>
-                  )}
-                </div>
-              ) : (
-                <form onSubmit={handleSave} className="form-grid alunos-form">
-                  <label>
-                    Nome completo
-                    <input
-                      name="fullName"
-                      type="text"
-                      value={form.fullName}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    Data de nascimento
-                    <input
-                      name="birthDate"
-                      type="date"
-                      value={form.birthDate}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    Sexo
-                    <input
-                      name="sex"
-                      type="text"
-                      maxLength={20}
-                      value={form.sex}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    E-mail
-                    <input
-                      name="email"
-                      type="email"
-                      value={form.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </label>
-
-                  <div className="detail-actions">
-                    <button type="submit" disabled={isSaving}>
-                      {isSaving ? 'Salvando...' : 'Salvar alterações'}
-                    </button>
-                    <button type="button" onClick={() => setIsEditing(false)} disabled={isSaving}>
-                      Cancelar
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              <div className="detail-actions">
-                {!isEditing && (
-                  <button type="button" onClick={() => setIsEditing(true)} disabled={isInactivating || isReactivating}>
-                    Editar
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={handleInactivate}
-                  disabled={isInactivating || isReactivating || !selectedAluno.isActive}
-                >
-                  {isInactivating ? 'Inativando...' : 'Inativar aluno'}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleReactivate}
-                  disabled={isReactivating || isInactivating || selectedAluno.isActive}
-                >
-                  {isReactivating ? 'Reativando...' : 'Reativar aluno'}
-                </button>
-              </div>
-            </>
-          )}
-        </section>
       </div>
+
+      {selectedId && (
+        <div
+          className="aluno-modal-overlay"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) handleCloseModal();
+          }}
+        >
+          <section className="aluno-modal" role="dialog" aria-modal="true" aria-labelledby="aluno-modal-title">
+            <div className="aluno-modal-header">
+              <div>
+                <h2 id="aluno-modal-title">Cadastro detalhado</h2>
+                <p>{selectedAluno?.fullName || 'Carregando dados do aluno'}</p>
+              </div>
+              <button
+                type="button"
+                className="modal-close-button"
+                onClick={handleCloseModal}
+                disabled={isSaving || isInactivating || isReactivating}
+              >
+                Fechar
+              </button>
+            </div>
+
+            {loadingDetail && <p className="modal-state">Carregando detalhes...</p>}
+            {detailError && <p className="error modal-state">Erro: {detailError}</p>}
+            {successMessage && <p className="success modal-state">{successMessage}</p>}
+
+            {selectedAluno && !loadingDetail && (
+              <>
+                {!isEditing ? (
+                  <div className="detail-grid">
+                    <div><strong>ID:</strong> {selectedAluno.id}</div>
+                    <div><strong>Nome:</strong> {selectedAluno.fullName}</div>
+                    <div><strong>E-mail:</strong> {selectedAluno.email}</div>
+                    <div><strong>Sexo:</strong> {selectedAluno.sex}</div>
+                    <div><strong>Nascimento:</strong> {toInputDate(selectedAluno.birthDate)}</div>
+                    <div>
+                      <strong>Status:</strong>{' '}
+                      <span className={selectedAluno.isActive ? 'status-active' : 'status-inactive'}>
+                        {selectedAluno.isActive ? 'Ativo' : 'Inativo'}
+                      </span>
+                    </div>
+                    {selectedAluno.inactiveAt && (
+                      <div><strong>Inativado em:</strong> {new Date(selectedAluno.inactiveAt).toLocaleString('pt-BR')}</div>
+                    )}
+                  </div>
+                ) : (
+                  <form onSubmit={handleSave} className="form-grid alunos-form">
+                    <label>
+                      Nome completo
+                      <input
+                        name="fullName"
+                        type="text"
+                        value={form.fullName}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </label>
+
+                    <label>
+                      Data de nascimento
+                      <input
+                        name="birthDate"
+                        type="date"
+                        value={form.birthDate}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </label>
+
+                    <label>
+                      Sexo
+                      <input
+                        name="sex"
+                        type="text"
+                        maxLength={20}
+                        value={form.sex}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </label>
+
+                    <label>
+                      E-mail
+                      <input
+                        name="email"
+                        type="email"
+                        value={form.email}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </label>
+
+                    <div className="detail-actions">
+                      <button type="submit" disabled={isSaving}>
+                        {isSaving ? 'Salvando...' : 'Salvar alterações'}
+                      </button>
+                      <button type="button" onClick={() => setIsEditing(false)} disabled={isSaving}>
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                <div className="detail-actions">
+                  {!isEditing && (
+                    <button type="button" onClick={() => setIsEditing(true)} disabled={isInactivating || isReactivating}>
+                      Editar
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleInactivate}
+                    disabled={isInactivating || isReactivating || !selectedAluno.isActive}
+                  >
+                    {isInactivating ? 'Inativando...' : 'Inativar aluno'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleReactivate}
+                    disabled={isReactivating || isInactivating || selectedAluno.isActive}
+                  >
+                    {isReactivating ? 'Reativando...' : 'Reativar aluno'}
+                  </button>
+                </div>
+              </>
+            )}
+          </section>
+        </div>
+      )}
     </div>
   );
 }

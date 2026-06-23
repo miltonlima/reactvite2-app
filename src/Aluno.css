@@ -1,5 +1,9 @@
 .alunos-page {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
   padding: 20px;
+  box-sizing: border-box;
   text-align: left;
 }
 
@@ -13,7 +17,8 @@
 
 .alunos-header h1 {
   margin: 0 0 8px;
-  font-size: 1.8rem;
+  font-size: 1.65rem;
+  line-height: 1.15;
 }
 
 .alunos-header p {
@@ -23,15 +28,15 @@
 
 .alunos-layout {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1fr;
   gap: 16px;
 }
 
-.alunos-list-card,
-.alunos-detail-card {
+.alunos-list-card {
   background: #ffffff;
   border-radius: 10px;
   padding: 16px;
+  min-width: 0;
   box-shadow: 0 1px 6px rgba(15, 23, 42, 0.08);
 }
 
@@ -42,8 +47,7 @@
   margin-bottom: 12px;
 }
 
-.alunos-list-header h2,
-.alunos-detail-card h2 {
+.alunos-list-header h2 {
   margin: 0;
   font-size: 1.1rem;
 }
@@ -52,15 +56,25 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 36px;
   font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.toggle-inativos input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
 }
 
 .alunos-table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .alunos-table {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
   font-size: 0.92rem;
 }
@@ -70,6 +84,7 @@
   padding: 10px 8px;
   border-bottom: 1px solid #e2e8f0;
   vertical-align: middle;
+  overflow-wrap: anywhere;
 }
 
 .alunos-table thead th {
@@ -80,6 +95,11 @@
 
 .alunos-table tr.selected {
   background: #eff6ff;
+}
+
+.alunos-table button {
+  min-height: 36px;
+  padding: 0 12px;
 }
 
 .status-active,
@@ -103,13 +123,24 @@
 
 .detail-grid {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 12px;
   margin-bottom: 14px;
 }
 
+.detail-grid > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .alunos-form {
   margin-top: 12px;
+}
+
+.alunos-form input {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .detail-actions {
@@ -119,8 +150,220 @@
   flex-wrap: wrap;
 }
 
+.aluno-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.aluno-modal {
+  width: min(680px, 100%);
+  max-height: min(82vh, 760px);
+  overflow: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+  padding: 18px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.aluno-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.aluno-modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.aluno-modal-header p {
+  margin: 4px 0 0;
+  color: #64748b;
+}
+
+.modal-close-button {
+  flex: 0 0 auto;
+  padding: 0.45rem 0.85rem;
+  min-height: 36px;
+}
+
+.modal-state {
+  margin: 14px 0 0;
+}
+
 @media (max-width: 1100px) {
   .alunos-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .alunos-page {
+    padding: 14px;
+  }
+
+  .alunos-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .alunos-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .alunos-header .secondary-link {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .alunos-list-card {
+    padding: 12px;
+  }
+
+  .alunos-table-wrap {
+    overflow: visible;
+  }
+
+  .alunos-table {
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+
+  .alunos-table thead {
+    display: none;
+  }
+
+  .alunos-table tbody,
+  .alunos-table tr,
+  .alunos-table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .alunos-table tr {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .alunos-table tr.selected {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+  }
+
+  .alunos-table td {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 9px 10px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .alunos-table td:last-child {
+    border-bottom: none;
+  }
+
+  .alunos-table td::before {
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .alunos-table td:nth-child(1)::before {
+    content: "ID";
+  }
+
+  .alunos-table td:nth-child(2)::before {
+    content: "Nome";
+  }
+
+  .alunos-table td:nth-child(3)::before {
+    content: "E-mail";
+  }
+
+  .alunos-table td:nth-child(4)::before {
+    content: "Status";
+  }
+
+  .alunos-table td:nth-child(5)::before {
+    content: "Ações";
+  }
+
+  .alunos-table button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .alunos-header,
+  .alunos-list-header,
+  .aluno-modal-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .aluno-modal-overlay {
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .aluno-modal {
+    width: 100%;
+    max-height: calc(100vh - 20px);
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-close-button,
+  .detail-actions button {
+    width: 100%;
+  }
+
+  .detail-actions {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  .alunos-page {
+    padding: 10px;
+  }
+
+  .alunos-list-card {
+    padding: 10px;
+  }
+
+  .alunos-table td {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+
+  .status-active,
+  .status-inactive {
+    width: fit-content;
   }
 }
