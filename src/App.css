@@ -398,8 +398,25 @@ body {
 
 .dashboard-header h2 { margin: 0; }
 
-.dashboard-sidebar .profile .name { font-weight: 700; }
-.dashboard-sidebar .profile .email { font-size: 12px; opacity: 0.8; }
+.dashboard-sidebar .profile .name,
+.dashboard-sidebar .profile .email {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.dashboard-sidebar .profile .name {
+  font-weight: 700;
+}
+
+.dashboard-sidebar .profile .email {
+  font-size: 12px;
+  opacity: 0.8;
+}
 .dashboard-sidebar .profile .profile-type {
   display: inline-flex;
   margin-top: 8px;

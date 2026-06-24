@@ -68,15 +68,16 @@
 }
 
 .alunos-table-wrap {
-  overflow-x: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
 .alunos-table {
   width: 100%;
-  min-width: 720px;
+  min-width: 0;
   border-collapse: collapse;
   font-size: 0.92rem;
+  table-layout: fixed;
 }
 
 .alunos-table th,
@@ -84,13 +85,49 @@
   padding: 10px 8px;
   border-bottom: 1px solid #e2e8f0;
   vertical-align: middle;
+  min-width: 0;
+  overflow: visible;
   overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .alunos-table thead th {
   color: #334155;
   text-align: left;
   background: #f8fafc;
+  white-space: nowrap;
+}
+
+.alunos-table th:nth-child(1),
+.alunos-table td:nth-child(1) {
+  width: 58px;
+}
+
+.alunos-table th:nth-child(2),
+.alunos-table td:nth-child(2) {
+  width: 30%;
+}
+
+.alunos-table th:nth-child(3),
+.alunos-table td:nth-child(3) {
+  width: 34%;
+}
+
+.alunos-table td:nth-child(2),
+.alunos-table td:nth-child(3) {
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.alunos-table th:nth-child(4),
+.alunos-table td:nth-child(4) {
+  width: 92px;
+}
+
+.alunos-table th:nth-child(5),
+.alunos-table td:nth-child(5) {
+  width: 116px;
 }
 
 .alunos-table tr.selected {
@@ -100,6 +137,7 @@
 .alunos-table button {
   min-height: 36px;
   padding: 0 12px;
+  max-width: 100%;
 }
 
 .status-active,
@@ -236,81 +274,54 @@
   }
 
   .alunos-table-wrap {
-    overflow: visible;
+    overflow-x: hidden;
   }
 
   .alunos-table {
-    min-width: 0;
-    border-collapse: separate;
-    border-spacing: 0 10px;
-  }
-
-  .alunos-table thead {
-    display: none;
-  }
-
-  .alunos-table tbody,
-  .alunos-table tr,
-  .alunos-table td {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .alunos-table tr {
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background: #ffffff;
-    overflow: hidden;
-  }
-
-  .alunos-table tr.selected {
-    border-color: #bfdbfe;
-    background: #eff6ff;
-  }
-
-  .alunos-table td {
-    display: grid;
-    grid-template-columns: 88px minmax(0, 1fr);
-    gap: 10px;
-    align-items: center;
-    padding: 9px 10px;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  .alunos-table td:last-child {
-    border-bottom: none;
-  }
-
-  .alunos-table td::before {
-    color: #64748b;
     font-size: 0.78rem;
-    font-weight: 800;
-    text-transform: uppercase;
   }
 
-  .alunos-table td:nth-child(1)::before {
-    content: "ID";
+  .alunos-table th,
+  .alunos-table td {
+    padding: 8px 6px;
   }
 
-  .alunos-table td:nth-child(2)::before {
-    content: "Nome";
+  .alunos-table th:nth-child(1),
+  .alunos-table td:nth-child(1) {
+    width: 42px;
   }
 
-  .alunos-table td:nth-child(3)::before {
-    content: "E-mail";
+  .alunos-table th:nth-child(2),
+  .alunos-table td:nth-child(2) {
+    width: auto;
   }
 
-  .alunos-table td:nth-child(4)::before {
-    content: "Status";
+  .alunos-table th:nth-child(3),
+  .alunos-table td:nth-child(3) {
+    width: 28%;
   }
 
-  .alunos-table td:nth-child(5)::before {
-    content: "Ações";
+  .alunos-table th:nth-child(4),
+  .alunos-table td:nth-child(4) {
+    width: 70px;
+  }
+
+  .alunos-table th:nth-child(5),
+  .alunos-table td:nth-child(5) {
+    width: 82px;
   }
 
   .alunos-table button {
     width: 100%;
+    min-height: 32px;
+    padding: 0 6px;
+    font-size: 0.78rem;
+  }
+
+  .status-active,
+  .status-inactive {
+    padding: 2px 6px;
+    font-size: 0.7rem;
   }
 }
 
@@ -357,13 +368,42 @@
     padding: 10px;
   }
 
+  .alunos-table {
+    font-size: 0.74rem;
+  }
+
+  .alunos-table th,
   .alunos-table td {
-    grid-template-columns: 1fr;
-    gap: 3px;
+    padding: 7px 4px;
+  }
+
+  .alunos-table th:nth-child(3),
+  .alunos-table td:nth-child(3) {
+    display: none;
+  }
+
+  .alunos-table th:nth-child(1),
+  .alunos-table td:nth-child(1) {
+    width: 36px;
+  }
+
+  .alunos-table th:nth-child(4),
+  .alunos-table td:nth-child(4) {
+    width: 64px;
+  }
+
+  .alunos-table th:nth-child(5),
+  .alunos-table td:nth-child(5) {
+    width: 76px;
   }
 
   .status-active,
   .status-inactive {
     width: fit-content;
+  }
+
+  .alunos-table button {
+    min-height: 30px;
+    font-size: 0.72rem;
   }
 }
