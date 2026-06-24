@@ -1,5 +1,10 @@
 .turma-report-page {
-  padding: 16px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #0f172a;
   text-align: left;
 }
 
@@ -7,19 +12,20 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .turma-report-header h1 {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 1.65rem;
+  line-height: 1.15;
 }
 
 .turma-report-header p {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   color: #64748b;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
 }
 
 .turma-report-header-right {
@@ -29,28 +35,30 @@
 }
 
 .turma-report-badge {
-  background: #dcfce7;
-  color: #14532d;
+  padding: 6px 12px;
   border: 1px solid #bbf7d0;
   border-radius: 999px;
-  padding: 4px 10px;
-  font-weight: 700;
+  background: #dcfce7;
+  color: #14532d;
   font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .turma-report-create {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .turma-create-inline-form {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 0.9fr 0.9fr auto auto;
-  gap: 8px;
+  grid-template-columns: minmax(220px, 1.4fr) minmax(180px, 1fr) minmax(138px, 0.75fr) minmax(138px, 0.75fr) auto auto;
+  gap: 10px;
   align-items: center;
-  background: #ffffff;
+  padding: 14px;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 10px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
 }
 
 .turma-create-inline-form > * {
@@ -60,65 +68,125 @@
 .turma-create-inline-form input,
 .turma-create-inline-form select,
 .inline-edit-input {
-  height: 34px;
-  border-radius: 6px;
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
   border: 1px solid #cbd5e1;
-  padding: 0 10px;
-  font-size: 0.9rem;
+  border-radius: 6px;
   background: #ffffff;
+  padding: 0 10px;
+  color: #0f172a;
+  font-size: 0.9rem;
 }
 
 .turma-create-inline-form button,
 .compact-actions button {
-  height: 34px;
+  min-height: 38px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   background: #f8fafc;
   color: #0f172a;
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
   padding: 0 10px;
 }
 
+.turma-create-inline-form button[type="submit"] {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
 .turma-create-inline-form button:hover,
 .compact-actions button:hover {
-  border-color: #86efac;
-  background: #f0fdf4;
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.turma-create-inline-form button[type="submit"]:hover {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+}
+
+.turma-create-inline-form button:disabled,
+.compact-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .turma-report-table-card {
-  background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  overflow: auto;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
 }
 
 .turma-report-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   font-size: 0.9rem;
 }
 
 .turma-report-table th,
 .turma-report-table td {
+  min-width: 0;
   border-bottom: 1px solid #e2e8f0;
-  padding: 8px 10px;
+  padding: 10px 12px;
   text-align: left;
   vertical-align: middle;
+  overflow-wrap: anywhere;
 }
 
 .turma-report-table thead th {
   background: #f8fafc;
   color: #334155;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.turma-report-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.turma-report-table th:nth-child(1),
+.turma-report-table td:nth-child(1) {
+  width: 56px;
+}
+
+.turma-report-table th:nth-child(2),
+.turma-report-table td:nth-child(2) {
+  width: 20%;
+}
+
+.turma-report-table th:nth-child(3),
+.turma-report-table td:nth-child(3) {
+  width: 22%;
+}
+
+.turma-report-table th:nth-child(4),
+.turma-report-table td:nth-child(4),
+.turma-report-table th:nth-child(5),
+.turma-report-table td:nth-child(5) {
+  width: 104px;
+}
+
+.turma-report-table th:nth-child(6),
+.turma-report-table td:nth-child(6) {
+  width: 92px;
 }
 
 .th-actions {
-  width: 220px;
+  width: 170px;
 }
 
 .compact-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -126,53 +194,61 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
+  min-height: 38px;
   color: #0f172a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .status-active,
 .status-inactive {
-  display: inline-block;
-  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
   border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .status-active {
+  border: 1px solid #bbf7d0;
   background: #dcfce7;
   color: #166534;
 }
 
 .status-inactive {
+  border: 1px solid #fecaca;
   background: #fee2e2;
   color: #991b1b;
 }
 
 .td-empty {
-  text-align: center;
+  padding: 18px;
   color: #64748b;
-  padding: 14px;
+  text-align: center;
 }
 
 .error {
+  margin: 10px 0;
   color: #dc2626;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .success {
+  margin: 10px 0;
   color: #16a34a;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 @media (max-width: 1200px) {
   .turma-create-inline-form {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 
   .turma-report-header {
     flex-direction: column;
-    align-items: flex-start;
   }
 
   .turma-report-header-right {
@@ -181,14 +257,69 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1120px) {
+  .turma-create-inline-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .turma-report-table {
+    font-size: 0.8rem;
+  }
+
+  .turma-report-table th,
+  .turma-report-table td {
+    padding: 8px 7px;
+  }
+
+  .turma-report-table th:nth-child(1),
+  .turma-report-table td:nth-child(1) {
+    width: 42px;
+  }
+
+  .turma-report-table th:nth-child(4),
+  .turma-report-table td:nth-child(4),
+  .turma-report-table th:nth-child(5),
+  .turma-report-table td:nth-child(5) {
+    width: 78px;
+  }
+
+  .turma-report-table th:nth-child(6),
+  .turma-report-table td:nth-child(6) {
+    width: 72px;
+  }
+
+  .th-actions {
+    width: 112px;
+  }
+
+  .compact-actions button {
+    width: 100%;
+    min-height: 32px;
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 760px) {
   .turma-report-page {
     padding: 12px;
   }
 
+  .turma-report-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .turma-report-header-right {
+    align-items: stretch;
+  }
+
+  .turma-report-header-right .secondary-link,
+  .turma-report-badge {
+    text-align: center;
+  }
+
   .turma-create-inline-form {
     grid-template-columns: 1fr;
-    gap: 10px;
+    padding: 12px;
   }
 
   .turma-create-inline-form input,
@@ -202,5 +333,174 @@
   .turma-create-inline-form .active-flag {
     justify-content: flex-start;
     padding: 6px 2px;
+  }
+
+  .turma-report-table-card {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  .turma-report-table,
+  .turma-report-table tbody {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .turma-report-table {
+    table-layout: auto;
+    font-size: 0.82rem;
+  }
+
+  .turma-report-table thead {
+    display: none;
+  }
+
+  .turma-report-table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "id status"
+      "turma turma"
+      "modalidade modalidade"
+      "inicio fim"
+      "acoes acoes";
+    gap: 0;
+    margin-bottom: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 5px 14px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+  }
+
+  .turma-report-table td {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    box-sizing: border-box;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .turma-report-table td:last-child {
+    border-bottom: none;
+  }
+
+  .turma-report-table td:nth-child(1) {
+    grid-area: id;
+    width: auto;
+    border-right: 1px solid #e2e8f0;
+  }
+
+  .turma-report-table td:nth-child(2) {
+    grid-area: turma;
+    width: auto;
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+
+  .turma-report-table td:nth-child(3) {
+    grid-area: modalidade;
+    width: auto;
+  }
+
+  .turma-report-table td:nth-child(4) {
+    grid-area: inicio;
+    width: auto;
+    border-right: 1px solid #e2e8f0;
+  }
+
+  .turma-report-table td:nth-child(5) {
+    grid-area: fim;
+    width: auto;
+  }
+
+  .turma-report-table td:nth-child(6) {
+    grid-area: status;
+    width: auto;
+    align-items: flex-end;
+  }
+
+  .turma-report-table td:nth-child(7) {
+    grid-area: acoes;
+    width: auto;
+  }
+
+  .turma-report-table td::before {
+    content: attr(data-label);
+    color: #64748b;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .turma-report-table td[colspan] {
+    display: block;
+    text-align: center;
+  }
+
+  .turma-report-table td[colspan]::before {
+    content: none;
+  }
+
+  .turma-report-table .active-flag {
+    min-height: 28px;
+    padding: 0;
+  }
+
+  .inline-edit-input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .compact-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .compact-actions button {
+    width: 100%;
+    min-height: 32px;
+    padding: 0 6px;
+    font-size: 0.76rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .turma-report-page {
+    padding: 10px;
+  }
+
+  .turma-report-header-right {
+    flex-direction: column;
+  }
+
+  .turma-report-table tr {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .turma-report-table {
+    font-size: 0.8rem;
+  }
+
+  .turma-report-table td {
+    padding: 7px 8px;
+  }
+
+  .turma-report-table td:nth-child(2) {
+    font-size: 0.9rem;
+  }
+
+  .compact-actions {
+    grid-template-columns: 1fr 1fr;
   }
 }

@@ -297,8 +297,8 @@ function Turma() {
                 const isEditing = editingId === item.id;
                 return (
                   <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td>
+                    <td data-label="ID">{item.id}</td>
+                    <td data-label="Turma">
                       {isEditing ? (
                         <input
                           className="inline-edit-input"
@@ -312,7 +312,7 @@ function Turma() {
                         item.nomeTurma
                       )}
                     </td>
-                    <td>
+                    <td data-label="Modalidade">
                       {isEditing ? (
                         <select
                           className="inline-edit-input"
@@ -330,7 +330,7 @@ function Turma() {
                         item.modalidadeNome
                       )}
                     </td>
-                    <td>
+                    <td data-label="Início">
                       {isEditing ? (
                         <input
                           className="inline-edit-input"
@@ -344,7 +344,7 @@ function Turma() {
                         formatDate(item.dataInicio)
                       )}
                     </td>
-                    <td>
+                    <td data-label="Fim">
                       {isEditing ? (
                         <input
                           className="inline-edit-input"
@@ -358,7 +358,7 @@ function Turma() {
                         formatDate(item.dataFim)
                       )}
                     </td>
-                    <td>
+                    <td data-label="Status">
                       {isEditing ? (
                         <label className="active-flag">
                           <input
@@ -376,7 +376,7 @@ function Turma() {
                         </span>
                       )}
                     </td>
-                    <td>
+                    <td data-label="Ações">
                       <div className="compact-actions">
                         {isEditing ? (
                           <>
