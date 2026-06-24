@@ -1,8 +1,5 @@
 import { useState } from 'react'
 import './App.css'
-import Menu from './components/Menu.jsx'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_BASE } from './config/apiBase'
 
@@ -60,56 +57,80 @@ function App15() {
   }
 
   return (
-    <>
+    <main className="education-login-page">
+      <section className="education-login-shell">
+        <div className="education-login-panel">
+          <div className="education-brand">
+            <div className="education-brand-mark">EA</div>
+            <div>
+              <span>Ambiente Educacional</span>
+              <strong>Atividades e Turmas</strong>
+            </div>
+          </div>
 
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h2>Sistema de Atividades Educacionais</h2>
+          <div className="education-login-copy">
+            <span className="education-kicker">Portal de aprendizagem</span>
+            <h1>Sistema de Atividades Educacionais</h1>
+            <p>
+              Acesse suas turmas, acompanhe inscrições e organize conteúdos em um espaço simples para alunos e professores.
+            </p>
+          </div>
 
-      <div className="auth-card">
-        <h2>Entrar</h2>
-        <p className="auth-subtitle">Informe e-mail e senha para continuar.</p>
+          <div className="education-visual" aria-hidden="true">
+            <div className="education-board">
+              <span>Plano da aula</span>
+              <strong>Turmas ativas</strong>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div className="education-stack">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
 
-        <form className="form-grid" onSubmit={handleSubmit}>
-          <label>
-            E-mail
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seuemail@exemplo.com"
-            />
-          </label>
+        <div className="auth-card education-auth-card">
+          <h2>Entrar na plataforma</h2>
+          <p className="auth-subtitle">Informe suas credenciais para continuar.</p>
 
-          <label>
-            Senha
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-            />
-          </label>
+          <form className="form-grid education-auth-form" onSubmit={handleSubmit}>
+            <label>
+              E-mail
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seuemail@exemplo.com"
+              />
+            </label>
 
-          <button type="submit" disabled={loading}>
-            {loading ? 'Entrando...' : 'Entrar'}
-          </button>
-        </form>
+            <label>
+              Senha
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Digite sua senha"
+              />
+            </label>
 
-        {error && <p className="error">{error}</p>}
-        {message && <p className="success">{message}</p>}
+            <button type="submit" disabled={loading}>
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
+          </form>
 
-        <p className="auth-subtitle">
-          Ainda não tem conta? <Link to="/page16">Cadastre-se</Link>
-        </p>
-      </div>
-    </>
+          {error && <p className="error education-auth-message">Erro: {error}</p>}
+          {message && <p className="success education-auth-message">{message}</p>}
+
+          <p className="auth-subtitle education-register-link">
+            Ainda não tem conta? <Link to="/page16">Cadastre-se</Link>
+          </p>
+        </div>
+      </section>
+    </main>
   )
 }
 
