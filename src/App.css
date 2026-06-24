@@ -400,6 +400,16 @@ body {
 
 .dashboard-sidebar .profile .name { font-weight: 700; }
 .dashboard-sidebar .profile .email { font-size: 12px; opacity: 0.8; }
+.dashboard-sidebar .profile .profile-type {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 700;
+}
 
 .item-label { margin-left: 8px; font-size: 14px; text-transform: capitalize; }
 

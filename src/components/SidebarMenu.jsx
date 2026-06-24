@@ -10,6 +10,20 @@ function isAlunoUser(userType) {
   return ['aluno', 'student', 'estudante'].includes(normalized);
 }
 
+function formatUserProfile(userType) {
+  const normalized = String(userType || '').trim().toLowerCase();
+  const labels = {
+    aluno: 'Aluno',
+    estudante: 'Aluno',
+    student: 'Aluno',
+    professor: 'Professor',
+    teacher: 'Professor',
+    admin: 'Administrador',
+    administrador: 'Administrador',
+  };
+  return labels[normalized] || userType || 'Perfil não informado';
+}
+
 function SidebarMenu({ userName, userEmail, userType, isMobileOpen, onNavigate }) {
   const menuItems = [
     { name: 'home', icon: '🏠', path: '/page17' },
@@ -33,6 +47,7 @@ function SidebarMenu({ userName, userEmail, userType, isMobileOpen, onNavigate }
         <div className="avatar"></div>
         <div className="name">{userName}</div>
         <div className="email">{userEmail}</div>
+        <div className="profile-type">{formatUserProfile(userType)}</div>
       </div>
       <nav>
         {menuItems.map(item => (
