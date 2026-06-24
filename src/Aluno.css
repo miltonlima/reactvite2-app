@@ -210,6 +210,86 @@
   flex-wrap: wrap;
 }
 
+.aluno-cursos-section {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.aluno-cursos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.aluno-cursos-header h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.aluno-cursos-header span {
+  color: #64748b;
+  font-size: 0.84rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.aluno-cursos-empty {
+  margin: 12px 0 0;
+  color: #64748b;
+}
+
+.aluno-cursos-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.aluno-curso-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.aluno-curso-item > div {
+  min-width: 0;
+}
+
+.aluno-curso-item strong,
+.aluno-curso-item span,
+.aluno-curso-item small {
+  overflow-wrap: anywhere;
+}
+
+.aluno-curso-item strong {
+  display: block;
+  color: #0f172a;
+}
+
+.aluno-curso-item span {
+  display: block;
+  margin-top: 3px;
+  color: #475569;
+}
+
+.aluno-curso-meta {
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.aluno-curso-meta small {
+  display: block;
+  margin-top: 6px;
+  color: #64748b;
+}
+
 .aluno-modal-overlay {
   position: fixed;
   inset: 0;
@@ -392,6 +472,16 @@
 
   .detail-actions {
     gap: 8px;
+  }
+
+  .aluno-cursos-header,
+  .aluno-curso-item {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .aluno-curso-meta {
+    text-align: left;
   }
 }
 

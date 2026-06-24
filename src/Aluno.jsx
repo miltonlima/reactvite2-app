@@ -50,6 +50,41 @@ function normalizeAlunosResponse(data) {
   return items.map(normalizeAluno).filter((item) => item?.id !== undefined && item?.id !== null);
 }
 
+function normalizeInscricao(item) {
+  if (!item) return null;
+
+  return {
+    id: getValue(item, 'id', 'Id'),
+    turmaId: getValue(item, 'turmaId', 'TurmaId', 'turma_id'),
+    turmaNome: getValue(item, 'turmaNome', 'TurmaNome', 'nome_turma') || 'Turma sem nome',
+    modalidadeId: getValue(item, 'modalidadeId', 'ModalidadeId', 'modalidade_id'),
+    modalidadeNome: getValue(item, 'modalidadeNome', 'ModalidadeNome', 'modalidade_nome') || 'Curso sem nome',
+    status: getValue(item, 'status', 'Status') || 'ATIVA',
+    createdAt: getValue(item, 'createdAt', 'CreatedAt', 'created_at') || null,
+  };
+}
+
+function normalizeInscricoesResponse(data) {
+  const items = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.inscricoes)
+      ? data.inscricoes
+      : Array.isArray(data?.items)
+        ? data.items
+        : Array.isArray(data?.data)
+          ? data.data
+          : [];
+
+  return items.map(normalizeInscricao).filter((item) => item?.id !== undefined && item?.id !== null);
+}
+
+function formatDateTime(value) {
+  if (!value) return 'Data não informada';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 'Data não informada';
+  return parsed.toLocaleString('pt-BR');
+}
+
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -67,7 +102,9 @@ async function request(path, options = {}) {
       );
     }
     const message = body?.mensagem || body?.detail || body?.message || response.statusText;
-    throw new Error(message);
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
   }
 
   return body;
@@ -83,6 +120,9 @@ function Aluno() {
   const [selectedAluno, setSelectedAluno] = useState(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [detailError, setDetailError] = useState('');
+  const [alunoInscricoes, setAlunoInscricoes] = useState([]);
+  const [loadingInscricoes, setLoadingInscricoes] = useState(false);
+  const [inscricoesError, setInscricoesError] = useState('');
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -143,6 +183,8 @@ function Aluno() {
       setSelectedId(id);
       setLoadingDetail(true);
       setDetailError('');
+      setAlunoInscricoes([]);
+      setInscricoesError('');
       setSuccessMessage('');
       setIsEditing(false);
 
@@ -160,6 +202,17 @@ function Aluno() {
       setDetailError(error.message || 'Falha ao carregar detalhes do aluno.');
     } finally {
       setLoadingDetail(false);
+    }
+
+    try {
+      setLoadingInscricoes(true);
+      const inscricoesData = await request(`/api/inscricoes/aluno/${id}`);
+      setAlunoInscricoes(normalizeInscricoesResponse(inscricoesData));
+    } catch (error) {
+      setAlunoInscricoes([]);
+      setInscricoesError(error.message || 'Falha ao carregar cursos do aluno.');
+    } finally {
+      setLoadingInscricoes(false);
     }
   }
 
@@ -202,6 +255,8 @@ function Aluno() {
     setSelectedId(null);
     setSelectedAluno(null);
     setDetailError('');
+    setAlunoInscricoes([]);
+    setInscricoesError('');
     setSuccessMessage('');
     setIsEditing(false);
   }
@@ -637,6 +692,38 @@ function Aluno() {
                       </button>
                     </div>
                   </form>
+                )}
+
+                {!isEditing && (
+                  <section className="aluno-cursos-section" aria-label="Cursos do aluno">
+                    <div className="aluno-cursos-header">
+                      <h3>Cursos inscritos</h3>
+                      <span>{alunoInscricoes.length} curso(s)</span>
+                    </div>
+
+                    {loadingInscricoes && <p className="modal-state">Carregando cursos...</p>}
+                    {inscricoesError && <p className="error modal-state">Erro: {inscricoesError}</p>}
+                    {!loadingInscricoes && !inscricoesError && alunoInscricoes.length === 0 && (
+                      <p className="aluno-cursos-empty">Este aluno ainda não está inscrito em cursos.</p>
+                    )}
+
+                    {!loadingInscricoes && !inscricoesError && alunoInscricoes.length > 0 && (
+                      <div className="aluno-cursos-list">
+                        {alunoInscricoes.map((inscricao) => (
+                          <article className="aluno-curso-item" key={inscricao.id}>
+                            <div>
+                              <strong>{inscricao.modalidadeNome}</strong>
+                              <span>{inscricao.turmaNome}</span>
+                            </div>
+                            <div className="aluno-curso-meta">
+                              <span className="status-active">{inscricao.status}</span>
+                              <small>{formatDateTime(inscricao.createdAt)}</small>
+                            </div>
+                          </article>
+                        ))}
+                      </div>
+                    )}
+                  </section>
                 )}
 
                 <div className="detail-actions">
