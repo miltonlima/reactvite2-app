@@ -216,6 +216,8 @@ body {
 .dashboard-sidebar .profile {
   text-align: center;
   margin-bottom: 40px;
+  width: 100%;
+  padding: 8px;
 }
 
 .dashboard-sidebar .profile .avatar {
@@ -427,6 +429,7 @@ body {
 }
 .dashboard-sidebar .profile .profile-type {
   display: inline-flex;
+  border: none;
   margin-top: 8px;
   padding: 3px 10px;
   border-radius: 999px;
@@ -434,6 +437,94 @@ body {
   color: #e2e8f0;
   font-size: 12px;
   font-weight: 700;
+  cursor: pointer;
+}
+
+.dashboard-sidebar .profile .profile-edit-button:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.profile-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.profile-modal {
+  width: min(620px, 100%);
+  max-height: min(86vh, 720px);
+  overflow: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+  padding: 18px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.profile-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.profile-modal-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.25rem;
+}
+
+.profile-modal-header p {
+  margin: 4px 0 0;
+  color: #64748b;
+}
+
+.profile-modal-header button {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 0.45rem 0.85rem;
+}
+
+.profile-modal-state {
+  margin: 14px 0 0;
+}
+
+.profile-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.profile-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #334155;
+  font-weight: 700;
+  min-width: 0;
+}
+
+.profile-form input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-modal-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 2px;
 }
 
 .item-label { margin-left: 8px; font-size: 14px; text-transform: capitalize; }
@@ -1041,5 +1132,33 @@ body {
   .logout-button {
     padding: 7px 12px;
     font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-modal-overlay {
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .profile-modal {
+    max-height: calc(100vh - 20px);
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  .profile-modal-header,
+  .profile-modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .profile-form {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-modal-header button,
+  .profile-modal-actions button {
+    width: 100%;
   }
 }

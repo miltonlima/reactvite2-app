@@ -2,6 +2,43 @@ import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 import SidebarMenu from './SidebarMenu';
+import { API_BASE } from '../config/apiBase';
+
+function toInputDate(value) {
+  if (!value) return '';
+  if (typeof value === 'string' && value.length >= 10) {
+    return value.slice(0, 10);
+  }
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return '';
+  return parsed.toISOString().slice(0, 10);
+}
+
+function getUserValue(user, ...keys) {
+  for (const key of keys) {
+    if (user?.[key] !== undefined && user?.[key] !== null) {
+      return user[key];
+    }
+  }
+  return '';
+}
+
+async function request(path, options = {}) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+
+  const isJson = response.headers.get('content-type')?.includes('application/json');
+  const body = isJson ? await response.json() : null;
+
+  if (!response.ok) {
+    const message = body?.mensagem || body?.detail || body?.message || response.statusText;
+    throw new Error(message);
+  }
+
+  return body;
+}
 
 function getUserType(user) {
   return String(
@@ -34,6 +71,16 @@ function getStoredUser() {
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(() => getStoredUser());
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    fullName: '',
+    birthDate: '',
+    sex: '',
+    email: '',
+  });
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileError, setProfileError] = useState('');
+  const [profileSuccess, setProfileSuccess] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   const isAuthenticated = Boolean(user);
@@ -66,6 +113,76 @@ function Layout() {
     navigate('/page15');
   }
 
+  function handleOpenProfileModal() {
+    setProfileForm({
+      fullName: getUserValue(user, 'full_name', 'fullName', 'name'),
+      birthDate: toInputDate(getUserValue(user, 'birth_date', 'birthDate')),
+      sex: getUserValue(user, 'sex', 'sexo'),
+      email: getUserValue(user, 'email'),
+    });
+    setProfileError('');
+    setProfileSuccess('');
+    setIsProfileModalOpen(true);
+    setSidebarOpen(false);
+  }
+
+  function handleCloseProfileModal() {
+    if (profileSaving) return;
+    setIsProfileModalOpen(false);
+    setProfileError('');
+    setProfileSuccess('');
+  }
+
+  function handleProfileInputChange(event) {
+    const { name, value } = event.target;
+    setProfileForm((current) => ({ ...current, [name]: value }));
+  }
+
+  async function handleSaveProfile(event) {
+    event.preventDefault();
+    const userId = Number(user?.id);
+
+    if (!userId) {
+      setProfileError('Usuário inválido para atualização.');
+      return;
+    }
+
+    try {
+      setProfileSaving(true);
+      setProfileError('');
+      setProfileSuccess('');
+
+      const payload = {
+        fullName: profileForm.fullName.trim(),
+        birthDate: profileForm.birthDate,
+        sex: profileForm.sex.trim(),
+        email: profileForm.email.trim(),
+      };
+
+      const response = await request(`/api/alunos/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      });
+
+      const updatedAluno = response?.aluno || response?.Aluno || response;
+      const nextUser = {
+        ...user,
+        full_name: updatedAluno?.fullName || updatedAluno?.full_name || payload.fullName,
+        birth_date: updatedAluno?.birthDate || updatedAluno?.birth_date || payload.birthDate,
+        sex: updatedAluno?.sex || updatedAluno?.Sex || payload.sex,
+        email: updatedAluno?.email || updatedAluno?.Email || payload.email,
+      };
+
+      localStorage.setItem('user', JSON.stringify(nextUser));
+      setUser(nextUser);
+      setProfileSuccess(response?.mensagem || 'Cadastro atualizado com sucesso.');
+    } catch (error) {
+      setProfileError(error.message || 'Falha ao atualizar cadastro.');
+    } finally {
+      setProfileSaving(false);
+    }
+  }
+
   useEffect(() => {
     function handleResize() {
       if (window.innerWidth > 900) {
@@ -90,6 +207,7 @@ function Layout() {
           userType={userType}
           isMobileOpen={sidebarOpen}
           onNavigate={() => setSidebarOpen(false)}
+          onProfileClick={handleOpenProfileModal}
         />
         <button
           type="button"
@@ -116,6 +234,87 @@ function Layout() {
           <Outlet />
         </main>
       </div>
+
+      {isProfileModalOpen && (
+        <div
+          className="profile-modal-overlay"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) handleCloseProfileModal();
+          }}
+        >
+          <section className="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profile-modal-title">
+            <div className="profile-modal-header">
+              <div>
+                <h2 id="profile-modal-title">Editar cadastro</h2>
+                <p>Atualize seus dados principais de perfil.</p>
+              </div>
+              <button type="button" onClick={handleCloseProfileModal} disabled={profileSaving}>
+                Fechar
+              </button>
+            </div>
+
+            {profileError && <p className="error profile-modal-state">Erro: {profileError}</p>}
+            {profileSuccess && <p className="success profile-modal-state">{profileSuccess}</p>}
+
+            <form className="profile-form" onSubmit={handleSaveProfile}>
+              <label>
+                Nome completo
+                <input
+                  name="fullName"
+                  type="text"
+                  value={profileForm.fullName}
+                  onChange={handleProfileInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Data de nascimento
+                <input
+                  name="birthDate"
+                  type="date"
+                  value={profileForm.birthDate}
+                  onChange={handleProfileInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Sexo
+                <input
+                  name="sex"
+                  type="text"
+                  maxLength={20}
+                  value={profileForm.sex}
+                  onChange={handleProfileInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                E-mail
+                <input
+                  name="email"
+                  type="email"
+                  value={profileForm.email}
+                  onChange={handleProfileInputChange}
+                  required
+                />
+              </label>
+
+              <div className="profile-modal-actions">
+                <button type="submit" disabled={profileSaving}>
+                  {profileSaving ? 'Salvando...' : 'Salvar alterações'}
+                </button>
+                <button type="button" onClick={handleCloseProfileModal} disabled={profileSaving}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
     </AuthContext.Provider>
   );
 }

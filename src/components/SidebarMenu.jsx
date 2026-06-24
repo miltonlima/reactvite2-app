@@ -24,7 +24,7 @@ function formatUserProfile(userType) {
   return labels[normalized] || userType || 'Perfil não informado';
 }
 
-function SidebarMenu({ userName, userEmail, userType, isMobileOpen, onNavigate }) {
+function SidebarMenu({ userName, userEmail, userType, isMobileOpen, onNavigate, onProfileClick }) {
   const location = useLocation();
   const menuItems = [
     { name: 'home', icon: '🏠', path: '/page17' },
@@ -48,7 +48,9 @@ function SidebarMenu({ userName, userEmail, userType, isMobileOpen, onNavigate }
         <div className="avatar"></div>
         <div className="name">{userName}</div>
         <div className="email">{userEmail}</div>
-        <div className="profile-type">{formatUserProfile(userType)}</div>
+        <button type="button" className="profile-type profile-edit-button" onClick={onProfileClick}>
+          {formatUserProfile(userType)}
+        </button>
       </div>
       <nav>
         {menuItems.map(item => {
