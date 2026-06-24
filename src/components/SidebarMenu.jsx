@@ -1,6 +1,6 @@
 // src/components/SidebarMenu.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 // O menu da barra lateral é um componente de apresentação simples.
 // Ele recebe `userName` e `userEmail` como props para exibir os detalhes do perfil.
@@ -25,6 +25,7 @@ function formatUserProfile(userType) {
 }
 
 function SidebarMenu({ userName, userEmail, userType, isMobileOpen, onNavigate }) {
+  const location = useLocation();
   const menuItems = [
     { name: 'home', icon: '🏠', path: '/page17' },
     { name: 'home2', icon: '🏠', path: '/home2' },
@@ -50,18 +51,25 @@ function SidebarMenu({ userName, userEmail, userType, isMobileOpen, onNavigate }
         <div className="profile-type">{formatUserProfile(userType)}</div>
       </div>
       <nav>
-        {menuItems.map(item => (
-          <Link
-            to={item.path}
-            key={item.name}
-            className="item"
-            style={{ textDecoration: 'none', color: 'inherit' }}
-            onClick={onNavigate}
-          >
-            <span className="icon">{item.icon}</span>
-            <span className="item-label">{item.name}</span>
-          </Link>
-        ))}
+        {menuItems.map(item => {
+          const isActive = item.path !== '#' && (
+            location.pathname === item.path ||
+            (item.path !== '/page17' && location.pathname.startsWith(`${item.path}/`))
+          );
+
+          return (
+            <Link
+              to={item.path}
+              key={item.name}
+              className={`item ${isActive ? 'active' : ''}`}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+              onClick={onNavigate}
+            >
+              <span className="icon">{item.icon}</span>
+              <span className="item-label">{item.name}</span>
+            </Link>
+          );
+        })}
       </nav>
     </aside>
   );

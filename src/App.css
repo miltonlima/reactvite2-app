@@ -244,6 +244,14 @@ body {
   background: rgba(255, 255, 255, 0.08);
 }
 
+.dashboard-sidebar nav .item.active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-sidebar nav .item.active .item-label {
+  font-weight: 700;
+}
+
 .dashboard-sidebar nav .item span.icon {
   width: 24px;
   text-align: center;
