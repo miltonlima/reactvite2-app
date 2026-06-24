@@ -1,0 +1,258 @@
+.student-home-page {
+  min-height: 100%;
+  padding: 20px;
+  background: #f8fafc;
+  color: #0f172a;
+  text-align: left;
+}
+
+.student-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+  gap: 18px;
+  align-items: end;
+  margin-bottom: 16px;
+  padding: 22px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+}
+
+.student-kicker {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: #0f766e;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.student-hero h1 {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.student-hero p {
+  max-width: 680px;
+  margin: 8px 0 0;
+  color: #64748b;
+}
+
+.student-search-panel {
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.student-search-panel label {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.student-search-panel input {
+  width: 100%;
+  height: 42px;
+  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.student-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.student-metrics article,
+.student-section,
+.student-course-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.student-metrics article {
+  padding: 14px;
+}
+
+.student-metrics span {
+  display: block;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.student-metrics strong {
+  display: block;
+  margin-top: 6px;
+  color: #0f172a;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.student-section {
+  margin-bottom: 16px;
+  padding: 14px;
+}
+
+.student-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.student-section-header h2,
+.student-section-header strong {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.student-section-header span {
+  color: #64748b;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.student-course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.student-course-card {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 14px;
+}
+
+.student-course-card strong {
+  color: #0f172a;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.student-course-card span,
+.student-course-card small {
+  color: #475569;
+  font-size: 0.86rem;
+}
+
+.student-date-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.student-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.student-progress div {
+  height: 100%;
+  border-radius: inherit;
+  background: #0f766e;
+}
+
+.student-primary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border: none;
+  border-radius: 8px;
+  background: #0f766e;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  padding: 0 12px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+.student-primary-action:hover {
+  background: #115e59;
+  color: #ffffff;
+}
+
+.student-empty {
+  margin: 0;
+  color: #64748b;
+}
+
+@media (max-width: 980px) {
+  .student-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .student-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .student-home-page {
+    padding: 12px;
+  }
+
+  .student-hero {
+    padding: 16px;
+  }
+
+  .student-hero h1 {
+    font-size: 1.55rem;
+  }
+
+  .student-metrics {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .student-metrics article {
+    padding: 12px;
+  }
+
+  .student-metrics strong {
+    font-size: 1.35rem;
+  }
+
+  .student-section {
+    padding: 12px;
+  }
+
+  .student-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .student-course-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .student-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .student-date-row {
+    grid-template-columns: 1fr;
+  }
+}

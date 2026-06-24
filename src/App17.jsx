@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
+import './App17.css';
 
 let apiCapabilitiesPromise = null;
 
@@ -254,132 +255,79 @@ function App17() {
   }
 
   return (
-    <div style={{ padding: 20, background: 'linear-gradient(180deg, #eff6ff 0%, #f8fafc 42%, #ffffff 100%)' }}>
-      <header
-        style={{
-          marginBottom: 16,
-          background: '#0f172a',
-          color: '#fff',
-          borderRadius: 14,
-          padding: 18,
-          textAlign: 'left',
-        }}
-      >
-        <h1 style={{ margin: 0, fontSize: 30 }}>Minha Escola Online</h1>
-        <p style={{ margin: '8px 0 12px', opacity: 0.92 }}>
-          Uma experiência intuitiva para estudar no seu ritmo, como uma plataforma moderna de cursos.
-        </p>
-        <input
-          type="search"
-          value={busca}
-          onChange={(event) => setBusca(event.target.value)}
-          placeholder="Buscar por nome da turma ou modalidade"
-          style={{
-            width: '100%',
-            maxWidth: 420,
-            border: '1px solid #334155',
-            borderRadius: 10,
-            padding: '10px 12px',
-            background: '#111827',
-            color: '#fff',
-            outline: 'none',
-          }}
-        />
+    <div className="student-home-page">
+      <header className="student-hero">
+        <div className="student-hero-copy">
+          <span className="student-kicker">Área do aluno</span>
+          <h1>Minha Escola Online</h1>
+          <p>Encontre suas turmas, acompanhe o progresso e descubra novas oportunidades de aprendizagem.</p>
+        </div>
+        <div className="student-search-panel">
+          <label>
+            Buscar turma
+            <input
+              type="search"
+              value={busca}
+              onChange={(event) => setBusca(event.target.value)}
+              placeholder="Nome da turma ou modalidade"
+            />
+          </label>
+        </div>
       </header>
 
-      <div
-        style={{
-          display: 'grid',
-          gap: 12,
-          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-          marginBottom: 16,
-        }}
-      >
-        <div className="card-metric" style={{ textAlign: 'left' }}>
-          <div>Minhas turmas</div>
-          <div className="card-value">{turmasInscritas.size}</div>
-        </div>
-        <div className="card-metric" style={{ textAlign: 'left' }}>
-          <div>Continuar estudando</div>
-          <div className="card-value">{continuarAprendendo.length}</div>
-        </div>
-        <div className="card-metric" style={{ textAlign: 'left' }}>
-          <div>Turmas abertas</div>
-          <div className="card-value">{turmasNaoInscritas.length}</div>
-        </div>
-        <div className="card-metric" style={{ textAlign: 'left' }}>
-          <div>Modalidades</div>
-          <div className="card-value">{modalidades.length}</div>
-        </div>
-      </div>
+      <section className="student-metrics" aria-label="Resumo do aluno">
+        <article>
+          <span>Minhas turmas</span>
+          <strong>{turmasInscritas.size}</strong>
+        </article>
+        <article>
+          <span>Continuar</span>
+          <strong>{continuarAprendendo.length}</strong>
+        </article>
+        <article>
+          <span>Turmas abertas</span>
+          <strong>{turmasNaoInscritas.length}</strong>
+        </article>
+        <article>
+          <span>Modalidades</span>
+          <strong>{modalidades.length}</strong>
+        </article>
+      </section>
 
       {loading && <p>Carregando modalidades e turmas...</p>}
       {error && <p className="error">Erro: {error}</p>}
       {inscricaoMensagem && <p className="success">{inscricaoMensagem}</p>}
 
       {!loading && continuarAprendendo.length > 0 && (
-        <section
-          style={{
-            marginBottom: 20,
-            border: '1px solid #dbeafe',
-            borderRadius: 12,
-            background: '#f8fbff',
-            padding: 14,
-            textAlign: 'left',
-          }}
-        >
-          <h2 style={{ margin: '0 0 10px', fontSize: 20 }}>Continuar estudando</h2>
-          <div style={{ display: 'grid', gap: 10, gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
+        <section className="student-section">
+          <div className="student-section-header">
+            <h2>Continuar estudando</h2>
+            <span>{continuarAprendendo.length} em andamento</span>
+          </div>
+          <div className="student-course-grid enrolled">
             {continuarAprendendo.map((item) => (
-              <article
-                key={item.turmaId}
-                style={{
-                  border: '1px solid #bfdbfe',
-                  borderRadius: 10,
-                  background: '#fff',
-                  padding: 12,
-                  display: 'grid',
-                  gap: 7,
-                }}
-              >
+              <article key={item.turmaId} className="student-course-card">
                 <strong>{item.turmaNome}</strong>
-                <span style={{ fontSize: 13, color: '#475569' }}>{item.modalidadeNome}</span>
-                <div
-                  style={{
-                    height: 8,
-                    borderRadius: 999,
-                    background: '#e2e8f0',
-                    overflow: 'hidden',
-                  }}
-                >
+                <span>{item.modalidadeNome}</span>
+                <div className="student-progress">
                   <div
                     style={{
                       width: `${Number(item.percentualProgresso || 0)}%`,
-                      background: '#2563eb',
-                      height: '100%',
                     }}
                   />
                 </div>
-                <span style={{ fontSize: 13 }}>
+                <small>
                   {Number(item.percentualProgresso || 0)}% concluído
                   {item.totalAulas > 0 ? (
-                    <span style={{ color: '#64748b', marginLeft: 6 }}>
+                    <span>
                       • {item.totalAulas} {item.totalAulas === 1 ? 'aula' : 'aulas'}
                     </span>
                   ) : null}
-                </span>
+                </small>
                 <button
                   type="button"
                   onClick={() => navigate(`/acesso-turma/${item.turmaId}`)}
-                  style={{
-                    background: '#2563eb',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 8,
-                    padding: '8px 10px',
-                    textAlign: 'center',
-                    fontWeight: 600,
-                  }}
+                  className="student-primary-action"
                 >
                   Continuar curso
                 </button>
@@ -397,45 +345,19 @@ function App17() {
         const cursos = turmasPorModalidade.get(Number(modalidade.id)) || [];
 
         return (
-          <section
-            key={modalidade.id}
-            style={{
-              marginBottom: 18,
-              border: '1px solid #d1d5db',
-              borderRadius: 10,
-              overflow: 'hidden',
-              background: '#fff',
-            }}
-          >
-            <header
-              style={{
-                background: '#1e293b',
-                color: '#fff',
-                padding: '12px 14px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: 8,
-                flexWrap: 'wrap',
-              }}
-            >
+          <section key={modalidade.id} className="student-section catalog-section">
+            <header className="student-section-header">
               <strong>{modalidade.courseName}</strong>
-              <span style={{ fontSize: 13, opacity: 0.95 }}>
+              <span>
                 {cursos.length} {cursos.length === 1 ? 'curso' : 'cursos'} disponíveis
               </span>
             </header>
 
-            <div style={{ padding: 14 }}>
+            <div>
               {cursos.length === 0 ? (
-                <p style={{ margin: 0 }}>Ainda não há turmas ativas vinculadas a esta modalidade.</p>
+                <p className="student-empty">Ainda não há turmas ativas vinculadas a esta modalidade.</p>
               ) : (
-                <div
-                  style={{
-                    display: 'grid',
-                    gap: 10,
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                  }}
-                >
+                <div className="student-course-grid">
                   {cursos.map((turma) => {
                     const turmaId = Number(turma.id);
                     const jaInscrito = turmasInscritas.has(turmaId);
@@ -443,39 +365,25 @@ function App17() {
                     return (
                       <article
                         key={turma.id}
-                        style={{
-                          border: '1px solid #e5e7eb',
-                          borderRadius: 8,
-                          padding: 12,
-                          display: 'grid',
-                          gap: 8,
-                          background: '#f8fafc',
-                        }}
+                        className="student-course-card available"
                       >
                         <strong>{turma.nomeTurma}</strong>
-                        <span style={{ fontSize: 13, color: '#334155' }}>{modalidade.courseName}</span>
-                        <span>Inicio: {formatDate(turma.dataInicio)}</span>
-                        <span>Fim: {formatDate(turma.dataFim)}</span>
+                        <span>{modalidade.courseName}</span>
+                        <div className="student-date-row">
+                          <span>Início: {formatDate(turma.dataInicio)}</span>
+                          <span>Fim: {formatDate(turma.dataFim)}</span>
+                        </div>
 
                         {jaInscrito && progressoMap.has(turmaId) && (
-                          <span style={{ fontSize: 13, color: '#1e40af' }}>
+                          <small>
                             Progresso: {Number(progressoMap.get(turmaId)?.percentualProgresso || 0)}%
-                          </span>
+                          </small>
                         )}
 
                         {jaInscrito ? (
                           <Link
                             to={`/acesso-turma/${turmaId}`}
-                            style={{
-                              textDecoration: 'none',
-                              background: '#2563eb',
-                              color: '#fff',
-                              border: 'none',
-                              borderRadius: 6,
-                              padding: '8px 10px',
-                              textAlign: 'center',
-                              fontWeight: 600,
-                            }}
+                            className="student-primary-action"
                           >
                             Acessar sala
                           </Link>
@@ -488,16 +396,10 @@ function App17() {
                               handleInscricao(modalidade, turma);
                             }}
                             style={{
-                              textDecoration: 'none',
-                              background: canCreateInscricao ? '#2563eb' : '#94a3b8',
-                              color: '#fff',
-                              borderRadius: 6,
-                              padding: '8px 10px',
-                              textAlign: 'center',
-                              fontWeight: 600,
                               cursor: !canCreateInscricao || inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
                               opacity: !canCreateInscricao || inscrevendoTurmaId === turma.id ? 0.75 : 1,
                             }}
+                            className="student-primary-action"
                           >
                             {!canCreateInscricao
                               ? 'Inscrição indisponível'
