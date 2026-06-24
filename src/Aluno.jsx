@@ -89,12 +89,24 @@ function Aluno() {
   const [isInactivating, setIsInactivating] = useState(false);
   const [isReactivating, setIsReactivating] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [createError, setCreateError] = useState('');
+  const [createSuccess, setCreateSuccess] = useState('');
 
   const [form, setForm] = useState({
     fullName: '',
     birthDate: '',
     sex: '',
     email: '',
+  });
+  const [createForm, setCreateForm] = useState({
+    fullName: '',
+    birthDate: '',
+    sex: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const selectedAlunoNome = useMemo(() => {
@@ -156,6 +168,35 @@ function Aluno() {
     setForm((current) => ({ ...current, [name]: value }));
   }
 
+  function handleCreateInputChange(event) {
+    const { name, value } = event.target;
+    setCreateForm((current) => ({ ...current, [name]: value }));
+  }
+
+  function resetCreateForm() {
+    setCreateForm({
+      fullName: '',
+      birthDate: '',
+      sex: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    });
+    setCreateError('');
+    setCreateSuccess('');
+  }
+
+  function handleOpenCreateModal() {
+    resetCreateForm();
+    setIsCreateModalOpen(true);
+  }
+
+  function handleCloseCreateModal() {
+    if (isCreating) return;
+    setIsCreateModalOpen(false);
+    resetCreateForm();
+  }
+
   function handleCloseModal() {
     if (isSaving || isInactivating || isReactivating) return;
     setSelectedId(null);
@@ -163,6 +204,46 @@ function Aluno() {
     setDetailError('');
     setSuccessMessage('');
     setIsEditing(false);
+  }
+
+  async function handleCreateAluno(event) {
+    event.preventDefault();
+
+    try {
+      setIsCreating(true);
+      setCreateError('');
+      setCreateSuccess('');
+
+      const payload = {
+        fullName: createForm.fullName.trim(),
+        birthDate: createForm.birthDate,
+        sex: createForm.sex.trim(),
+        email: createForm.email.trim(),
+        password: createForm.password,
+        confirmPassword: createForm.confirmPassword,
+      };
+
+      const response = await request('/register', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      setCreateSuccess(response?.mensagem || 'Aluno inscrito com sucesso.');
+      await loadAlunos(includeInactive);
+
+      const createdAluno = normalizeAluno(response?.usuario || response?.user || response?.aluno);
+      if (createdAluno?.id) {
+        setIsCreateModalOpen(false);
+        resetCreateForm();
+        await handleViewAluno(createdAluno.id);
+      } else {
+        resetCreateForm();
+      }
+    } catch (error) {
+      setCreateError(error.message || 'Falha ao inscrever aluno.');
+    } finally {
+      setIsCreating(false);
+    }
   }
 
   async function handleSave(event) {
@@ -272,9 +353,14 @@ function Aluno() {
       <div className="alunos-header">
         <div>
           <h1>Gestão de Alunos</h1>
-          <p>Liste, visualize, edite e inative alunos cadastrados.</p>
+          <p>Liste, inscreva, visualize, edite e inative alunos cadastrados.</p>
         </div>
-        <Link to="/page17" className="secondary-link">Voltar ao Dashboard</Link>
+        <div className="alunos-header-actions">
+          <button type="button" className="primary-action" onClick={handleOpenCreateModal}>
+            Novo aluno
+          </button>
+          <Link to="/page17" className="secondary-link">Voltar ao Dashboard</Link>
+        </div>
       </div>
 
       <div className="alunos-layout">
@@ -339,6 +425,114 @@ function Aluno() {
         </section>
 
       </div>
+
+      {isCreateModalOpen && (
+        <div
+          className="aluno-modal-overlay"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) handleCloseCreateModal();
+          }}
+        >
+          <section className="aluno-modal" role="dialog" aria-modal="true" aria-labelledby="aluno-create-modal-title">
+            <div className="aluno-modal-header">
+              <div>
+                <h2 id="aluno-create-modal-title">Inscrever novo aluno</h2>
+                <p>Preencha os dados iniciais de acesso e cadastro.</p>
+              </div>
+              <button
+                type="button"
+                className="modal-close-button"
+                onClick={handleCloseCreateModal}
+                disabled={isCreating}
+              >
+                Fechar
+              </button>
+            </div>
+
+            {createError && <p className="error modal-state">Erro: {createError}</p>}
+            {createSuccess && <p className="success modal-state">{createSuccess}</p>}
+
+            <form onSubmit={handleCreateAluno} className="form-grid alunos-form">
+              <label>
+                Nome completo
+                <input
+                  name="fullName"
+                  type="text"
+                  value={createForm.fullName}
+                  onChange={handleCreateInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Data de nascimento
+                <input
+                  name="birthDate"
+                  type="date"
+                  value={createForm.birthDate}
+                  onChange={handleCreateInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Sexo
+                <input
+                  name="sex"
+                  type="text"
+                  maxLength={20}
+                  value={createForm.sex}
+                  onChange={handleCreateInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                E-mail
+                <input
+                  name="email"
+                  type="email"
+                  value={createForm.email}
+                  onChange={handleCreateInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Senha inicial
+                <input
+                  name="password"
+                  type="password"
+                  value={createForm.password}
+                  onChange={handleCreateInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Confirmar senha
+                <input
+                  name="confirmPassword"
+                  type="password"
+                  value={createForm.confirmPassword}
+                  onChange={handleCreateInputChange}
+                  required
+                />
+              </label>
+
+              <div className="detail-actions">
+                <button type="submit" disabled={isCreating}>
+                  {isCreating ? 'Inscrevendo...' : 'Inscrever aluno'}
+                </button>
+                <button type="button" onClick={handleCloseCreateModal} disabled={isCreating}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
 
       {selectedId && (
         <div
