@@ -519,6 +519,12 @@ body {
   box-sizing: border-box;
 }
 
+.profile-form input:disabled {
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
 .profile-modal-actions {
   grid-column: 1 / -1;
   display: flex;

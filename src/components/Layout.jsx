@@ -156,7 +156,7 @@ function Layout() {
         fullName: profileForm.fullName.trim(),
         birthDate: profileForm.birthDate,
         sex: profileForm.sex.trim(),
-        email: profileForm.email.trim(),
+        email: getUserValue(user, 'email'),
       };
 
       const response = await request(`/api/alunos/${userId}`, {
@@ -298,8 +298,8 @@ function Layout() {
                   name="email"
                   type="email"
                   value={profileForm.email}
-                  onChange={handleProfileInputChange}
-                  required
+                  disabled
+                  readOnly
                 />
               </label>
 
