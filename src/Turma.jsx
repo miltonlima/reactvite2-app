@@ -142,6 +142,7 @@ function Turma() {
   }
 
   function cancelEdit() {
+    if (saving) return;
     setEditingId(null);
     setEditingForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
   }
@@ -298,117 +299,31 @@ function Turma() {
                 return (
                   <tr key={item.id}>
                     <td data-label="ID">{item.id}</td>
-                    <td data-label="Turma">
-                      {isEditing ? (
-                        <input
-                          className="inline-edit-input"
-                          name="nomeTurma"
-                          type="text"
-                          value={editingForm.nomeTurma}
-                          onChange={handleEditInputChange}
-                          disabled={saving}
-                        />
-                      ) : (
-                        item.nomeTurma
-                      )}
-                    </td>
-                    <td data-label="Modalidade">
-                      {isEditing ? (
-                        <select
-                          className="inline-edit-input"
-                          name="modalidadeId"
-                          value={editingForm.modalidadeId}
-                          onChange={handleEditInputChange}
-                          disabled={saving}
-                        >
-                          <option value="">Selecione</option>
-                          {modalidades.map((modalidade) => (
-                            <option key={modalidade.id} value={modalidade.id}>{modalidade.courseName}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        item.modalidadeNome
-                      )}
-                    </td>
-                    <td data-label="Início">
-                      {isEditing ? (
-                        <input
-                          className="inline-edit-input"
-                          name="dataInicio"
-                          type="date"
-                          value={editingForm.dataInicio}
-                          onChange={handleEditInputChange}
-                          disabled={saving}
-                        />
-                      ) : (
-                        formatDate(item.dataInicio)
-                      )}
-                    </td>
-                    <td data-label="Fim">
-                      {isEditing ? (
-                        <input
-                          className="inline-edit-input"
-                          name="dataFim"
-                          type="date"
-                          value={editingForm.dataFim}
-                          onChange={handleEditInputChange}
-                          disabled={saving}
-                        />
-                      ) : (
-                        formatDate(item.dataFim)
-                      )}
-                    </td>
+                    <td data-label="Turma">{item.nomeTurma}</td>
+                    <td data-label="Modalidade">{item.modalidadeNome}</td>
+                    <td data-label="Início">{formatDate(item.dataInicio)}</td>
+                    <td data-label="Fim">{formatDate(item.dataFim)}</td>
                     <td data-label="Status">
-                      {isEditing ? (
-                        <label className="active-flag">
-                          <input
-                            name="active"
-                            type="checkbox"
-                            checked={editingForm.active}
-                            onChange={handleEditInputChange}
-                            disabled={saving}
-                          />
-                          Ativa
-                        </label>
-                      ) : (
-                        <span className={item.active ? 'status-active' : 'status-inactive'}>
-                          {item.active ? 'Ativa' : 'Inativa'}
-                        </span>
-                      )}
+                      <span className={item.active ? 'status-active' : 'status-inactive'}>
+                        {item.active ? 'Ativa' : 'Inativa'}
+                      </span>
                     </td>
                     <td data-label="Ações">
                       <div className="compact-actions">
-                        {isEditing ? (
-                          <>
-                            <button
-                              type="button"
-                              onClick={handleUpdate}
-                              disabled={saving || !editingForm.nomeTurma.trim() || !editingForm.modalidadeId}
-                            >
-                              {saving ? 'Salvando...' : 'Salvar'}
-                            </button>
-                            <button type="button" onClick={cancelEdit} disabled={saving}>
-                              Cancelar
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => startEdit(item)}
-                              disabled={deletingId === item.id || saving}
-                            >
-                              Editar
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(item.id, item.nomeTurma)}
-                              disabled={deletingId === item.id || saving}
-                            >
-                              {deletingId === item.id ? 'Excluindo...' : 'Excluir'}
-                            </button>
-                          </>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => startEdit(item)}
+                          disabled={deletingId === item.id || saving}
+                        >
+                          {isEditing ? 'Editando...' : 'Editar'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(item.id, item.nomeTurma)}
+                          disabled={deletingId === item.id || saving}
+                        >
+                          {deletingId === item.id ? 'Excluindo...' : 'Excluir'}
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -418,6 +333,107 @@ function Turma() {
           </tbody>
         </table>
       </section>
+
+      {editingId && (
+        <div
+          className="turma-modal-overlay"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) cancelEdit();
+          }}
+        >
+          <section className="turma-edit-modal" role="dialog" aria-modal="true" aria-labelledby="turma-edit-title">
+            <header className="turma-edit-modal-header">
+              <div>
+                <h2 id="turma-edit-title">Editar turma</h2>
+                <p>Atualize os dados principais da turma selecionada.</p>
+              </div>
+              <button type="button" onClick={cancelEdit} disabled={saving}>
+                Fechar
+              </button>
+            </header>
+
+            <form
+              className="turma-edit-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleUpdate();
+              }}
+            >
+              <label>
+                Nome da turma
+                <input
+                  name="nomeTurma"
+                  type="text"
+                  value={editingForm.nomeTurma}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Modalidade
+                <select
+                  name="modalidadeId"
+                  value={editingForm.modalidadeId}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                >
+                  <option value="">Selecione</option>
+                  {modalidades.map((modalidade) => (
+                    <option key={modalidade.id} value={modalidade.id}>{modalidade.courseName}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label>
+                Data de início
+                <input
+                  name="dataInicio"
+                  type="date"
+                  value={editingForm.dataInicio}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Data de fim
+                <input
+                  name="dataFim"
+                  type="date"
+                  value={editingForm.dataFim}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label className="active-flag turma-edit-active">
+                <input
+                  name="active"
+                  type="checkbox"
+                  checked={editingForm.active}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                />
+                Turma ativa
+              </label>
+
+              <div className="turma-edit-actions">
+                <button
+                  type="submit"
+                  disabled={saving || !editingForm.nomeTurma.trim() || !editingForm.modalidadeId}
+                >
+                  {saving ? 'Salvando...' : 'Salvar alterações'}
+                </button>
+                <button type="button" onClick={cancelEdit} disabled={saving}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

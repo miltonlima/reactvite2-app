@@ -242,6 +242,113 @@
   font-weight: 700;
 }
 
+.turma-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.turma-edit-modal {
+  width: min(640px, 100%);
+  max-height: min(86vh, 760px);
+  overflow: auto;
+  padding: 18px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+}
+
+.turma-edit-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.turma-edit-modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.turma-edit-modal-header p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.turma-edit-modal-header button,
+.turma-edit-actions button {
+  min-height: 36px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0 12px;
+}
+
+.turma-edit-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.turma-edit-form label {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.turma-edit-form input,
+.turma-edit-form select {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.turma-edit-active {
+  align-content: center;
+}
+
+.turma-edit-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.turma-edit-actions button[type="submit"] {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.turma-edit-modal-header button:disabled,
+.turma-edit-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 @media (max-width: 1200px) {
   .turma-create-inline-form {
     grid-template-columns: 1fr 1fr 1fr;
@@ -472,6 +579,31 @@
     min-height: 32px;
     padding: 0 6px;
     font-size: 0.76rem;
+  }
+
+  .turma-modal-overlay {
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .turma-edit-modal {
+    max-height: calc(100vh - 20px);
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .turma-edit-modal-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .turma-edit-form {
+    grid-template-columns: 1fr;
+  }
+
+  .turma-edit-modal-header button,
+  .turma-edit-actions button {
+    width: 100%;
   }
 }
 
