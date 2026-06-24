@@ -60,6 +60,8 @@
 
 .modalidade-create-inline-form input,
 .inline-edit-input {
+  width: 100%;
+  box-sizing: border-box;
   height: 34px;
   border-radius: 6px;
   border: 1px solid #cbd5e1;
@@ -164,5 +166,124 @@
   .modalidade-report-header-right {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 650px) {
+  .modalidade-report-page {
+    padding: 12px;
+  }
+
+  .modalidade-report-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .modalidade-report-header-right {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .modalidade-report-badge,
+  .modalidade-report-header-right .secondary-link {
+    text-align: center;
+  }
+
+  .modalidade-create-inline-form {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .modalidade-create-inline-form label,
+  .modalidade-create-inline-form input,
+  .modalidade-create-inline-form button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .modalidade-report-table-card {
+    border: none;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .modalidade-report-table,
+  .modalidade-report-table tbody,
+  .modalidade-report-table tr,
+  .modalidade-report-table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .modalidade-report-table {
+    font-size: 0.86rem;
+  }
+
+  .modalidade-report-table thead {
+    display: none;
+  }
+
+  .modalidade-report-table tr {
+    margin-bottom: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .modalidade-report-table td {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    min-height: 38px;
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    overflow-wrap: anywhere;
+  }
+
+  .modalidade-report-table td:last-child {
+    border-bottom: none;
+  }
+
+  .modalidade-report-table td::before {
+    content: attr(data-label);
+    color: #64748b;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .modalidade-report-table td[colspan] {
+    display: block;
+    text-align: center;
+  }
+
+  .modalidade-report-table td[colspan]::before {
+    content: none;
+  }
+
+  .compact-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .compact-actions button {
+    width: 100%;
+    min-height: 34px;
+    padding: 0 8px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .modalidade-report-page {
+    padding: 10px;
+  }
+
+  .modalidade-report-header h1 {
+    font-size: 1.2rem;
   }
 }

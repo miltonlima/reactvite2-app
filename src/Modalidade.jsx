@@ -187,8 +187,8 @@ function Modalidade() {
                 const isEditing = editingId === item.id;
                 return (
                   <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td>
+                    <td data-label="ID">{item.id}</td>
+                    <td data-label="Modalidade">
                       {isEditing ? (
                         <input
                           className="inline-edit-input"
@@ -201,8 +201,8 @@ function Modalidade() {
                         item.courseName
                       )}
                     </td>
-                    <td>{formatDate(item.createdAt)}</td>
-                    <td>
+                    <td data-label="Criado">{formatDate(item.createdAt)}</td>
+                    <td data-label="Ações">
                       <div className="compact-actions">
                         {isEditing ? (
                           <>
