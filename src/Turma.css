@@ -79,6 +79,22 @@
   font-size: 0.9rem;
 }
 
+.turma-create-inline-form input[type="checkbox"],
+.turma-create-inline-form input[type="radio"],
+.turma-edit-form input[type="checkbox"],
+.turma-edit-form input[type="radio"],
+.active-flag input[type="checkbox"],
+.active-flag input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  flex: 0 0 16px;
+  padding: 0;
+}
+
 .turma-create-inline-form button,
 .compact-actions button {
   min-height: 38px;
@@ -440,6 +456,12 @@
   .turma-create-inline-form .active-flag {
     justify-content: flex-start;
     padding: 6px 2px;
+  }
+
+  .turma-create-inline-form input[type="checkbox"],
+  .turma-create-inline-form input[type="radio"] {
+    width: 16px;
+    height: 16px;
   }
 
   .turma-report-table-card {
