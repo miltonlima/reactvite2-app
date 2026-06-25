@@ -492,6 +492,12 @@ body {
   flex: 0 0 auto;
   min-height: 36px;
   padding: 0.45rem 0.85rem;
+  border: none;
+  border-radius: 8px;
+  background: #e2e8f0;
+  color: #0f172a;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .profile-modal-state {
@@ -514,9 +520,25 @@ body {
   min-width: 0;
 }
 
-.profile-form input {
+.profile-form input,
+.profile-form select {
   width: 100%;
+  min-height: 42px;
   box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 0 12px;
+  font: inherit;
+  font-weight: 600;
+  outline: none;
+}
+
+.profile-form input:focus,
+.profile-form select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
 }
 
 .profile-form input:disabled {
@@ -531,6 +553,32 @@ body {
   gap: 10px;
   flex-wrap: wrap;
   margin-top: 2px;
+}
+
+.profile-modal-actions button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.profile-modal-actions button[type="submit"] {
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.profile-modal-actions button[type="button"] {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+}
+
+.profile-modal-actions button:disabled,
+.profile-modal-header button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .item-label { margin-left: 8px; font-size: 14px; text-transform: capitalize; }
