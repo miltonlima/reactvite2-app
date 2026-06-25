@@ -147,6 +147,7 @@ function Aluno() {
   const [loadingList, setLoadingList] = useState(false);
   const [listError, setListError] = useState('');
   const [includeInactive, setIncludeInactive] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'desc' });
 
   const [selectedId, setSelectedId] = useState(null);
@@ -186,8 +187,17 @@ function Aluno() {
     return alunos.find((item) => item.id === selectedId)?.fullName || 'Aluno';
   }, [alunos, selectedId]);
 
+  const filteredAlunos = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return alunos;
+
+    return alunos.filter((aluno) => (
+      `${aluno.fullName || ''} ${aluno.email || ''}`.toLowerCase().includes(term)
+    ));
+  }, [alunos, searchTerm]);
+
   const sortedAlunos = useMemo(() => {
-    return [...alunos].sort((a, b) => {
+    return [...filteredAlunos].sort((a, b) => {
       const getSortValue = (item) => {
         if (sortConfig.key === 'id') return Number(item.id) || 0;
         if (sortConfig.key === 'fullName') return String(item.fullName || '').toLowerCase();
@@ -203,7 +213,7 @@ function Aluno() {
       if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [alunos, sortConfig]);
+  }, [filteredAlunos, sortConfig]);
 
   useEffect(() => {
     loadAlunos(includeInactive);
@@ -486,24 +496,39 @@ function Aluno() {
         <section className="alunos-list-card">
           <div className="alunos-list-header">
             <h2>Alunos</h2>
-            <label className="toggle-inativos">
-              <input
-                type="checkbox"
-                checked={includeInactive}
-                onChange={(event) => setIncludeInactive(event.target.checked)}
-              />
-              Mostrar inativos
-            </label>
+            <div className="alunos-list-tools">
+              <label className="alunos-search">
+                <span>Buscar aluno</span>
+                <input
+                  type="search"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  placeholder="Nome ou e-mail"
+                />
+              </label>
+              <label className="toggle-inativos">
+                <input
+                  type="checkbox"
+                  checked={includeInactive}
+                  onChange={(event) => setIncludeInactive(event.target.checked)}
+                />
+                Mostrar inativos
+              </label>
+            </div>
           </div>
 
           {loadingList && <p>Carregando alunos...</p>}
           {listError && <p className="error">Erro: {listError}</p>}
 
           {!loadingList && !listError && alunos.length === 0 && (
-            <p>Nenhum aluno encontrado.</p>
+            <p>Nenhum aluno cadastrado.</p>
           )}
 
-          {!loadingList && !listError && alunos.length > 0 && (
+          {!loadingList && !listError && alunos.length > 0 && sortedAlunos.length === 0 && (
+            <p>Nenhum aluno encontrado para "{searchTerm}".</p>
+          )}
+
+          {!loadingList && !listError && sortedAlunos.length > 0 && (
             <div className="alunos-table-wrap">
               <table className="alunos-table">
                 <thead>

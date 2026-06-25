@@ -66,7 +66,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   margin-bottom: 12px;
+  flex-wrap: nowrap;
 }
 
 .alunos-list-header h2 {
@@ -74,11 +76,49 @@
   font-size: 1.1rem;
 }
 
+.alunos-list-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.alunos-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.alunos-search input {
+  width: min(260px, 30vw);
+  min-width: 170px;
+  height: 34px;
+  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 10px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.alunos-search input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
 .toggle-inativos {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 36px;
+  min-height: 34px;
   font-size: 0.92rem;
   white-space: nowrap;
 }
@@ -406,6 +446,15 @@
     padding: 12px;
   }
 
+  .alunos-list-tools {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .alunos-search input {
+    width: min(260px, 42vw);
+  }
+
   .alunos-table-wrap {
     overflow-x: hidden;
   }
@@ -464,6 +513,24 @@
   .aluno-modal-header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .alunos-list-tools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .alunos-search {
+    min-width: 0;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 5px;
+    white-space: normal;
+  }
+
+  .alunos-search input {
+    width: 100%;
+    min-width: 0;
   }
 
   .alunos-header-actions {
