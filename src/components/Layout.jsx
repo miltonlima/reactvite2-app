@@ -63,7 +63,6 @@ function normalizeSexCode(value) {
     outro: 'O',
     other: 'O',
     n: 'N',
-    'nÃ£o informado': 'N',
     'não informado': 'N',
     'nao informado': 'N',
   };

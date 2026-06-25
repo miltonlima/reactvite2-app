@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Turma.css';
 import { API_BASE } from './config/apiBase';
@@ -59,6 +59,7 @@ function Turma() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'asc' });
 
   useEffect(() => {
     loadInitialData();
@@ -77,6 +78,39 @@ function Turma() {
       setError(err.message || 'Falha ao carregar turmas.');
     }
   }
+
+  function getSortValue(item, key) {
+    if (key === 'id') return Number(item.id) || 0;
+    if (key === 'nomeTurma') return String(item.nomeTurma || '').toLowerCase();
+    if (key === 'modalidadeNome') return String(item.modalidadeNome || '').toLowerCase();
+    if (key === 'dataInicio') return item.dataInicio ? new Date(item.dataInicio).getTime() : 0;
+    if (key === 'dataFim') return item.dataFim ? new Date(item.dataFim).getTime() : 0;
+    if (key === 'active') return item.active ? 1 : 0;
+    return '';
+  }
+
+  function handleSort(key) {
+    setSortConfig((current) => ({
+      key,
+      direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  }
+
+  function getSortIndicator(key) {
+    if (sortConfig.key !== key) return '';
+    return sortConfig.direction === 'asc' ? ' ▲' : ' ▼';
+  }
+
+  const sortedTurmas = useMemo(() => {
+    return [...turmas].sort((a, b) => {
+      const aValue = getSortValue(a, sortConfig.key);
+      const bValue = getSortValue(b, sortConfig.key);
+
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [sortConfig, turmas]);
 
   function handleCreateInputChange(event) {
     const { name, type, checked, value } = event.target;
@@ -279,22 +313,22 @@ function Turma() {
         <table className="turma-report-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Turma</th>
-              <th>Modalidade</th>
-              <th>Início</th>
-              <th>Fim</th>
-              <th>Status</th>
+              <th><button type="button" className="sort-header-button" onClick={() => handleSort('id')}>ID{getSortIndicator('id')}</button></th>
+              <th><button type="button" className="sort-header-button" onClick={() => handleSort('nomeTurma')}>Turma{getSortIndicator('nomeTurma')}</button></th>
+              <th><button type="button" className="sort-header-button" onClick={() => handleSort('modalidadeNome')}>Modalidade{getSortIndicator('modalidadeNome')}</button></th>
+              <th><button type="button" className="sort-header-button" onClick={() => handleSort('dataInicio')}>Início{getSortIndicator('dataInicio')}</button></th>
+              <th><button type="button" className="sort-header-button" onClick={() => handleSort('dataFim')}>Fim{getSortIndicator('dataFim')}</button></th>
+              <th><button type="button" className="sort-header-button" onClick={() => handleSort('active')}>Status{getSortIndicator('active')}</button></th>
               <th className="th-actions">Ações</th>
             </tr>
           </thead>
           <tbody>
-            {turmas.length === 0 ? (
+            {sortedTurmas.length === 0 ? (
               <tr>
                 <td colSpan={7} className="td-empty">Nenhuma turma cadastrada.</td>
               </tr>
             ) : (
-              turmas.map((item) => {
+              sortedTurmas.map((item) => {
                 const isEditing = editingId === item.id;
                 return (
                   <tr key={item.id}>
@@ -439,3 +473,4 @@ function Turma() {
 }
 
 export default Turma;
+
