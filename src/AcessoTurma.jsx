@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
+import './AcessoTurma.css';
 
 async function request(path, options = {}) {
   const hasBody = typeof options.body !== 'undefined';
@@ -122,6 +123,13 @@ function AcessoTurma() {
     [aulas, aulaAtualId]
   );
 
+  const aulaAtualIndex = useMemo(
+    () => aulas.findIndex((item) => Number(item.id) === Number(aulaAtual?.id)),
+    [aulaAtual, aulas]
+  );
+
+  const proximaAula = aulaAtualIndex >= 0 ? aulas[aulaAtualIndex + 1] : null;
+
   const resumoProgresso = useMemo(() => {
     const total = aulas.length;
     const concluidas = aulas.filter((item) => item.concluida).length;
@@ -165,65 +173,57 @@ function AcessoTurma() {
   }
 
   return (
-    <div style={{ padding: 20, maxWidth: 820, margin: '0 auto', textAlign: 'left' }}>
-      <header style={{ marginBottom: 16 }}>
-        <h1 style={{ margin: 0 }}>Acesso da Turma</h1>
-        <p style={{ margin: '8px 0 0' }}>
-          Esta página valida sua inscrição e libera o acesso à turma selecionada.
-        </p>
+    <div className="acesso-turma-page">
+      <header className="acesso-hero">
+        <div>
+          <span className="acesso-kicker">Área de estudos</span>
+          <h1>Acesso da Turma</h1>
+          <p>Continue suas aulas, acompanhe o progresso e marque as etapas concluídas.</p>
+        </div>
+        <Link to="/page17" className="acesso-back-link">Voltar para inscrições</Link>
       </header>
 
-      {loading && <p>Validando acesso...</p>}
-      {!loading && error && <p className="error">Erro: {error}</p>}
+      {loading && <p className="acesso-state">Validando acesso...</p>}
+      {!loading && error && <p className="error acesso-state">Erro: {error}</p>}
 
       {!loading && !error && inscricao && (
-        <section
-          style={{
-            border: '1px solid #cbd5e1',
-            borderRadius: 14,
-            background: '#fff',
-            padding: 16,
-            display: 'grid',
-            gap: 14,
-          }}
-        >
-          <div style={{ display: 'grid', gap: 6 }}>
-            <strong style={{ fontSize: 22 }}>{inscricao.turmaNome || `Turma #${inscricao.turmaId}`}</strong>
-            <span>Modalidade: {inscricao.modalidadeNome || 'Não informada'}</span>
-            <span>Status da inscrição: {inscricao.status || 'ATIVA'}</span>
-            <span>Inscrição realizada em: {formatDateTime(inscricao.createdAt)}</span>
-
-            <div
-              style={{
-                marginTop: 6,
-                height: 10,
-                borderRadius: 999,
-                background: '#e2e8f0',
-                overflow: 'hidden',
-                maxWidth: 460,
-              }}
-            >
-              <div style={{ width: `${resumoProgresso.percentual}%`, background: '#2563eb', height: '100%' }} />
+        <section className="acesso-shell">
+          <div className="acesso-summary">
+            <div className="acesso-course-info">
+              <strong>{inscricao.turmaNome || `Turma #${inscricao.turmaId}`}</strong>
+              <span>{inscricao.modalidadeNome || 'Modalidade não informada'}</span>
             </div>
-            <span style={{ fontSize: 13 }}>
-              Progresso geral: {resumoProgresso.percentual}% ({resumoProgresso.concluidas}/{resumoProgresso.total} aulas)
-            </span>
+
+            <div className="acesso-summary-grid">
+              <div>
+                <span>Status</span>
+                <strong>{inscricao.status || 'ATIVA'}</strong>
+              </div>
+              <div>
+                <span>Inscrição</span>
+                <strong>{formatDateTime(inscricao.createdAt)}</strong>
+              </div>
+              <div>
+                <span>Aulas concluídas</span>
+                <strong>{resumoProgresso.concluidas}/{resumoProgresso.total}</strong>
+              </div>
+            </div>
+
+            <div className="acesso-progress-row">
+              <div className="acesso-progress-bar" aria-label={`Progresso geral ${resumoProgresso.percentual}%`}>
+                <div style={{ width: `${resumoProgresso.percentual}%` }} />
+              </div>
+              <span>{resumoProgresso.percentual}%</span>
+            </div>
           </div>
 
-          <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'minmax(250px, 330px) 1fr' }}>
-            <aside
-              style={{
-                border: '1px solid #e2e8f0',
-                borderRadius: 10,
-                padding: 10,
-                display: 'grid',
-                gap: 8,
-                maxHeight: 480,
-                overflow: 'auto',
-              }}
-            >
-              <strong>Conteúdo da turma</strong>
-              {aulas.length === 0 && <span>Esta turma ainda não possui aulas cadastradas.</span>}
+          <div className="acesso-content-layout">
+            <aside className="acesso-lessons">
+              <div className="acesso-panel-title">
+                <strong>Conteúdo da turma</strong>
+                <span>{aulas.length} aula(s)</span>
+              </div>
+              {aulas.length === 0 && <span className="acesso-empty">Esta turma ainda não possui aulas cadastradas.</span>}
               {aulas.map((aula, index) => {
                 const ativa = Number(aulaAtualId) === Number(aula.id);
                 return (
@@ -231,68 +231,47 @@ function AcessoTurma() {
                     key={aula.id}
                     type="button"
                     onClick={() => setAulaAtualId(aula.id)}
-                    style={{
-                      border: ativa ? '1px solid #2563eb' : '1px solid #cbd5e1',
-                      borderRadius: 8,
-                      padding: '8px 10px',
-                      background: ativa ? '#eff6ff' : '#fff',
-                      textAlign: 'left',
-                      color: '#0f172a',
-                    }}
+                    className={`acesso-lesson-button ${ativa ? 'active' : ''}`}
                   >
-                    <div style={{ fontWeight: 700 }}>Aula {index + 1}: {aula.titulo}</div>
-                    <div style={{ fontSize: 12, opacity: 0.8 }}>
-                      {aula.moduloTitulo} • {aula.duracaoMinutos} min • {aula.concluida ? 'Concluída' : 'Pendente'}
+                    <span className={aula.concluida ? 'lesson-status done' : 'lesson-status pending'}>
+                      {aula.concluida ? 'Concluída' : 'Pendente'}
+                    </span>
+                    <div className="lesson-title">Aula {index + 1}: {aula.titulo}</div>
+                    <div className="lesson-meta">
+                      {aula.moduloTitulo || 'Módulo'} • {aula.duracaoMinutos || 0} min
                     </div>
                   </button>
                 );
               })}
             </aside>
 
-            <article
-              style={{
-                border: '1px solid #e2e8f0',
-                borderRadius: 10,
-                padding: 14,
-                textAlign: 'left',
-                display: 'grid',
-                gap: 10,
-                alignContent: 'start',
-                minHeight: 220,
-              }}
-            >
+            <article className="acesso-lesson-detail">
               {!aulaAtual ? (
-                <span>Selecione uma aula para iniciar.</span>
+                <span className="acesso-empty">Selecione uma aula para iniciar.</span>
               ) : (
                 <>
-                  <strong style={{ fontSize: 20 }}>{aulaAtual.titulo}</strong>
-                  <span style={{ color: '#334155', fontSize: 13 }}>
-                    {aulaAtual.moduloTitulo} • {aulaAtual.duracaoMinutos} minutos
-                  </span>
-                  <p style={{ margin: 0 }}>{aulaAtual.descricao || 'Sem descrição cadastrada para esta aula.'}</p>
+                  <div className="lesson-detail-heading">
+                    <span>{aulaAtual.moduloTitulo || 'Módulo da turma'}</span>
+                    <strong>{aulaAtual.titulo}</strong>
+                    <small>{aulaAtual.duracaoMinutos || 0} minutos de estudo</small>
+                  </div>
+
+                  <p>{aulaAtual.descricao || 'Sem descrição cadastrada para esta aula.'}</p>
 
                   {aulaAtual.videoUrl ? (
-                    <a href={aulaAtual.videoUrl} target="_blank" rel="noreferrer">
+                    <a className="video-link" href={aulaAtual.videoUrl} target="_blank" rel="noreferrer">
                       Abrir aula em vídeo
                     </a>
                   ) : (
-                    <span style={{ fontSize: 13, color: '#64748b' }}>Nenhum vídeo vinculado.</span>
+                    <span className="no-video">Nenhum vídeo vinculado.</span>
                   )}
 
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <div className="lesson-actions">
                     <button
                       type="button"
                       onClick={() => atualizarConclusao(!aulaAtual.concluida)}
                       disabled={salvandoProgresso}
-                      style={{
-                        border: 'none',
-                        borderRadius: 8,
-                        background: aulaAtual.concluida ? '#cbd5e1' : '#2563eb',
-                        color: aulaAtual.concluida ? '#0f172a' : '#fff',
-                        padding: '8px 12px',
-                        fontWeight: 700,
-                        opacity: salvandoProgresso ? 0.7 : 1,
-                      }}
+                      className={aulaAtual.concluida ? 'secondary-action' : 'primary-action'}
                     >
                       {salvandoProgresso
                         ? 'Salvando...'
@@ -304,19 +283,10 @@ function AcessoTurma() {
                     <button
                       type="button"
                       onClick={() => {
-                        const atualIndex = aulas.findIndex((item) => Number(item.id) === Number(aulaAtual.id));
-                        const proxima = aulas[atualIndex + 1];
-                        if (proxima) setAulaAtualId(proxima.id);
+                        if (proximaAula) setAulaAtualId(proximaAula.id);
                       }}
-                      disabled={!aulas.some((item) => Number(item.id) === Number(aulaAtual.id))}
-                      style={{
-                        border: '1px solid #2563eb',
-                        borderRadius: 8,
-                        background: '#fff',
-                        color: '#2563eb',
-                        padding: '8px 12px',
-                        fontWeight: 700,
-                      }}
+                      disabled={!proximaAula}
+                      className="outline-action"
                     >
                       Próxima aula
                     </button>
@@ -324,22 +294,6 @@ function AcessoTurma() {
                 </>
               )}
             </article>
-          </div>
-
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
-            <Link
-              to="/page17"
-              style={{
-                textDecoration: 'none',
-                background: '#2563eb',
-                color: '#fff',
-                borderRadius: 6,
-                padding: '8px 12px',
-                fontWeight: 600,
-              }}
-            >
-              Voltar para inscrições
-            </Link>
           </div>
         </section>
       )}

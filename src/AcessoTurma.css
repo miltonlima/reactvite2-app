@@ -1,0 +1,364 @@
+.acesso-turma-page {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.acesso-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.acesso-kicker {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: #2563eb;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.acesso-hero h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.8rem;
+  line-height: 1.12;
+}
+
+.acesso-hero p {
+  max-width: 620px;
+  margin: 8px 0 0;
+  color: #475569;
+}
+
+.acesso-back-link {
+  flex: 0 0 auto;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #2563eb;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+}
+
+.acesso-state {
+  margin: 0;
+  padding: 14px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.08);
+}
+
+.acesso-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.acesso-summary,
+.acesso-lessons,
+.acesso-lesson-detail {
+  min-width: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 8px rgba(15, 23, 42, 0.07);
+}
+
+.acesso-summary {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.15fr) minmax(0, 1.85fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+.acesso-course-info {
+  display: grid;
+  align-content: center;
+  gap: 5px;
+}
+
+.acesso-course-info strong {
+  color: #0f172a;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.acesso-course-info span {
+  color: #475569;
+}
+
+.acesso-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.acesso-summary-grid div {
+  min-width: 0;
+  padding: 10px;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+.acesso-summary-grid span {
+  display: block;
+  margin-bottom: 4px;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.acesso-summary-grid strong {
+  color: #0f172a;
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.acesso-progress-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.acesso-progress-bar {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.acesso-progress-bar div {
+  height: 100%;
+  border-radius: inherit;
+  background: #2563eb;
+}
+
+.acesso-progress-row span {
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.acesso-content-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.acesso-lessons {
+  display: grid;
+  gap: 10px;
+  max-height: 620px;
+  overflow: auto;
+  padding: 12px;
+}
+
+.acesso-panel-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #0f172a;
+}
+
+.acesso-panel-title span {
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.acesso-empty,
+.no-video {
+  color: #64748b;
+}
+
+.acesso-lesson-button {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #0f172a;
+  text-align: left;
+  cursor: pointer;
+}
+
+.acesso-lesson-button.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.lesson-status {
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.lesson-status.done {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.lesson-status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.lesson-title {
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.lesson-meta {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.acesso-lesson-detail {
+  min-height: 360px;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 18px;
+}
+
+.lesson-detail-heading {
+  display: grid;
+  gap: 4px;
+}
+
+.lesson-detail-heading span {
+  color: #2563eb;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.lesson-detail-heading strong {
+  color: #0f172a;
+  font-size: 1.55rem;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+
+.lesson-detail-heading small {
+  color: #64748b;
+}
+
+.acesso-lesson-detail p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.55;
+}
+
+.video-link {
+  width: fit-content;
+  color: #2563eb;
+  font-weight: 800;
+}
+
+.lesson-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.lesson-actions button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.lesson-actions .primary-action {
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.lesson-actions .secondary-action {
+  border: none;
+  background: #cbd5e1;
+  color: #0f172a;
+}
+
+.lesson-actions .outline-action {
+  border: 1px solid #2563eb;
+  background: #ffffff;
+  color: #2563eb;
+}
+
+.lesson-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+@media (max-width: 980px) {
+  .acesso-summary,
+  .acesso-content-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .acesso-lessons {
+    max-height: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .acesso-turma-page {
+    padding: 14px;
+  }
+
+  .acesso-hero {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .acesso-hero h1 {
+    font-size: 1.45rem;
+  }
+
+  .acesso-back-link {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .acesso-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .acesso-course-info strong,
+  .lesson-detail-heading strong {
+    font-size: 1.18rem;
+  }
+
+  .acesso-lesson-detail {
+    min-height: 0;
+    padding: 14px;
+  }
+
+  .lesson-actions button {
+    width: 100%;
+  }
+}
