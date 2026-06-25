@@ -64,11 +64,28 @@ function AcessoTurma() {
   const [inscricao, setInscricao] = useState(null);
   const [aulas, setAulas] = useState([]);
   const [aulaAtualId, setAulaAtualId] = useState(null);
+  const [isCompactLayout, setIsCompactLayout] = useState(false);
+  const [isLessonModalOpen, setIsLessonModalOpen] = useState(false);
   const [salvandoProgresso, setSalvandoProgresso] = useState(false);
 
   useEffect(() => {
     loadAcesso();
   }, [turmaIdNumero]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 980px)');
+    const updateLayout = () => setIsCompactLayout(mediaQuery.matches);
+
+    updateLayout();
+    mediaQuery.addEventListener('change', updateLayout);
+    return () => mediaQuery.removeEventListener('change', updateLayout);
+  }, []);
+
+  useEffect(() => {
+    if (!isCompactLayout) {
+      setIsLessonModalOpen(false);
+    }
+  }, [isCompactLayout]);
 
   async function loadAcesso() {
     try {
@@ -128,6 +145,7 @@ function AcessoTurma() {
     [aulaAtual, aulas]
   );
 
+  const aulaAnterior = aulaAtualIndex > 0 ? aulas[aulaAtualIndex - 1] : null;
   const proximaAula = aulaAtualIndex >= 0 ? aulas[aulaAtualIndex + 1] : null;
 
   const resumoProgresso = useMemo(() => {
@@ -170,6 +188,76 @@ function AcessoTurma() {
     } finally {
       setSalvandoProgresso(false);
     }
+  }
+
+  function handleSelectAula(id) {
+    setAulaAtualId(id);
+    if (isCompactLayout) {
+      setIsLessonModalOpen(true);
+    }
+  }
+
+  function renderLessonDetail() {
+    if (!aulaAtual) {
+      return <span className="acesso-empty">Selecione uma aula para iniciar.</span>;
+    }
+
+    return (
+      <>
+        <div className="lesson-detail-heading">
+          <span>{aulaAtual.moduloTitulo || 'Módulo da turma'}</span>
+          <strong>{aulaAtual.titulo}</strong>
+          <small>{aulaAtual.duracaoMinutos || 0} minutos de estudo</small>
+        </div>
+
+        <p>{aulaAtual.descricao || 'Sem descrição cadastrada para esta aula.'}</p>
+
+        {aulaAtual.videoUrl ? (
+          <a className="video-link" href={aulaAtual.videoUrl} target="_blank" rel="noreferrer">
+            Abrir aula em vídeo
+          </a>
+        ) : (
+          <span className="no-video">Nenhum vídeo vinculado.</span>
+        )}
+
+        <div className="lesson-actions">
+          <button
+            type="button"
+            onClick={() => atualizarConclusao(!aulaAtual.concluida)}
+            disabled={salvandoProgresso}
+            className={aulaAtual.concluida ? 'secondary-action' : 'primary-action'}
+          >
+            {salvandoProgresso
+              ? 'Salvando...'
+              : aulaAtual.concluida
+                ? 'Desmarcar conclusão'
+                : 'Marcar como concluída'}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              if (aulaAnterior) setAulaAtualId(aulaAnterior.id);
+            }}
+            disabled={!aulaAnterior}
+            className="outline-action"
+          >
+            Voltar aula
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              if (proximaAula) setAulaAtualId(proximaAula.id);
+            }}
+            disabled={!proximaAula}
+            className="outline-action"
+          >
+            Próxima aula
+          </button>
+        </div>
+      </>
+    );
   }
 
   return (
@@ -230,7 +318,7 @@ function AcessoTurma() {
                   <button
                     key={aula.id}
                     type="button"
-                    onClick={() => setAulaAtualId(aula.id)}
+                    onClick={() => handleSelectAula(aula.id)}
                     className={`acesso-lesson-button ${ativa ? 'active' : ''}`}
                   >
                     <span className={aula.concluida ? 'lesson-status done' : 'lesson-status pending'}>
@@ -246,56 +334,35 @@ function AcessoTurma() {
             </aside>
 
             <article className="acesso-lesson-detail">
-              {!aulaAtual ? (
-                <span className="acesso-empty">Selecione uma aula para iniciar.</span>
-              ) : (
-                <>
-                  <div className="lesson-detail-heading">
-                    <span>{aulaAtual.moduloTitulo || 'Módulo da turma'}</span>
-                    <strong>{aulaAtual.titulo}</strong>
-                    <small>{aulaAtual.duracaoMinutos || 0} minutos de estudo</small>
-                  </div>
-
-                  <p>{aulaAtual.descricao || 'Sem descrição cadastrada para esta aula.'}</p>
-
-                  {aulaAtual.videoUrl ? (
-                    <a className="video-link" href={aulaAtual.videoUrl} target="_blank" rel="noreferrer">
-                      Abrir aula em vídeo
-                    </a>
-                  ) : (
-                    <span className="no-video">Nenhum vídeo vinculado.</span>
-                  )}
-
-                  <div className="lesson-actions">
-                    <button
-                      type="button"
-                      onClick={() => atualizarConclusao(!aulaAtual.concluida)}
-                      disabled={salvandoProgresso}
-                      className={aulaAtual.concluida ? 'secondary-action' : 'primary-action'}
-                    >
-                      {salvandoProgresso
-                        ? 'Salvando...'
-                        : aulaAtual.concluida
-                          ? 'Desmarcar conclusão'
-                          : 'Marcar como concluída'}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (proximaAula) setAulaAtualId(proximaAula.id);
-                      }}
-                      disabled={!proximaAula}
-                      className="outline-action"
-                    >
-                      Próxima aula
-                    </button>
-                  </div>
-                </>
-              )}
+              {renderLessonDetail()}
             </article>
           </div>
         </section>
+      )}
+
+      {isLessonModalOpen && aulaAtual && (
+        <div
+          className="acesso-lesson-modal-overlay"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setIsLessonModalOpen(false);
+          }}
+        >
+          <section className="acesso-lesson-modal" role="dialog" aria-modal="true" aria-labelledby="acesso-lesson-modal-title">
+            <div className="acesso-lesson-modal-header">
+              <div>
+                <span>Aula selecionada</span>
+                <h2 id="acesso-lesson-modal-title">{aulaAtual.titulo}</h2>
+              </div>
+              <button type="button" onClick={() => setIsLessonModalOpen(false)}>
+                Fechar
+              </button>
+            </div>
+            <div className="acesso-lesson-modal-body">
+              {renderLessonDetail()}
+            </div>
+          </section>
+        </div>
       )}
     </div>
   );
