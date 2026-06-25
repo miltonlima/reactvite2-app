@@ -23,6 +23,57 @@ function getUserValue(user, ...keys) {
   return '';
 }
 
+const SEX_OPTIONS = ['Feminino', 'Masculino', 'Outro', 'Não informado'];
+
+function normalizeSexOption(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  const options = {
+    f: 'Feminino',
+    feminino: 'Feminino',
+    female: 'Feminino',
+    m: 'Masculino',
+    masculino: 'Masculino',
+    male: 'Masculino',
+    outro: 'Outro',
+    other: 'Outro',
+    'não informado': 'Não informado',
+    'nao informado': 'Não informado',
+  };
+
+  return options[normalized] || '';
+}
+
+const SEX_SELECT_OPTIONS = [
+  { value: 'F', label: 'Feminino' },
+  { value: 'M', label: 'Masculino' },
+  { value: 'O', label: 'Outro' },
+  { value: 'N', label: 'Nao informado' },
+];
+
+function normalizeSexCode(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  const directCodes = {
+    f: 'F',
+    feminino: 'F',
+    female: 'F',
+    m: 'M',
+    masculino: 'M',
+    male: 'M',
+    o: 'O',
+    outro: 'O',
+    other: 'O',
+    n: 'N',
+    'nÃ£o informado': 'N',
+    'não informado': 'N',
+    'nao informado': 'N',
+  };
+  const legacyLabel = normalizeSexOption(value);
+  const labelMatch = SEX_SELECT_OPTIONS.find((option) => option.label.toLowerCase() === String(legacyLabel).toLowerCase());
+  const legacyOption = SEX_OPTIONS.find((option) => String(option).trim().toLowerCase() === normalized);
+
+  return directCodes[normalized] || labelMatch?.value || directCodes[String(legacyOption || '').trim().toLowerCase()] || '';
+}
+
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -117,7 +168,7 @@ function Layout() {
     setProfileForm({
       fullName: getUserValue(user, 'full_name', 'fullName', 'name'),
       birthDate: toInputDate(getUserValue(user, 'birth_date', 'birthDate')),
-      sex: getUserValue(user, 'sex', 'sexo'),
+      sex: normalizeSexCode(getUserValue(user, 'sex', 'sexo')),
       email: getUserValue(user, 'email'),
     });
     setProfileError('');
@@ -282,14 +333,17 @@ function Layout() {
 
               <label>
                 Sexo
-                <input
+                <select
                   name="sex"
-                  type="text"
-                  maxLength={20}
                   value={profileForm.sex}
                   onChange={handleProfileInputChange}
                   required
-                />
+                >
+                  <option value="">Selecione</option>
+                  {SEX_SELECT_OPTIONS.map((option) => (
+                    <option value={option.value} key={option.value}>{option.label}</option>
+                  ))}
+                </select>
               </label>
 
               <label>
