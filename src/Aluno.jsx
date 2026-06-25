@@ -22,6 +22,38 @@ function getValue(item, ...keys) {
   return undefined;
 }
 
+const SEX_OPTIONS = [
+  { value: 'F', label: 'Feminino' },
+  { value: 'M', label: 'Masculino' },
+  { value: 'O', label: 'Outro' },
+  { value: 'N', label: 'Nao informado' },
+];
+
+function normalizeSexCode(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  const options = {
+    f: 'F',
+    feminino: 'F',
+    female: 'F',
+    m: 'M',
+    masculino: 'M',
+    male: 'M',
+    o: 'O',
+    outro: 'O',
+    other: 'O',
+    n: 'N',
+    'não informado': 'N',
+    'nao informado': 'N',
+  };
+
+  return options[normalized] || '';
+}
+
+function formatSexLabel(value) {
+  const code = normalizeSexCode(value);
+  return SEX_OPTIONS.find((option) => option.value === code)?.label || value || 'Nao informado';
+}
+
 function normalizeAluno(item) {
   if (!item) return null;
 
@@ -194,7 +226,7 @@ function Aluno() {
       setForm({
         fullName: aluno?.fullName || '',
         birthDate: toInputDate(aluno?.birthDate),
-        sex: aluno?.sex || '',
+        sex: normalizeSexCode(aluno?.sex),
         email: aluno?.email || '',
       });
     } catch (error) {
@@ -533,14 +565,17 @@ function Aluno() {
 
               <label>
                 Sexo
-                <input
+                <select
                   name="sex"
-                  type="text"
-                  maxLength={20}
                   value={createForm.sex}
                   onChange={handleCreateInputChange}
                   required
-                />
+                >
+                  <option value="">Selecione</option>
+                  {SEX_OPTIONS.map((option) => (
+                    <option value={option.value} key={option.value}>{option.label}</option>
+                  ))}
+                </select>
               </label>
 
               <label>
@@ -624,7 +659,7 @@ function Aluno() {
                     <div><strong>ID:</strong> {selectedAluno.id}</div>
                     <div><strong>Nome:</strong> {selectedAluno.fullName}</div>
                     <div><strong>E-mail:</strong> {selectedAluno.email}</div>
-                    <div><strong>Sexo:</strong> {selectedAluno.sex}</div>
+                    <div><strong>Sexo:</strong> {formatSexLabel(selectedAluno.sex)}</div>
                     <div><strong>Nascimento:</strong> {toInputDate(selectedAluno.birthDate)}</div>
                     <div>
                       <strong>Status:</strong>{' '}
@@ -662,14 +697,17 @@ function Aluno() {
 
                     <label>
                       Sexo
-                      <input
+                      <select
                         name="sex"
-                        type="text"
-                        maxLength={20}
                         value={form.sex}
                         onChange={handleInputChange}
                         required
-                      />
+                      >
+                        <option value="">Selecione</option>
+                        {SEX_OPTIONS.map((option) => (
+                          <option value={option.value} key={option.value}>{option.label}</option>
+                        ))}
+                      </select>
                     </label>
 
                     <label>

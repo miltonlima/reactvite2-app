@@ -198,7 +198,8 @@
   margin-top: 12px;
 }
 
-.alunos-form input {
+.alunos-form input,
+.alunos-form select {
   width: 100%;
   box-sizing: border-box;
 }
