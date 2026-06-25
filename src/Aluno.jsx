@@ -147,6 +147,7 @@ function Aluno() {
   const [loadingList, setLoadingList] = useState(false);
   const [listError, setListError] = useState('');
   const [includeInactive, setIncludeInactive] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'desc' });
 
   const [selectedId, setSelectedId] = useState(null);
   const [selectedAluno, setSelectedAluno] = useState(null);
@@ -184,6 +185,25 @@ function Aluno() {
   const selectedAlunoNome = useMemo(() => {
     return alunos.find((item) => item.id === selectedId)?.fullName || 'Aluno';
   }, [alunos, selectedId]);
+
+  const sortedAlunos = useMemo(() => {
+    return [...alunos].sort((a, b) => {
+      const getSortValue = (item) => {
+        if (sortConfig.key === 'id') return Number(item.id) || 0;
+        if (sortConfig.key === 'fullName') return String(item.fullName || '').toLowerCase();
+        if (sortConfig.key === 'email') return String(item.email || '').toLowerCase();
+        if (sortConfig.key === 'isActive') return item.isActive ? 1 : 0;
+        return '';
+      };
+
+      const aValue = getSortValue(a);
+      const bValue = getSortValue(b);
+
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [alunos, sortConfig]);
 
   useEffect(() => {
     loadAlunos(includeInactive);
@@ -246,6 +266,18 @@ function Aluno() {
     } finally {
       setLoadingInscricoes(false);
     }
+  }
+
+  function handleSort(key) {
+    setSortConfig((current) => ({
+      key,
+      direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  }
+
+  function getSortIndicator(key) {
+    if (sortConfig.key !== key) return '';
+    return sortConfig.direction === 'asc' ? ' ▲' : ' ▼';
   }
 
   function handleInputChange(event) {
@@ -476,15 +508,15 @@ function Aluno() {
               <table className="alunos-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                    <th>Status</th>
+                    <th><button type="button" className="aluno-sort-button" onClick={() => handleSort('id')}>ID{getSortIndicator('id')}</button></th>
+                    <th><button type="button" className="aluno-sort-button" onClick={() => handleSort('fullName')}>Nome{getSortIndicator('fullName')}</button></th>
+                    <th><button type="button" className="aluno-sort-button" onClick={() => handleSort('email')}>E-mail{getSortIndicator('email')}</button></th>
+                    <th><button type="button" className="aluno-sort-button" onClick={() => handleSort('isActive')}>Status{getSortIndicator('isActive')}</button></th>
                     <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {alunos.map((aluno) => (
+                  {sortedAlunos.map((aluno) => (
                     <tr key={aluno.id} className={selectedId === aluno.id ? 'selected' : ''}>
                       <td>{aluno.id}</td>
                       <td>{aluno.fullName}</td>

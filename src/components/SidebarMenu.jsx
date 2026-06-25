@@ -24,6 +24,23 @@ function formatUserProfile(userType) {
   return labels[normalized] || userType || 'Perfil não informado';
 }
 
+function getUserInitials(userName, userEmail) {
+  const nameParts = String(userName || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (nameParts.length >= 2) {
+    return `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase();
+  }
+
+  if (nameParts.length === 1) {
+    return nameParts[0].slice(0, 2).toUpperCase();
+  }
+
+  return String(userEmail || 'U').slice(0, 2).toUpperCase();
+}
+
 function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, onNavigate, onProfileClick }) {
   const location = useLocation();
   const menuItems = [
@@ -46,7 +63,7 @@ function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, o
     <aside className={`dashboard-sidebar ${isMobileOpen ? 'open' : ''}`}>
       <div className="profile">
         <div className="avatar">
-          {userPhoto && <img src={userPhoto} alt="" />}
+          {userPhoto ? <img src={userPhoto} alt="" /> : <span>{getUserInitials(userName, userEmail)}</span>}
         </div>
         <div className="name">{userName}</div>
         <div className="email">{userEmail}</div>
