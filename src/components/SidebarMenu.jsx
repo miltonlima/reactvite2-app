@@ -52,6 +52,7 @@ function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, o
     { name: 'Inscrição', icon: '📝', path: '/inscricao' },
     { name: 'Módulo / Aula', icon: '🧑', path: '/professor/conteudo' },
     { name: 'Avaliação', icon: '🎓', path: '/avaliacao' },
+    { name: 'Banco de questões', icon: '📋', path: '/banco-questoes' },
     { name: 'Arquivo', icon: '📁', path: '/arquivo' },
     { name: 'Mensagens', icon: '✉️', path: '/mensagem' },
     { name: 'Notificação', icon: '🔔', path: '#' },

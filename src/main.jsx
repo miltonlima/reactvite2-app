@@ -28,6 +28,7 @@ import Aluno from './Aluno.jsx'
 import Modalidade from './Modalidade.jsx'
 import Turma from './Turma.jsx'
 import Avaliacao from './Avaliacao.jsx'
+import BancoQuestoes from './BancoQuestoes.jsx'
 import Inscricao from './Inscricao.jsx'
 import AcessoTurma from './AcessoTurma.jsx'
 import ProfessorConteudo from './ProfessorConteudo.jsx'
@@ -67,6 +68,7 @@ const AlunoPage = withTitle(Aluno, 'Alunos')
 const ModalidadePage = withTitle(Modalidade, 'Modalidades')
 const TurmaPage = withTitle(Turma, 'Turmas')
 const AvaliacaoPage = withTitle(Avaliacao, 'Avaliações');
+const BancoQuestoesPage = withTitle(BancoQuestoes, 'Banco de questões');
 const InscricaoPage = withTitle(Inscricao, 'Inscrições');
 const AcessoTurmaPage = withTitle(AcessoTurma, 'Acesso da Turma');
 const ProfessorConteudoPage = withTitle(ProfessorConteudo, 'Professor - Conteúdo');
@@ -107,6 +109,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/modalidade" element={<ModalidadePage />} />
           <Route path="/turma" element={<TurmaPage />} />
           <Route path="/avaliacao" element={<AvaliacaoPage />} />
+          <Route path="/banco-questoes" element={<BancoQuestoesPage />} />
           <Route path="/inscricao" element={<InscricaoPage />} />
           <Route path="/acesso-turma/:turmaId" element={<AcessoTurmaPage />} />
           <Route path="/professor/conteudo" element={<ProfessorConteudoPage />} />
