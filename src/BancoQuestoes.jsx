@@ -196,23 +196,25 @@ function BancoQuestoes() {
         <form onSubmit={handleCreateQuestion}>
           <div className="question-create-heading">
             <div>
-              <strong>Nova questao</strong>
+              <strong>Nova questão</strong>
               <span>Monte o enunciado e adicione quantas alternativas precisar.</span>
             </div>
           </div>
 
-          <label className="question-field-large">
-            Enunciado
-            <textarea
-              name="enunciado"
-              value={form.enunciado}
-              onChange={handleInputChange}
-              placeholder="Digite o enunciado da questao"
-              rows="4"
-            />
-          </label>
+          <div className="question-form-section">
+            <label className="question-field-large">
+              Enunciado
+              <textarea
+                name="enunciado"
+                value={form.enunciado}
+                onChange={handleInputChange}
+                placeholder="Digite o enunciado da questao"
+                rows="4"
+              />
+            </label>
+          </div>
 
-          <div className="question-alternatives">
+          <div className="question-form-section question-alternatives">
             <div className="question-alternatives-header">
               <div>
                 <strong>Alternativas</strong>
@@ -258,7 +260,7 @@ function BancoQuestoes() {
             </div>
           </div>
 
-          <div className="question-form-footer">
+          <div className="question-form-section question-form-footer">
             <div className="question-create-grid">
               <label>
                 Dificuldade

@@ -130,13 +130,13 @@
 }
 
 .question-bank-create {
-  padding: 14px;
+  padding: 16px;
 }
 
 .question-bank-create form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .question-create-heading {
@@ -146,6 +146,13 @@
   gap: 14px;
   padding-bottom: 12px;
   border-bottom: 1px solid #e2e8f0;
+}
+
+.question-form-section {
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
 }
 
 .question-create-heading div,
@@ -178,8 +185,7 @@
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 14px;
-  padding-top: 12px;
-  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
 }
 
 .question-form-footer .question-create-grid {
@@ -227,9 +233,6 @@
 .question-alternatives {
   display: grid;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
   background: #f8fafc;
 }
 
@@ -247,7 +250,7 @@
 
 .question-alternative-row {
   display: grid;
-  grid-template-columns: 92px minmax(260px, 1fr) 104px;
+  grid-template-columns: minmax(0, 1fr) 92px 104px;
   align-items: end;
   gap: 10px;
   padding: 10px;
@@ -274,6 +277,7 @@
 
 .alternative-text-field {
   min-width: 0;
+  order: -1;
 }
 
 .alternative-text-field input {
@@ -402,7 +406,7 @@
   }
 
   .question-alternative-row {
-    grid-template-columns: 92px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 92px;
   }
 
   .question-field-large {
