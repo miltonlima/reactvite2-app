@@ -126,13 +126,47 @@
 }
 
 .question-bank-create form {
-  display: grid;
-  grid-template-columns: minmax(260px, 1.8fr) minmax(150px, 0.7fr) minmax(130px, 0.5fr) minmax(120px, 0.5fr) auto;
-  align-items: end;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
-.question-bank-create button {
+.question-create-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.question-create-heading div,
+.question-alternatives-header div {
+  display: grid;
+  gap: 3px;
+}
+
+.question-create-heading strong,
+.question-alternatives-header strong {
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.question-create-heading span,
+.question-alternatives-header span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.question-create-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(140px, 180px) minmax(130px, 170px);
+  gap: 12px;
+}
+
+.question-bank-create button,
+.secondary-create-button,
+.remove-alternative-button {
   min-height: 40px;
   padding: 0 18px;
   border: 0;
@@ -146,6 +180,76 @@
 .question-bank-create button:disabled {
   background: #94a3b8;
   cursor: not-allowed;
+}
+
+.secondary-create-button {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.remove-alternative-button {
+  border: 1px solid #fecaca;
+  background: #fff7f7;
+  color: #991b1b;
+  padding: 0 12px;
+}
+
+.remove-alternative-button:disabled {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #94a3b8;
+}
+
+.question-alternatives {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.question-alternatives-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.question-alternatives-list {
+  display: grid;
+  gap: 8px;
+}
+
+.question-alternative-row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.alternative-correct-control {
+  align-items: center;
+  flex-direction: row !important;
+  gap: 7px !important;
+  min-height: 40px;
+  white-space: nowrap;
+}
+
+.alternative-correct-control input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  margin: 0;
+}
+
+.alternative-text-field {
+  min-width: 0;
 }
 
 .question-bank-list {
@@ -185,6 +289,44 @@
 
 .question-card-main small {
   color: #64748b;
+}
+
+.question-card-alternatives {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.question-card-alternatives li {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  color: #334155;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.question-card-alternatives li > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.question-card-alternatives li > strong {
+  margin-left: auto;
+  color: #047857;
+  font-size: 0.76rem;
+  white-space: nowrap;
 }
 
 .question-card-meta {
@@ -227,12 +369,13 @@
 }
 
 @media (max-width: 1040px) {
-  .question-bank-create form {
-    grid-template-columns: minmax(260px, 1fr) minmax(150px, 1fr);
+  .question-create-grid,
+  .question-alternative-row {
+    grid-template-columns: 1fr 1fr;
   }
 
   .question-field-large,
-  .question-bank-create button {
+  .alternative-text-field {
     grid-column: 1 / -1;
   }
 }
@@ -252,9 +395,21 @@
   }
 
   .question-bank-toolbar,
-  .question-bank-create form,
+  .question-create-grid,
+  .question-alternative-row,
   .question-card {
     grid-template-columns: 1fr;
+  }
+
+  .question-create-heading,
+  .question-alternatives-header {
+    flex-direction: column;
+  }
+
+  .question-create-heading button,
+  .secondary-create-button,
+  .remove-alternative-button {
+    width: 100%;
   }
 
   .question-card-meta {

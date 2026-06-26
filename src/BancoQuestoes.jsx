@@ -1,60 +1,152 @@
 import { useMemo, useState } from 'react';
 import './BancoQuestoes.css';
 
+const emptyAlternative = (id, correta = false) => ({
+  id,
+  texto: '',
+  correta,
+});
+
 const initialQuestions = [
   {
     id: 1,
     enunciado: 'Qual recurso do React permite controlar estado dentro de um componente funcional?',
     modalidade: 'React',
-    dificuldade: 'Fácil',
+    dificuldade: 'Facil',
     status: 'Ativa',
+    alternativas: [
+      { id: 1, texto: 'useState', correta: true },
+      { id: 2, texto: 'useRoute', correta: false },
+      { id: 3, texto: 'useStyle', correta: false },
+    ],
   },
   {
     id: 2,
-    enunciado: 'Em uma API REST, qual método HTTP é mais indicado para atualizar um recurso existente?',
+    enunciado: 'Em uma API REST, qual metodo HTTP e mais indicado para atualizar um recurso existente?',
     modalidade: 'Back-end',
-    dificuldade: 'Média',
+    dificuldade: 'Media',
     status: 'Ativa',
+    alternativas: [
+      { id: 1, texto: 'GET', correta: false },
+      { id: 2, texto: 'PUT', correta: true },
+      { id: 3, texto: 'TRACE', correta: false },
+    ],
   },
   {
     id: 3,
     enunciado: 'O que significa responsividade em uma interface web?',
     modalidade: 'Front-end',
-    dificuldade: 'Fácil',
+    dificuldade: 'Facil',
     status: 'Rascunho',
+    alternativas: [
+      { id: 1, texto: 'Adaptar a interface a diferentes tamanhos de tela', correta: true },
+      { id: 2, texto: 'Responder chamadas de API mais rapido', correta: false },
+    ],
   },
 ];
+
+function getInitialForm() {
+  return {
+    enunciado: '',
+    modalidade: '',
+    dificuldade: 'Facil',
+    status: 'Ativa',
+    alternativas: [emptyAlternative(1, true), emptyAlternative(2)],
+  };
+}
 
 function BancoQuestoes() {
   const [questions, setQuestions] = useState(initialQuestions);
   const [search, setSearch] = useState('');
   const [difficulty, setDifficulty] = useState('Todas');
-  const [form, setForm] = useState({
-    enunciado: '',
-    modalidade: '',
-    dificuldade: 'Fácil',
-    status: 'Ativa',
-  });
+  const [form, setForm] = useState(getInitialForm);
 
   const filteredQuestions = useMemo(() => {
     const term = search.trim().toLowerCase();
 
     return questions.filter((question) => {
-      const matchesTerm = !term || `${question.enunciado} ${question.modalidade}`.toLowerCase().includes(term);
+      const alternativesText = (question.alternativas || []).map((item) => item.texto).join(' ');
+      const matchesTerm = !term
+        || `${question.enunciado} ${question.modalidade} ${alternativesText}`.toLowerCase().includes(term);
       const matchesDifficulty = difficulty === 'Todas' || question.dificuldade === difficulty;
       return matchesTerm && matchesDifficulty;
     });
   }, [difficulty, questions, search]);
+
+  const filledAlternatives = form.alternativas.filter((alternativa) => alternativa.texto.trim());
+  const canCreateQuestion = form.enunciado.trim() && form.modalidade.trim() && filledAlternatives.length >= 2;
 
   function handleInputChange(event) {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
   }
 
+  function handleAlternativeChange(id, value) {
+    setForm((current) => ({
+      ...current,
+      alternativas: current.alternativas.map((alternativa) => (
+        alternativa.id === id ? { ...alternativa, texto: value } : alternativa
+      )),
+    }));
+  }
+
+  function handleCorrectAlternative(id) {
+    setForm((current) => ({
+      ...current,
+      alternativas: current.alternativas.map((alternativa) => ({
+        ...alternativa,
+        correta: alternativa.id === id,
+      })),
+    }));
+  }
+
+  function addAlternative() {
+    setForm((current) => {
+      const nextId = current.alternativas.length
+        ? Math.max(...current.alternativas.map((alternativa) => alternativa.id)) + 1
+        : 1;
+
+      return {
+        ...current,
+        alternativas: [...current.alternativas, emptyAlternative(nextId, current.alternativas.length === 0)],
+      };
+    });
+  }
+
+  function removeAlternative(id) {
+    setForm((current) => {
+      if (current.alternativas.length <= 1) return current;
+
+      const removedAlternative = current.alternativas.find((alternativa) => alternativa.id === id);
+      const nextAlternatives = current.alternativas.filter((alternativa) => alternativa.id !== id);
+
+      if (removedAlternative?.correta && nextAlternatives.length) {
+        return {
+          ...current,
+          alternativas: nextAlternatives.map((alternativa, index) => ({
+            ...alternativa,
+            correta: index === 0,
+          })),
+        };
+      }
+
+      return { ...current, alternativas: nextAlternatives };
+    });
+  }
+
   function handleCreateQuestion(event) {
     event.preventDefault();
 
-    if (!form.enunciado.trim() || !form.modalidade.trim()) return;
+    const alternativas = form.alternativas
+      .map((alternativa) => ({ ...alternativa, texto: alternativa.texto.trim() }))
+      .filter((alternativa) => alternativa.texto);
+
+    if (!form.enunciado.trim() || !form.modalidade.trim() || alternativas.length < 2) return;
+
+    const hasCorrectAlternative = alternativas.some((alternativa) => alternativa.correta);
+    const normalizedAlternatives = hasCorrectAlternative
+      ? alternativas
+      : alternativas.map((alternativa, index) => ({ ...alternativa, correta: index === 0 }));
 
     const nextQuestion = {
       id: questions.length ? Math.max(...questions.map((item) => item.id)) + 1 : 1,
@@ -62,19 +154,20 @@ function BancoQuestoes() {
       modalidade: form.modalidade.trim(),
       dificuldade: form.dificuldade,
       status: form.status,
+      alternativas: normalizedAlternatives,
     };
 
     setQuestions((current) => [nextQuestion, ...current]);
-    setForm({ enunciado: '', modalidade: '', dificuldade: 'Fácil', status: 'Ativa' });
+    setForm(getInitialForm());
   }
 
   return (
     <div className="question-bank-page">
       <header className="question-bank-header">
         <div>
-          <span className="question-bank-eyebrow">Avaliações</span>
-          <h1>Banco de questões</h1>
-          <p>Organize questões por curso, dificuldade e status para montar avaliações com mais agilidade.</p>
+          <span className="question-bank-eyebrow">Avaliacoes</span>
+          <h1>Banco de questoes</h1>
+          <p>Organize questoes por curso, dificuldade e status para montar avaliacoes com mais agilidade.</p>
         </div>
         <div className="question-bank-summary">
           <span>Total</span>
@@ -82,14 +175,14 @@ function BancoQuestoes() {
         </div>
       </header>
 
-      <section className="question-bank-toolbar" aria-label="Filtros do banco de questões">
+      <section className="question-bank-toolbar" aria-label="Filtros do banco de questoes">
         <label>
           Buscar
           <input
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Nome da questão ou curso"
+            placeholder="Nome da questao, alternativa ou curso"
           />
         </label>
 
@@ -97,62 +190,116 @@ function BancoQuestoes() {
           Dificuldade
           <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
             <option>Todas</option>
-            <option>Fácil</option>
-            <option>Média</option>
-            <option>Difícil</option>
+            <option>Facil</option>
+            <option>Media</option>
+            <option>Dificil</option>
           </select>
         </label>
       </section>
 
       <section className="question-bank-create">
         <form onSubmit={handleCreateQuestion}>
+          <div className="question-create-heading">
+            <div>
+              <strong>Nova questao</strong>
+              <span>Monte o enunciado e adicione quantas alternativas precisar.</span>
+            </div>
+            <button type="submit" disabled={!canCreateQuestion}>
+              Adicionar questao
+            </button>
+          </div>
+
+          <div className="question-create-grid">
+            <label>
+              Curso
+              <input
+                name="modalidade"
+                value={form.modalidade}
+                onChange={handleInputChange}
+                placeholder="Ex.: Matematica"
+              />
+            </label>
+
+            <label>
+              Dificuldade
+              <select name="dificuldade" value={form.dificuldade} onChange={handleInputChange}>
+                <option>Facil</option>
+                <option>Media</option>
+                <option>Dificil</option>
+              </select>
+            </label>
+
+            <label>
+              Status
+              <select name="status" value={form.status} onChange={handleInputChange}>
+                <option>Ativa</option>
+                <option>Rascunho</option>
+              </select>
+            </label>
+          </div>
+
           <label className="question-field-large">
-            Nova questão
+            Enunciado
             <textarea
               name="enunciado"
               value={form.enunciado}
               onChange={handleInputChange}
-              placeholder="Digite o enunciado da questão"
-              rows="3"
+              placeholder="Digite o enunciado da questao"
+              rows="4"
             />
           </label>
 
-          <label>
-            Curso
-            <input
-              name="modalidade"
-              value={form.modalidade}
-              onChange={handleInputChange}
-              placeholder="Ex.: Matemática"
-            />
-          </label>
+          <div className="question-alternatives">
+            <div className="question-alternatives-header">
+              <div>
+                <strong>Alternativas</strong>
+                <span>Marque uma alternativa como correta.</span>
+              </div>
+              <button type="button" className="secondary-create-button" onClick={addAlternative}>
+                Adicionar alternativa
+              </button>
+            </div>
 
-          <label>
-            Dificuldade
-            <select name="dificuldade" value={form.dificuldade} onChange={handleInputChange}>
-              <option>Fácil</option>
-              <option>Média</option>
-              <option>Difícil</option>
-            </select>
-          </label>
+            <div className="question-alternatives-list">
+              {form.alternativas.map((alternativa, index) => (
+                <div key={alternativa.id} className="question-alternative-row">
+                  <label className="alternative-correct-control">
+                    <input
+                      type="radio"
+                      name="alternativaCorreta"
+                      checked={alternativa.correta}
+                      onChange={() => handleCorrectAlternative(alternativa.id)}
+                    />
+                    Correta
+                  </label>
 
-          <label>
-            Status
-            <select name="status" value={form.status} onChange={handleInputChange}>
-              <option>Ativa</option>
-              <option>Rascunho</option>
-            </select>
-          </label>
+                  <label className="alternative-text-field">
+                    Alternativa {index + 1}
+                    <input
+                      value={alternativa.texto}
+                      onChange={(event) => handleAlternativeChange(alternativa.id, event.target.value)}
+                      placeholder={`Texto da alternativa ${index + 1}`}
+                    />
+                  </label>
 
-          <button type="submit" disabled={!form.enunciado.trim() || !form.modalidade.trim()}>
-            Adicionar
-          </button>
+                  <button
+                    type="button"
+                    className="remove-alternative-button"
+                    onClick={() => removeAlternative(alternativa.id)}
+                    disabled={form.alternativas.length <= 1}
+                  >
+                    Remover
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
         </form>
       </section>
 
-      <section className="question-bank-list" aria-label="Lista de questões cadastradas">
+      <section className="question-bank-list" aria-label="Lista de questoes cadastradas">
         {filteredQuestions.length === 0 ? (
-          <p className="question-bank-empty">Nenhuma questão encontrada.</p>
+          <p className="question-bank-empty">Nenhuma questao encontrada.</p>
         ) : (
           filteredQuestions.map((question) => (
             <article key={question.id} className="question-card">
@@ -160,10 +307,22 @@ function BancoQuestoes() {
                 <span className="question-card-id">#{question.id}</span>
                 <strong>{question.enunciado}</strong>
                 <small>{question.modalidade}</small>
+                {question.alternativas?.length > 0 && (
+                  <ul className="question-card-alternatives">
+                    {question.alternativas.map((alternativa, index) => (
+                      <li key={alternativa.id}>
+                        <span>{String.fromCharCode(65 + index)}</span>
+                        {alternativa.texto}
+                        {alternativa.correta && <strong>Correta</strong>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               <div className="question-card-meta">
                 <span>{question.dificuldade}</span>
+                <span>{question.alternativas?.length || 0} alternativas</span>
                 <span className={question.status === 'Ativa' ? 'is-active' : 'is-draft'}>{question.status}</span>
               </div>
             </article>
