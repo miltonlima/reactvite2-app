@@ -17,6 +17,16 @@ function getInitialForm() {
   };
 }
 
+function formatDifficulty(value) {
+  const labels = {
+    Facil: 'Fácil',
+    Media: 'Média',
+    Dificil: 'Difícil',
+  };
+
+  return labels[value] || value;
+}
+
 async function request(path, options = {}) {
   const hasBody = typeof options.body !== 'undefined';
   const response = await fetch(`${API_BASE}${path}`, {
@@ -60,7 +70,7 @@ function BancoQuestoes() {
       const data = await request('/api/perguntas');
       setQuestions(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError(err.message || 'Nao foi possivel carregar as perguntas.');
+      setError(err.message || 'Não foi possível carregar as perguntas.');
     } finally {
       setLoading(false);
     }
@@ -182,7 +192,7 @@ function BancoQuestoes() {
       setForm(getInitialForm());
       setSuccess(editingId ? 'Pergunta atualizada com sucesso.' : 'Pergunta cadastrada com sucesso.');
     } catch (err) {
-      setError(err.message || 'Nao foi possivel salvar a pergunta.');
+      setError(err.message || 'Não foi possível salvar a pergunta.');
     } finally {
       setSaving(false);
     }
@@ -223,9 +233,9 @@ function BancoQuestoes() {
       if (Number(editingId) === Number(question.id)) {
         cancelEdit();
       }
-      setSuccess('Pergunta excluida com sucesso.');
+      setSuccess('Pergunta excluída com sucesso.');
     } catch (err) {
-      setError(err.message || 'Nao foi possivel excluir a pergunta.');
+      setError(err.message || 'Não foi possível excluir a pergunta.');
     } finally {
       setDeletingId(null);
     }
@@ -235,9 +245,9 @@ function BancoQuestoes() {
     <div className="question-bank-page">
       <header className="question-bank-header">
         <div>
-          <span className="question-bank-eyebrow">Avaliacoes</span>
-          <h1>Banco de questoes</h1>
-          <p>Organize enunciados, alternativas, dificuldade e status para montar avaliacoes com mais agilidade.</p>
+          <span className="question-bank-eyebrow">Avaliações</span>
+          <h1>Banco de questões</h1>
+          <p>Organize enunciados, alternativas, dificuldade e status para montar avaliações com mais agilidade.</p>
         </div>
         <div className="question-bank-summary">
           <span>Total</span>
@@ -245,14 +255,14 @@ function BancoQuestoes() {
         </div>
       </header>
 
-      <section className="question-bank-toolbar" aria-label="Filtros do banco de questoes">
+      <section className="question-bank-toolbar" aria-label="Filtros do banco de questões">
         <label>
           Buscar
           <input
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Nome da questao ou alternativa"
+            placeholder="Nome da questão ou alternativa"
           />
         </label>
 
@@ -260,9 +270,9 @@ function BancoQuestoes() {
           Dificuldade
           <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
             <option>Todas</option>
-            <option>Facil</option>
-            <option>Media</option>
-            <option>Dificil</option>
+            <option value="Facil">Fácil</option>
+            <option value="Media">Média</option>
+            <option value="Dificil">Difícil</option>
           </select>
         </label>
       </section>
@@ -271,12 +281,12 @@ function BancoQuestoes() {
         <form onSubmit={handleCreateQuestion}>
           <div className="question-create-heading">
             <div>
-              <strong>Nova questao</strong>
+              <strong>Nova questão</strong>
               <span>{editingId ? `Editando pergunta #${editingId}` : 'Monte o enunciado e adicione quantas alternativas precisar.'}</span>
             </div>
             {editingId && (
               <button type="button" className="secondary-create-button" onClick={cancelEdit} disabled={saving}>
-                Cancelar edicao
+                Cancelar edição
               </button>
             )}
           </div>
@@ -288,7 +298,7 @@ function BancoQuestoes() {
                 name="enunciado"
                 value={form.enunciado}
                 onChange={handleInputChange}
-                placeholder="Digite o enunciado da questao"
+                placeholder="Digite o enunciado da questão"
                 rows="4"
               />
             </label>
@@ -350,9 +360,9 @@ function BancoQuestoes() {
               <label>
                 Dificuldade
                 <select name="dificuldade" value={form.dificuldade} onChange={handleInputChange} disabled={saving}>
-                  <option>Facil</option>
-                  <option>Media</option>
-                  <option>Dificil</option>
+                  <option value="Facil">Fácil</option>
+                  <option value="Media">Média</option>
+                  <option value="Dificil">Difícil</option>
                 </select>
               </label>
 
@@ -366,19 +376,19 @@ function BancoQuestoes() {
             </div>
 
             <button type="submit" className="question-submit-button" disabled={!canCreateQuestion || saving}>
-              {saving ? 'Salvando...' : editingId ? 'Salvar alteracoes' : 'Adicionar questao'}
+              {saving ? 'Salvando...' : editingId ? 'Salvar alterações' : 'Adicionar questão'}
             </button>
           </div>
         </form>
       </section>
 
-      <section className="question-bank-list" aria-label="Lista de questoes cadastradas">
+      <section className="question-bank-list" aria-label="Lista de questões cadastradas">
         {loading && <p className="question-bank-empty">Carregando perguntas...</p>}
         {error && <p className="question-bank-message error">Erro: {error}</p>}
         {success && <p className="question-bank-message success">{success}</p>}
 
         {!loading && filteredQuestions.length === 0 ? (
-          <p className="question-bank-empty">Nenhuma questao encontrada.</p>
+          <p className="question-bank-empty">Nenhuma questão encontrada.</p>
         ) : (
           !loading && filteredQuestions.map((question) => (
             <article key={question.id} className="question-card">
@@ -399,7 +409,7 @@ function BancoQuestoes() {
               </div>
 
               <div className="question-card-meta">
-                <span>{question.dificuldade}</span>
+                <span>{formatDifficulty(question.dificuldade)}</span>
                 <span>{question.alternativas?.length || 0} alternativas</span>
                 <span className={question.status === 'Ativa' ? 'is-active' : 'is-draft'}>{question.status}</span>
               </div>
