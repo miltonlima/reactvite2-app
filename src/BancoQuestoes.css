@@ -168,7 +168,7 @@
 
 .question-create-grid {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(150px, 180px) minmax(140px, 170px);
+  grid-template-columns: minmax(150px, 180px) minmax(140px, 170px);
   gap: 12px;
   align-items: end;
 }
@@ -385,7 +385,7 @@
 
 @media (max-width: 1040px) {
   .question-create-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(150px, 180px) minmax(140px, 170px);
+    grid-template-columns: minmax(150px, 180px) minmax(140px, 170px);
   }
 
   .question-alternative-row {

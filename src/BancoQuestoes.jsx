@@ -11,7 +11,6 @@ const initialQuestions = [
   {
     id: 1,
     enunciado: 'Qual recurso do React permite controlar estado dentro de um componente funcional?',
-    modalidade: 'React',
     dificuldade: 'Facil',
     status: 'Ativa',
     alternativas: [
@@ -23,7 +22,6 @@ const initialQuestions = [
   {
     id: 2,
     enunciado: 'Em uma API REST, qual metodo HTTP e mais indicado para atualizar um recurso existente?',
-    modalidade: 'Back-end',
     dificuldade: 'Media',
     status: 'Ativa',
     alternativas: [
@@ -35,7 +33,6 @@ const initialQuestions = [
   {
     id: 3,
     enunciado: 'O que significa responsividade em uma interface web?',
-    modalidade: 'Front-end',
     dificuldade: 'Facil',
     status: 'Rascunho',
     alternativas: [
@@ -48,7 +45,6 @@ const initialQuestions = [
 function getInitialForm() {
   return {
     enunciado: '',
-    modalidade: '',
     dificuldade: 'Facil',
     status: 'Ativa',
     alternativas: [emptyAlternative(1, true), emptyAlternative(2)],
@@ -67,14 +63,14 @@ function BancoQuestoes() {
     return questions.filter((question) => {
       const alternativesText = (question.alternativas || []).map((item) => item.texto).join(' ');
       const matchesTerm = !term
-        || `${question.enunciado} ${question.modalidade} ${alternativesText}`.toLowerCase().includes(term);
+        || `${question.enunciado} ${alternativesText}`.toLowerCase().includes(term);
       const matchesDifficulty = difficulty === 'Todas' || question.dificuldade === difficulty;
       return matchesTerm && matchesDifficulty;
     });
   }, [difficulty, questions, search]);
 
   const filledAlternatives = form.alternativas.filter((alternativa) => alternativa.texto.trim());
-  const canCreateQuestion = form.enunciado.trim() && form.modalidade.trim() && filledAlternatives.length >= 2;
+  const canCreateQuestion = form.enunciado.trim() && filledAlternatives.length >= 2;
 
   function handleInputChange(event) {
     const { name, value } = event.target;
@@ -141,7 +137,7 @@ function BancoQuestoes() {
       .map((alternativa) => ({ ...alternativa, texto: alternativa.texto.trim() }))
       .filter((alternativa) => alternativa.texto);
 
-    if (!form.enunciado.trim() || !form.modalidade.trim() || alternativas.length < 2) return;
+    if (!form.enunciado.trim() || alternativas.length < 2) return;
 
     const hasCorrectAlternative = alternativas.some((alternativa) => alternativa.correta);
     const normalizedAlternatives = hasCorrectAlternative
@@ -151,7 +147,6 @@ function BancoQuestoes() {
     const nextQuestion = {
       id: questions.length ? Math.max(...questions.map((item) => item.id)) + 1 : 1,
       enunciado: form.enunciado.trim(),
-      modalidade: form.modalidade.trim(),
       dificuldade: form.dificuldade,
       status: form.status,
       alternativas: normalizedAlternatives,
@@ -167,7 +162,7 @@ function BancoQuestoes() {
         <div>
           <span className="question-bank-eyebrow">Avaliacoes</span>
           <h1>Banco de questoes</h1>
-          <p>Organize questoes por curso, dificuldade e status para montar avaliacoes com mais agilidade.</p>
+          <p>Organize enunciados, alternativas, dificuldade e status para montar avaliacoes com mais agilidade.</p>
         </div>
         <div className="question-bank-summary">
           <span>Total</span>
@@ -182,7 +177,7 @@ function BancoQuestoes() {
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Nome da questao, alternativa ou curso"
+            placeholder="Nome da questao ou alternativa"
           />
         </label>
 
@@ -210,16 +205,6 @@ function BancoQuestoes() {
           </div>
 
           <div className="question-create-grid">
-            <label>
-              Curso
-              <input
-                name="modalidade"
-                value={form.modalidade}
-                onChange={handleInputChange}
-                placeholder="Ex.: Matematica"
-              />
-            </label>
-
             <label>
               Dificuldade
               <select name="dificuldade" value={form.dificuldade} onChange={handleInputChange}>
@@ -306,7 +291,6 @@ function BancoQuestoes() {
               <div className="question-card-main">
                 <span className="question-card-id">#{question.id}</span>
                 <strong>{question.enunciado}</strong>
-                <small>{question.modalidade}</small>
                 {question.alternativas?.length > 0 && (
                   <ul className="question-card-alternatives">
                     {question.alternativas.map((alternativa, index) => (
