@@ -109,12 +109,12 @@ function BancoQuestoes() {
     });
   }
 
-  function removeAlternative(id) {
+  function removeAlternative(indexToRemove) {
     setForm((current) => {
       if (current.alternativas.length <= 1) return current;
 
-      const removedAlternative = current.alternativas.find((alternativa) => alternativa.id === id);
-      const nextAlternatives = current.alternativas.filter((alternativa) => alternativa.id !== id);
+      const removedAlternative = current.alternativas[indexToRemove];
+      const nextAlternatives = current.alternativas.filter((_, index) => index !== indexToRemove);
 
       if (removedAlternative?.correta && nextAlternatives.length) {
         return {
@@ -270,7 +270,7 @@ function BancoQuestoes() {
                   <button
                     type="button"
                     className="remove-alternative-button"
-                    onClick={() => removeAlternative(alternativa.id)}
+                    onClick={() => removeAlternative(index)}
                     disabled={form.alternativas.length <= 1}
                   >
                     Remover
