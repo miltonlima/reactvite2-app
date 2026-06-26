@@ -45,7 +45,7 @@ function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, o
   const location = useLocation();
   const menuItems = [
     { name: 'home', icon: '🏠', path: '/page17' },
-    { name: 'home2', icon: '🏠', path: '/home2' },
+    { name: 'Dashbord', icon: '📊', path: '/home2' },
     { name: 'Alunos', icon: '🔎', path: '/aluno' },
     { name: 'Modalidades', icon: '📝', path: '/modalidade' },
     { name: 'Cursos', icon: '📗', path: '/turma' },
