@@ -142,10 +142,11 @@
 .question-create-heading {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 14px;
   padding-bottom: 12px;
   border-bottom: 1px solid #e2e8f0;
+  text-align: left;
 }
 
 .question-form-section {
@@ -159,6 +160,8 @@
 .question-alternatives-header div {
   display: grid;
   gap: 3px;
+  justify-items: start;
+  text-align: left;
 }
 
 .question-create-heading strong,
