@@ -307,7 +307,10 @@ function BancoQuestoes() {
 
             <div className="question-alternatives-list">
               {form.alternativas.map((alternativa, index) => (
-                <div key={`${alternativa.id}-${index}`} className="question-alternative-row">
+                <div
+                  key={`${alternativa.id}-${index}`}
+                  className={`question-alternative-row ${alternativa.correta ? 'is-correct' : ''}`}
+                >
                   <label className="alternative-correct-control">
                     <input
                       type="radio"
@@ -385,7 +388,7 @@ function BancoQuestoes() {
                 {question.alternativas?.length > 0 && (
                   <ul className="question-card-alternatives">
                     {question.alternativas.map((alternativa, index) => (
-                      <li key={alternativa.id}>
+                      <li key={alternativa.id} className={alternativa.correta ? 'is-correct' : ''}>
                         <span>{String.fromCharCode(65 + index)}</span>
                         {alternativa.texto}
                         {alternativa.correta && <strong>Correta</strong>}

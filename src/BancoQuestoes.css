@@ -271,6 +271,20 @@
   background: #ffffff;
 }
 
+.question-alternative-row.is-correct {
+  border-color: #d1fae5;
+  background: #ffffff;
+}
+
+.question-alternative-row.is-correct .alternative-correct-control {
+  color: #047857;
+}
+
+.question-alternative-row.is-correct .alternative-text-field input {
+  border-color: #bbf7d0;
+  background: #ffffff;
+}
+
 .alternative-correct-control {
   align-items: center;
   flex-direction: row !important;
@@ -352,6 +366,11 @@
   line-height: 1.35;
 }
 
+.question-card-alternatives li.is-correct {
+  color: #334155;
+  font-weight: 700;
+}
+
 .question-card-alternatives li > span {
   display: inline-flex;
   align-items: center;
@@ -364,6 +383,11 @@
   color: #334155;
   font-size: 0.72rem;
   font-weight: 800;
+}
+
+.question-card-alternatives li.is-correct > span {
+  background: #ecfdf5;
+  color: #047857;
 }
 
 .question-card-alternatives li > strong {
