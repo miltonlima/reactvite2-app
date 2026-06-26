@@ -280,7 +280,7 @@ function BancoQuestoes() {
               </label>
             </div>
 
-            <button type="submit" disabled={!canCreateQuestion}>
+            <button type="submit" className="question-submit-button" disabled={!canCreateQuestion}>
               Adicionar questao
             </button>
           </div>

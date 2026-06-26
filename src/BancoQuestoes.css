@@ -205,6 +205,7 @@
   border-radius: 6px;
   background: #2563eb;
   color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
   font-weight: 700;
   cursor: pointer;
 }
@@ -214,16 +215,23 @@
   cursor: not-allowed;
 }
 
+.question-bank-create .question-submit-button {
+  color: #0f172a;
+  -webkit-text-fill-color: #0f172a;
+}
+
 .secondary-create-button {
   border: 1px solid #cbd5e1;
   background: #f8fafc;
   color: #0f172a;
+  -webkit-text-fill-color: #0f172a;
 }
 
 .remove-alternative-button {
   border: 1px solid #fecaca;
   background: #fff7f7;
   color: #991b1b;
+  -webkit-text-fill-color: #991b1b;
   padding: 0 12px;
 }
 
@@ -231,6 +239,7 @@
   border-color: #e2e8f0;
   background: #f8fafc;
   color: #94a3b8;
+  -webkit-text-fill-color: #94a3b8;
 }
 
 .question-alternatives {
