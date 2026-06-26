@@ -173,6 +173,19 @@
   align-items: end;
 }
 
+.question-form-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.question-form-footer .question-create-grid {
+  justify-content: start;
+}
+
 .question-bank-create button,
 .secondary-create-button,
 .remove-alternative-button {
@@ -419,6 +432,7 @@
 
   .question-bank-toolbar,
   .question-create-grid,
+  .question-form-footer,
   .question-card {
     grid-template-columns: 1fr;
   }
@@ -433,6 +447,7 @@
   }
 
   .question-create-heading button,
+  .question-form-footer button,
   .secondary-create-button,
   .remove-alternative-button {
     width: 100%;

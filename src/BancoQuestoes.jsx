@@ -199,28 +199,6 @@ function BancoQuestoes() {
               <strong>Nova questao</strong>
               <span>Monte o enunciado e adicione quantas alternativas precisar.</span>
             </div>
-            <button type="submit" disabled={!canCreateQuestion}>
-              Adicionar questao
-            </button>
-          </div>
-
-          <div className="question-create-grid">
-            <label>
-              Dificuldade
-              <select name="dificuldade" value={form.dificuldade} onChange={handleInputChange}>
-                <option>Facil</option>
-                <option>Media</option>
-                <option>Dificil</option>
-              </select>
-            </label>
-
-            <label>
-              Status
-              <select name="status" value={form.status} onChange={handleInputChange}>
-                <option>Ativa</option>
-                <option>Rascunho</option>
-              </select>
-            </label>
           </div>
 
           <label className="question-field-large">
@@ -278,6 +256,31 @@ function BancoQuestoes() {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="question-form-footer">
+            <div className="question-create-grid">
+              <label>
+                Dificuldade
+                <select name="dificuldade" value={form.dificuldade} onChange={handleInputChange}>
+                  <option>Facil</option>
+                  <option>Media</option>
+                  <option>Dificil</option>
+                </select>
+              </label>
+
+              <label>
+                Status
+                <select name="status" value={form.status} onChange={handleInputChange}>
+                  <option>Ativa</option>
+                  <option>Rascunho</option>
+                </select>
+              </label>
+            </div>
+
+            <button type="submit" disabled={!canCreateQuestion}>
+              Adicionar questao
+            </button>
           </div>
         </form>
       </section>
