@@ -1,46 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './BancoQuestoes.css';
+import { API_BASE } from './config/apiBase';
 
 const emptyAlternative = (id, correta = false) => ({
   id,
   texto: '',
   correta,
 });
-
-const initialQuestions = [
-  {
-    id: 1,
-    enunciado: 'Qual recurso do React permite controlar estado dentro de um componente funcional?',
-    dificuldade: 'Facil',
-    status: 'Ativa',
-    alternativas: [
-      { id: 1, texto: 'useState', correta: true },
-      { id: 2, texto: 'useRoute', correta: false },
-      { id: 3, texto: 'useStyle', correta: false },
-    ],
-  },
-  {
-    id: 2,
-    enunciado: 'Em uma API REST, qual metodo HTTP e mais indicado para atualizar um recurso existente?',
-    dificuldade: 'Media',
-    status: 'Ativa',
-    alternativas: [
-      { id: 1, texto: 'GET', correta: false },
-      { id: 2, texto: 'PUT', correta: true },
-      { id: 3, texto: 'TRACE', correta: false },
-    ],
-  },
-  {
-    id: 3,
-    enunciado: 'O que significa responsividade em uma interface web?',
-    dificuldade: 'Facil',
-    status: 'Rascunho',
-    alternativas: [
-      { id: 1, texto: 'Adaptar a interface a diferentes tamanhos de tela', correta: true },
-      { id: 2, texto: 'Responder chamadas de API mais rapido', correta: false },
-    ],
-  },
-];
 
 function getInitialForm() {
   return {
@@ -51,11 +17,54 @@ function getInitialForm() {
   };
 }
 
+async function request(path, options = {}) {
+  const hasBody = typeof options.body !== 'undefined';
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: {
+      ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
+      ...(options.headers || {}),
+    },
+  });
+
+  const isJson = response.headers.get('content-type')?.includes('application/json');
+  const data = isJson ? await response.json() : null;
+
+  if (!response.ok) {
+    throw new Error(data?.mensagem || data?.detail || data?.message || response.statusText);
+  }
+
+  return data;
+}
+
 function BancoQuestoes() {
-  const [questions, setQuestions] = useState(initialQuestions);
+  const [questions, setQuestions] = useState([]);
   const [search, setSearch] = useState('');
   const [difficulty, setDifficulty] = useState('Todas');
   const [form, setForm] = useState(getInitialForm);
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    loadQuestions();
+  }, []);
+
+  async function loadQuestions() {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await request('/api/perguntas');
+      setQuestions(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(err.message || 'Nao foi possivel carregar as perguntas.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const filteredQuestions = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -99,7 +108,7 @@ function BancoQuestoes() {
   function addAlternative() {
     setForm((current) => {
       const nextId = current.alternativas.length
-        ? Math.max(...current.alternativas.map((alternativa) => alternativa.id)) + 1
+        ? Math.max(...current.alternativas.map((alternativa) => Number(alternativa.id) || 0)) + 1
         : 1;
 
       return {
@@ -130,7 +139,7 @@ function BancoQuestoes() {
     });
   }
 
-  function handleCreateQuestion(event) {
+  async function handleCreateQuestion(event) {
     event.preventDefault();
 
     const alternativas = form.alternativas
@@ -144,16 +153,82 @@ function BancoQuestoes() {
       ? alternativas
       : alternativas.map((alternativa, index) => ({ ...alternativa, correta: index === 0 }));
 
-    const nextQuestion = {
-      id: questions.length ? Math.max(...questions.map((item) => item.id)) + 1 : 1,
+    const payload = {
       enunciado: form.enunciado.trim(),
       dificuldade: form.dificuldade,
       status: form.status,
-      alternativas: normalizedAlternatives,
+      alternativas: normalizedAlternatives.map((alternativa, index) => ({
+        id: Number(alternativa.id) > 0 ? Number(alternativa.id) : null,
+        texto: alternativa.texto,
+        correta: Boolean(alternativa.correta),
+        ordem: index + 1,
+      })),
     };
 
-    setQuestions((current) => [nextQuestion, ...current]);
+    try {
+      setSaving(true);
+      setError('');
+      setSuccess('');
+      const saved = editingId
+        ? await request(`/api/perguntas/${editingId}`, { method: 'PUT', body: JSON.stringify(payload) })
+        : await request('/api/perguntas', { method: 'POST', body: JSON.stringify(payload) });
+
+      setQuestions((current) => (
+        editingId
+          ? current.map((item) => (Number(item.id) === Number(editingId) ? saved : item))
+          : [saved, ...current]
+      ));
+      setEditingId(null);
+      setForm(getInitialForm());
+      setSuccess(editingId ? 'Pergunta atualizada com sucesso.' : 'Pergunta cadastrada com sucesso.');
+    } catch (err) {
+      setError(err.message || 'Nao foi possivel salvar a pergunta.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function startEdit(question) {
+    setEditingId(question.id);
+    setForm({
+      enunciado: question.enunciado || '',
+      dificuldade: question.dificuldade || 'Facil',
+      status: question.status || 'Ativa',
+      alternativas: (question.alternativas?.length ? question.alternativas : [emptyAlternative(1, true), emptyAlternative(2)])
+        .map((alternativa, index) => ({
+          id: alternativa.id || index + 1,
+          texto: alternativa.texto || '',
+          correta: Boolean(alternativa.correta),
+        })),
+    });
+    setError('');
+    setSuccess('');
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
     setForm(getInitialForm());
+  }
+
+  async function handleDeleteQuestion(question) {
+    const ok = window.confirm(`Excluir pergunta #${question.id}?`);
+    if (!ok) return;
+
+    try {
+      setDeletingId(question.id);
+      setError('');
+      setSuccess('');
+      await request(`/api/perguntas/${question.id}`, { method: 'DELETE' });
+      setQuestions((current) => current.filter((item) => Number(item.id) !== Number(question.id)));
+      if (Number(editingId) === Number(question.id)) {
+        cancelEdit();
+      }
+      setSuccess('Pergunta excluida com sucesso.');
+    } catch (err) {
+      setError(err.message || 'Nao foi possivel excluir a pergunta.');
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
@@ -196,9 +271,14 @@ function BancoQuestoes() {
         <form onSubmit={handleCreateQuestion}>
           <div className="question-create-heading">
             <div>
-              <strong>Nova questão</strong>
-              <span>Monte o enunciado e adicione quantas alternativas precisar.</span>
+              <strong>Nova questao</strong>
+              <span>{editingId ? `Editando pergunta #${editingId}` : 'Monte o enunciado e adicione quantas alternativas precisar.'}</span>
             </div>
+            {editingId && (
+              <button type="button" className="secondary-create-button" onClick={cancelEdit} disabled={saving}>
+                Cancelar edicao
+              </button>
+            )}
           </div>
 
           <div className="question-form-section">
@@ -220,20 +300,21 @@ function BancoQuestoes() {
                 <strong>Alternativas</strong>
                 <span>Marque uma alternativa como correta.</span>
               </div>
-              <button type="button" className="secondary-create-button" onClick={addAlternative}>
+              <button type="button" className="secondary-create-button" onClick={addAlternative} disabled={saving}>
                 Adicionar alternativa
               </button>
             </div>
 
             <div className="question-alternatives-list">
               {form.alternativas.map((alternativa, index) => (
-                <div key={alternativa.id} className="question-alternative-row">
+                <div key={`${alternativa.id}-${index}`} className="question-alternative-row">
                   <label className="alternative-correct-control">
                     <input
                       type="radio"
                       name="alternativaCorreta"
                       checked={alternativa.correta}
                       onChange={() => handleCorrectAlternative(alternativa.id)}
+                      disabled={saving}
                     />
                     Correta
                   </label>
@@ -244,6 +325,7 @@ function BancoQuestoes() {
                       value={alternativa.texto}
                       onChange={(event) => handleAlternativeChange(alternativa.id, event.target.value)}
                       placeholder={`Texto da alternativa ${index + 1}`}
+                      disabled={saving}
                     />
                   </label>
 
@@ -251,7 +333,7 @@ function BancoQuestoes() {
                     type="button"
                     className="remove-alternative-button"
                     onClick={() => removeAlternative(index)}
-                    disabled={form.alternativas.length <= 1}
+                    disabled={saving || form.alternativas.length <= 1}
                   >
                     Remover
                   </button>
@@ -264,7 +346,7 @@ function BancoQuestoes() {
             <div className="question-create-grid">
               <label>
                 Dificuldade
-                <select name="dificuldade" value={form.dificuldade} onChange={handleInputChange}>
+                <select name="dificuldade" value={form.dificuldade} onChange={handleInputChange} disabled={saving}>
                   <option>Facil</option>
                   <option>Media</option>
                   <option>Dificil</option>
@@ -273,25 +355,29 @@ function BancoQuestoes() {
 
               <label>
                 Status
-                <select name="status" value={form.status} onChange={handleInputChange}>
+                <select name="status" value={form.status} onChange={handleInputChange} disabled={saving}>
                   <option>Ativa</option>
                   <option>Rascunho</option>
                 </select>
               </label>
             </div>
 
-            <button type="submit" className="question-submit-button" disabled={!canCreateQuestion}>
-              Adicionar questão
+            <button type="submit" className="question-submit-button" disabled={!canCreateQuestion || saving}>
+              {saving ? 'Salvando...' : editingId ? 'Salvar alteracoes' : 'Adicionar questao'}
             </button>
           </div>
         </form>
       </section>
 
       <section className="question-bank-list" aria-label="Lista de questoes cadastradas">
-        {filteredQuestions.length === 0 ? (
+        {loading && <p className="question-bank-empty">Carregando perguntas...</p>}
+        {error && <p className="question-bank-message error">Erro: {error}</p>}
+        {success && <p className="question-bank-message success">{success}</p>}
+
+        {!loading && filteredQuestions.length === 0 ? (
           <p className="question-bank-empty">Nenhuma questao encontrada.</p>
         ) : (
-          filteredQuestions.map((question) => (
+          !loading && filteredQuestions.map((question) => (
             <article key={question.id} className="question-card">
               <div className="question-card-main">
                 <span className="question-card-id">#{question.id}</span>
@@ -313,6 +399,15 @@ function BancoQuestoes() {
                 <span>{question.dificuldade}</span>
                 <span>{question.alternativas?.length || 0} alternativas</span>
                 <span className={question.status === 'Ativa' ? 'is-active' : 'is-draft'}>{question.status}</span>
+              </div>
+
+              <div className="question-card-actions">
+                <button type="button" onClick={() => startEdit(question)} disabled={saving || deletingId === question.id}>
+                  Editar
+                </button>
+                <button type="button" onClick={() => handleDeleteQuestion(question)} disabled={saving || deletingId === question.id}>
+                  {deletingId === question.id ? 'Excluindo...' : 'Excluir'}
+                </button>
               </div>
             </article>
           ))

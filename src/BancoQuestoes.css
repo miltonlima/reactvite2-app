@@ -380,6 +380,35 @@
   gap: 8px;
 }
 
+.question-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.question-card-actions button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.question-card-actions button:last-child {
+  border-color: #fecaca;
+  background: #fff7f7;
+  color: #991b1b;
+}
+
+.question-card-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .question-card-meta span {
   display: inline-flex;
   align-items: center;
@@ -410,6 +439,14 @@
   border-radius: 8px;
   background: #ffffff;
   color: #64748b;
+}
+
+.question-bank-message {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #ffffff;
+  font-weight: 700;
 }
 
 @media (max-width: 1040px) {
@@ -475,6 +512,10 @@
   }
 
   .question-card-meta {
+    justify-content: flex-start;
+  }
+
+  .question-card-actions {
     justify-content: flex-start;
   }
 }
