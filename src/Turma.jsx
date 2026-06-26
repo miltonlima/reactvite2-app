@@ -60,6 +60,7 @@ function Turma() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'asc' });
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
     loadInitialData();
@@ -154,6 +155,7 @@ function Turma() {
 
       setTurmas((current) => [...current, created]);
       setForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
+      setIsCreateModalOpen(false);
       setSuccess('Turma cadastrada com sucesso.');
     } catch (err) {
       setError(err.message || 'Falha ao cadastrar turma.');
@@ -179,6 +181,19 @@ function Turma() {
     if (saving) return;
     setEditingId(null);
     setEditingForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
+  }
+
+  function openCreateModal() {
+    setForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
+    setError('');
+    setSuccess('');
+    setIsCreateModalOpen(true);
+  }
+
+  function closeCreateModal() {
+    if (saving) return;
+    setIsCreateModalOpen(false);
+    setForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
   }
 
   async function handleUpdate() {
@@ -246,65 +261,12 @@ function Turma() {
         </div>
         <div className="turma-report-header-right">
           <span className="turma-report-badge">Total: {turmas.length}</span>
+          <button type="button" className="turma-primary-action" onClick={openCreateModal}>
+            Nova turma
+          </button>
           <Link to="/page17" className="secondary-link">Voltar ao Dashboard</Link>
         </div>
       </header>
-
-      <section className="turma-report-create">
-        <form onSubmit={handleCreate} className="turma-create-inline-form">
-          <input
-            name="nomeTurma"
-            type="text"
-            value={form.nomeTurma}
-            onChange={handleCreateInputChange}
-            placeholder="Nome da turma"
-            disabled={saving}
-          />
-
-          <select
-            name="modalidadeId"
-            value={form.modalidadeId}
-            onChange={handleCreateInputChange}
-            disabled={saving}
-          >
-            <option value="">Selecione a modalidade</option>
-            {modalidades.map((modalidade) => (
-              <option key={modalidade.id} value={modalidade.id}>{modalidade.courseName}</option>
-            ))}
-          </select>
-
-          <input
-            name="dataInicio"
-            type="date"
-            value={form.dataInicio}
-            onChange={handleCreateInputChange}
-            disabled={saving}
-          />
-
-          <input
-            name="dataFim"
-            type="date"
-            value={form.dataFim}
-            onChange={handleCreateInputChange}
-            disabled={saving}
-          />
-
-          <label className="active-flag">
-            <input
-              name="active"
-              type="checkbox"
-              checked={form.active}
-              onChange={handleCreateInputChange}
-              disabled={saving}
-            />
-            Ativa
-          </label>
-
-          <button type="submit" disabled={saving || !form.nomeTurma.trim() || !form.modalidadeId}>
-            {saving ? 'Salvando...' : 'Cadastrar'}
-          </button>
-        </form>
-      </section>
 
       {error && <p className="error">Erro: {error}</p>}
       {success && <p className="success">{success}</p>}
@@ -367,6 +329,98 @@ function Turma() {
           </tbody>
         </table>
       </section>
+
+      {isCreateModalOpen && (
+        <div
+          className="turma-modal-overlay"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeCreateModal();
+          }}
+        >
+          <section className="turma-edit-modal" role="dialog" aria-modal="true" aria-labelledby="turma-create-title">
+            <header className="turma-edit-modal-header">
+              <div>
+                <h2 id="turma-create-title">Cadastrar turma</h2>
+                <p>Informe os dados principais para criar uma nova turma.</p>
+              </div>
+              <button type="button" onClick={closeCreateModal} disabled={saving}>
+                Fechar
+              </button>
+            </header>
+
+            <form className="turma-edit-form" onSubmit={handleCreate}>
+              <label>
+                Nome da turma
+                <input
+                  name="nomeTurma"
+                  type="text"
+                  value={form.nomeTurma}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Modalidade
+                <select
+                  name="modalidadeId"
+                  value={form.modalidadeId}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                >
+                  <option value="">Selecione</option>
+                  {modalidades.map((modalidade) => (
+                    <option key={modalidade.id} value={modalidade.id}>{modalidade.courseName}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label>
+                Data de início
+                <input
+                  name="dataInicio"
+                  type="date"
+                  value={form.dataInicio}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Data de fim
+                <input
+                  name="dataFim"
+                  type="date"
+                  value={form.dataFim}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label className="active-flag turma-edit-active">
+                <input
+                  name="active"
+                  type="checkbox"
+                  checked={form.active}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                />
+                Turma ativa
+              </label>
+
+              <div className="turma-edit-actions">
+                <button type="submit" disabled={saving || !form.nomeTurma.trim() || !form.modalidadeId}>
+                  {saving ? 'Salvando...' : 'Cadastrar turma'}
+                </button>
+                <button type="button" onClick={closeCreateModal} disabled={saving}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
 
       {editingId && (
         <div

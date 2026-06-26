@@ -45,6 +45,24 @@
   white-space: nowrap;
 }
 
+.turma-primary-action {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.turma-primary-action:hover {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+}
+
 .turma-report-create {
   margin-bottom: 14px;
 }
@@ -456,6 +474,7 @@
   }
 
   .turma-report-header-right .secondary-link,
+  .turma-primary-action,
   .turma-report-badge {
     text-align: center;
   }
