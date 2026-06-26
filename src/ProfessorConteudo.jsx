@@ -129,7 +129,7 @@ function ProfessorConteudo() {
         }
       }
 
-      setError(err.message || 'Não foi possível carregar as turmas.');
+      setError(err.message || 'Não foi possível carregar os cursos.');
     } finally {
       setLoading(false);
     }
@@ -146,7 +146,7 @@ function ProfessorConteudo() {
       setModulos(Array.isArray(modulosData) ? modulosData : []);
       setAulas(Array.isArray(aulasData) ? aulasData : []);
     } catch (err) {
-      setError(err.message || 'Não foi possível carregar conteúdo da turma.');
+      setError(err.message || 'Não foi possível carregar conteúdo do curso.');
     } finally {
       setLoading(false);
     }
@@ -334,7 +334,7 @@ function ProfessorConteudo() {
     <div className="professor-page">
       <header className="professor-hero">
         <span className="professor-kicker">Painel do Professor</span>
-        <h1>Conteúdo da Turma</h1>
+        <h1>Conteúdo do Curso</h1>
         <p>
           Crie e organize módulos e aulas pela interface, sem precisar editar SQL.
         </p>
@@ -348,9 +348,9 @@ function ProfessorConteudo() {
 
       <section className="professor-toolbar">
         <label className="professor-field">
-          <span>Turma</span>
+          <span>Curso</span>
           <select value={turmaId} onChange={(event) => setTurmaId(event.target.value)} disabled={loading || saving}>
-            {!turmas.length && <option value="">Nenhuma turma disponível</option>}
+            {!turmas.length && <option value="">Nenhum curso disponível</option>}
             {turmas.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.nomeTurma} - {item.modalidadeNome}
@@ -372,12 +372,12 @@ function ProfessorConteudo() {
 
         {turmaAtual && (
           <small className="professor-active-turma">
-            Turma ativa: <strong>{turmaAtual.nomeTurma}</strong> | Período: {formatDate(turmaAtual.dataInicio)} até {formatDate(turmaAtual.dataFim)}
+            Curso ativo: <strong>{turmaAtual.nomeTurma}</strong> | Período: {formatDate(turmaAtual.dataInicio)} até {formatDate(turmaAtual.dataFim)}
           </small>
         )}
       </section>
 
-      {loading && <p className="professor-loading">Carregando conteúdo da turma...</p>}
+      {loading && <p className="professor-loading">Carregando conteúdo do curso...</p>}
 
       {!loading && (
         <div className="professor-content-grid">
@@ -419,7 +419,7 @@ function ProfessorConteudo() {
               </button>
             </div>
 
-            {!modulos.length && <p className="professor-empty">Nenhum módulo criado ainda para esta turma.</p>}
+            {!modulos.length && <p className="professor-empty">Nenhum módulo criado ainda para este curso.</p>}
 
             {modulos.map((modulo) => (
               <article key={modulo.id} className="professor-card">
@@ -524,7 +524,7 @@ function ProfessorConteudo() {
               <button type="button" onClick={createAula} disabled={saving} className="btn btn-primary">Criar aula</button>
             </div>
 
-            {!aulas.length && <p className="professor-empty">Nenhuma aula criada ainda para esta turma.</p>}
+            {!aulas.length && <p className="professor-empty">Nenhuma aula criada ainda para este curso.</p>}
 
             {aulas.map((aula) => (
               <article key={aula.id} className="professor-card">

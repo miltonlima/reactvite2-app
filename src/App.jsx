@@ -117,7 +117,7 @@ function App() {
             <p className="job-title">Analista de Sistemas Pleno – EAD</p>
             <ul>
               <li>Desenvolvimento e manutenção de sistemas acadêmicos web</li>
-              <li>Integração de dados de alunos, cursos e turmas</li>
+              <li>Integração de dados de alunos e cursos</li>
               <li>Suporte técnico e manutenção evolutiva de plataformas educacionais</li>
             </ul>
           </div>

@@ -88,7 +88,7 @@ function normalizeInscricao(item) {
   return {
     id: getValue(item, 'id', 'Id'),
     turmaId: getValue(item, 'turmaId', 'TurmaId', 'turma_id'),
-    turmaNome: getValue(item, 'turmaNome', 'TurmaNome', 'nome_turma') || 'Turma sem nome',
+    turmaNome: getValue(item, 'turmaNome', 'TurmaNome', 'nome_turma') || 'Curso sem nome',
     modalidadeId: getValue(item, 'modalidadeId', 'ModalidadeId', 'modalidade_id'),
     modalidadeNome: getValue(item, 'modalidadeNome', 'ModalidadeNome', 'modalidade_nome') || 'Curso sem nome',
     status: getValue(item, 'status', 'Status') || 'ATIVA',

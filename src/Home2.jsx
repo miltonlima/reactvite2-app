@@ -58,7 +58,7 @@ function App17() {
               <div className="card-value">2434</div>
             </div>
             <div className="card-metric">
-              <div>Turmas</div>
+              <div>Cursos</div>
               <div className="card-value">1259</div>
             </div>
             <div className="card-metric">

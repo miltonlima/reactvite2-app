@@ -260,16 +260,16 @@ function App17() {
         <div className="student-hero-copy">
           <span className="student-kicker">Área do aluno</span>
           <h1>Minha Escola Online</h1>
-          <p>Encontre suas turmas, acompanhe o progresso e descubra novas oportunidades de aprendizagem.</p>
+          <p>Encontre seus cursos, acompanhe o progresso e descubra novas oportunidades de aprendizagem.</p>
         </div>
         <div className="student-search-panel">
           <label>
-            Buscar turma
+            Buscar curso
             <input
               type="search"
               value={busca}
               onChange={(event) => setBusca(event.target.value)}
-              placeholder="Nome da turma ou modalidade"
+              placeholder="Nome do curso ou modalidade"
             />
           </label>
         </div>
@@ -277,7 +277,7 @@ function App17() {
 
       <section className="student-metrics" aria-label="Resumo do aluno">
         <article>
-          <span>Minhas turmas</span>
+          <span>Meus cursos</span>
           <strong>{turmasInscritas.size}</strong>
         </article>
         <article>
@@ -285,7 +285,7 @@ function App17() {
           <strong>{continuarAprendendo.length}</strong>
         </article>
         <article>
-          <span>Turmas abertas</span>
+          <span>Cursos abertos</span>
           <strong>{turmasNaoInscritas.length}</strong>
         </article>
         <article>
@@ -294,7 +294,7 @@ function App17() {
         </article>
       </section>
 
-      {loading && <p>Carregando modalidades e turmas...</p>}
+      {loading && <p>Carregando modalidades e cursos...</p>}
       {error && <p className="error">Erro: {error}</p>}
       {inscricaoMensagem && <p className="success">{inscricaoMensagem}</p>}
 
@@ -355,7 +355,7 @@ function App17() {
 
             <div>
               {cursos.length === 0 ? (
-                <p className="student-empty">Ainda não há turmas ativas vinculadas a esta modalidade.</p>
+                <p className="student-empty">Ainda não há cursos ativos vinculados a esta modalidade.</p>
               ) : (
                 <div className="student-course-grid">
                   {cursos.map((turma) => {

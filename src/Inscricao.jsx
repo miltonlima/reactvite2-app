@@ -161,7 +161,7 @@ function Inscricao() {
       <header style={{ marginBottom: 16 }}>
         <h1 style={{ margin: 0 }}>Cursos Disponíveis para Inscrição</h1>
         <p style={{ margin: '8px 0 0' }}>
-          Selecione uma turma ativa para concluir a inscrição.
+          Selecione um curso ativo para concluir a inscrição.
         </p>
         <div style={{ marginTop: 10 }}>
           <Link to="/page17" className="secondary-link">Voltar para catálogo</Link>
@@ -210,7 +210,7 @@ function Inscricao() {
 
             <div style={{ padding: 14 }}>
               {cursos.length === 0 ? (
-                <p style={{ margin: 0 }}>Ainda não há turmas ativas vinculadas a esta modalidade.</p>
+                <p style={{ margin: 0 }}>Ainda não há cursos ativos vinculados a esta modalidade.</p>
               ) : (
                 <div
                   style={{

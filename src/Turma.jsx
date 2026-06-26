@@ -76,7 +76,7 @@ function Turma() {
       setTurmas(Array.isArray(turmasData) ? turmasData : []);
       setModalidades(Array.isArray(modalidadesData) ? modalidadesData : []);
     } catch (err) {
-      setError(err.message || 'Falha ao carregar turmas.');
+      setError(err.message || 'Falha ao carregar cursos.');
     }
   }
 
@@ -133,7 +133,7 @@ function Turma() {
     event.preventDefault();
 
     if (!form.nomeTurma.trim() || !form.modalidadeId) {
-      setError('Nome da turma e modalidade são obrigatórios.');
+      setError('Nome do curso e modalidade são obrigatórios.');
       return;
     }
 
@@ -156,9 +156,9 @@ function Turma() {
       setTurmas((current) => [...current, created]);
       setForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
       setIsCreateModalOpen(false);
-      setSuccess('Turma cadastrada com sucesso.');
+      setSuccess('Curso cadastrado com sucesso.');
     } catch (err) {
-      setError(err.message || 'Falha ao cadastrar turma.');
+      setError(err.message || 'Falha ao cadastrar curso.');
     } finally {
       setSaving(false);
     }
@@ -200,7 +200,7 @@ function Turma() {
     if (!editingId) return;
 
     if (!editingForm.nomeTurma.trim() || !editingForm.modalidadeId) {
-      setError('Nome da turma e modalidade são obrigatórios.');
+      setError('Nome do curso e modalidade são obrigatórios.');
       return;
     }
 
@@ -222,16 +222,16 @@ function Turma() {
 
       setTurmas((current) => current.map((item) => (item.id === editingId ? updated : item)));
       cancelEdit();
-      setSuccess('Turma atualizada com sucesso.');
+      setSuccess('Curso atualizado com sucesso.');
     } catch (err) {
-      setError(err.message || 'Falha ao atualizar turma.');
+      setError(err.message || 'Falha ao atualizar curso.');
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(id, nomeTurma) {
-    const ok = window.confirm(`Excluir turma "${nomeTurma}"?`);
+    const ok = window.confirm(`Excluir curso "${nomeTurma}"?`);
     if (!ok) return;
 
     try {
@@ -244,9 +244,9 @@ function Turma() {
       if (editingId === id) {
         cancelEdit();
       }
-      setSuccess('Turma excluída com sucesso.');
+      setSuccess('Curso excluído com sucesso.');
     } catch (err) {
-      setError(err.message || 'Falha ao excluir turma.');
+      setError(err.message || 'Falha ao excluir curso.');
     } finally {
       setDeletingId(null);
     }
@@ -256,13 +256,13 @@ function Turma() {
     <div className="turma-report-page">
       <header className="turma-report-header">
         <div>
-          <h1>Relatório de Turmas</h1>
-          <p>Cadastro, manutenção e exclusão de turmas.</p>
+          <h1>Relatório de Cursos</h1>
+          <p>Cadastro, manutenção e exclusão de cursos.</p>
         </div>
         <div className="turma-report-header-right">
           <span className="turma-report-badge">Total: {turmas.length}</span>
           <button type="button" className="turma-primary-action" onClick={openCreateModal}>
-            Nova turma
+            Novo curso
           </button>
           <Link to="/page17" className="secondary-link">Voltar ao Dashboard</Link>
         </div>
@@ -276,7 +276,7 @@ function Turma() {
           <thead>
             <tr>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('id')}>ID{getSortIndicator('id')}</button></th>
-              <th><button type="button" className="sort-header-button" onClick={() => handleSort('nomeTurma')}>Turma{getSortIndicator('nomeTurma')}</button></th>
+              <th><button type="button" className="sort-header-button" onClick={() => handleSort('nomeTurma')}>Curso{getSortIndicator('nomeTurma')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('modalidadeNome')}>Modalidade{getSortIndicator('modalidadeNome')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('dataInicio')}>Início{getSortIndicator('dataInicio')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('dataFim')}>Fim{getSortIndicator('dataFim')}</button></th>
@@ -287,7 +287,7 @@ function Turma() {
           <tbody>
             {sortedTurmas.length === 0 ? (
               <tr>
-                <td colSpan={7} className="td-empty">Nenhuma turma cadastrada.</td>
+                <td colSpan={7} className="td-empty">Nenhum curso cadastrado.</td>
               </tr>
             ) : (
               sortedTurmas.map((item) => {
@@ -295,7 +295,7 @@ function Turma() {
                 return (
                   <tr key={item.id}>
                     <td data-label="ID">{item.id}</td>
-                    <td data-label="Turma">{item.nomeTurma}</td>
+                    <td data-label="Curso">{item.nomeTurma}</td>
                     <td data-label="Modalidade">{item.modalidadeNome}</td>
                     <td data-label="Início">{formatDate(item.dataInicio)}</td>
                     <td data-label="Fim">{formatDate(item.dataFim)}</td>
@@ -341,8 +341,8 @@ function Turma() {
           <section className="turma-edit-modal" role="dialog" aria-modal="true" aria-labelledby="turma-create-title">
             <header className="turma-edit-modal-header">
               <div>
-                <h2 id="turma-create-title">Cadastrar turma</h2>
-                <p>Informe os dados principais para criar uma nova turma.</p>
+                <h2 id="turma-create-title">Cadastrar curso</h2>
+                <p>Informe os dados principais para criar um novo curso.</p>
               </div>
               <button type="button" onClick={closeCreateModal} disabled={saving}>
                 Fechar
@@ -351,7 +351,7 @@ function Turma() {
 
             <form className="turma-edit-form" onSubmit={handleCreate}>
               <label>
-                Nome da turma
+                Nome do curso
                 <input
                   name="nomeTurma"
                   type="text"
@@ -406,12 +406,12 @@ function Turma() {
                   onChange={handleCreateInputChange}
                   disabled={saving}
                 />
-                Turma ativa
+                Curso ativo
               </label>
 
               <div className="turma-edit-actions">
                 <button type="submit" disabled={saving || !form.nomeTurma.trim() || !form.modalidadeId}>
-                  {saving ? 'Salvando...' : 'Cadastrar turma'}
+                  {saving ? 'Salvando...' : 'Cadastrar curso'}
                 </button>
                 <button type="button" onClick={closeCreateModal} disabled={saving}>
                   Cancelar
@@ -433,8 +433,8 @@ function Turma() {
           <section className="turma-edit-modal" role="dialog" aria-modal="true" aria-labelledby="turma-edit-title">
             <header className="turma-edit-modal-header">
               <div>
-                <h2 id="turma-edit-title">Editar turma</h2>
-                <p>Atualize os dados principais da turma selecionada.</p>
+                <h2 id="turma-edit-title">Editar curso</h2>
+                <p>Atualize os dados principais do curso selecionado.</p>
               </div>
               <button type="button" onClick={cancelEdit} disabled={saving}>
                 Fechar
@@ -449,7 +449,7 @@ function Turma() {
               }}
             >
               <label>
-                Nome da turma
+                Nome do curso
                 <input
                   name="nomeTurma"
                   type="text"
@@ -504,7 +504,7 @@ function Turma() {
                   onChange={handleEditInputChange}
                   disabled={saving}
                 />
-                Turma ativa
+                Curso ativo
               </label>
 
               <div className="turma-edit-actions">

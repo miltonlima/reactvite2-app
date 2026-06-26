@@ -66,11 +66,11 @@ const ArquivoPage = withTitle(Arquivo, 'Arquivos')
 const MensagemPage = withTitle(Mensagem, 'Mensagens')
 const AlunoPage = withTitle(Aluno, 'Alunos')
 const ModalidadePage = withTitle(Modalidade, 'Modalidades')
-const TurmaPage = withTitle(Turma, 'Turmas')
+const TurmaPage = withTitle(Turma, 'Cursos')
 const AvaliacaoPage = withTitle(Avaliacao, 'Avaliações');
 const BancoQuestoesPage = withTitle(BancoQuestoes, 'Banco de questões');
 const InscricaoPage = withTitle(Inscricao, 'Inscrições');
-const AcessoTurmaPage = withTitle(AcessoTurma, 'Acesso da Turma');
+const AcessoTurmaPage = withTitle(AcessoTurma, 'Acesso do Curso');
 const ProfessorConteudoPage = withTitle(ProfessorConteudo, 'Professor - Conteúdo');
 
 

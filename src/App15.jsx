@@ -64,7 +64,7 @@ function App15() {
             <div className="education-brand-mark">EA</div>
             <div>
               <span>Ambiente Educacional</span>
-              <strong>Atividades e Turmas</strong>
+              <strong>Atividades e Cursos</strong>
             </div>
           </div>
 
@@ -72,14 +72,14 @@ function App15() {
             <span className="education-kicker">Portal de aprendizagem</span>
             <h1>Sistema de Atividades Educacionais</h1>
             <p>
-              Acesse suas turmas, acompanhe inscrições e organize conteúdos em um espaço simples para alunos e professores.
+              Acesse seus cursos, acompanhe inscrições e organize conteúdos em um espaço simples para alunos e professores.
             </p>
           </div>
 
           <div className="education-visual" aria-hidden="true">
             <div className="education-board">
               <span>Plano da aula</span>
-              <strong>Turmas ativas</strong>
+              <strong>Cursos ativos</strong>
               <div></div>
               <div></div>
               <div></div>

@@ -93,13 +93,13 @@ function AcessoTurma() {
       setError('');
 
       if (!turmaIdNumero) {
-        setError('Turma inválida para acesso.');
+        setError('Curso inválido para acesso.');
         return;
       }
 
       const alunoId = getAlunoIdFromStorage();
       if (!alunoId) {
-        setError('Faça login para acessar a turma.');
+        setError('Faça login para acessar o curso.');
         return;
       }
 
@@ -113,7 +113,7 @@ function AcessoTurma() {
       const encontrada = lista.find((item) => Number(item?.turmaId) === turmaIdNumero);
 
       if (!encontrada) {
-        setError('Você não está inscrito nesta turma.');
+        setError('Você não está inscrito neste curso.');
         return;
       }
 
@@ -121,7 +121,7 @@ function AcessoTurma() {
 
       const aulasData = await requestWithFallback(`/api/turmas/${turmaIdNumero}/aulas?alunoId=${alunoId}`, null);
       if (!aulasData) {
-        setError('A API em produção ainda não possui o endpoint de aulas da turma. Publique a versão mais recente do back-end.');
+        setError('A API em produção ainda não possui o endpoint de aulas do curso. Publique a versão mais recente do back-end.');
         return;
       }
 
@@ -129,7 +129,7 @@ function AcessoTurma() {
       setAulas(aulasLista);
       setAulaAtualId(aulasLista[0]?.id || null);
     } catch (err) {
-      setError(err.message || 'Não foi possível validar o acesso da turma.');
+      setError(err.message || 'Não foi possível validar o acesso do curso.');
     } finally {
       setLoading(false);
     }
@@ -205,7 +205,7 @@ function AcessoTurma() {
     return (
       <>
         <div className="lesson-detail-heading">
-          <span>{aulaAtual.moduloTitulo || 'Módulo da turma'}</span>
+          <span>{aulaAtual.moduloTitulo || 'Módulo do curso'}</span>
           <strong>{aulaAtual.titulo}</strong>
           <small>{aulaAtual.duracaoMinutos || 0} minutos de estudo</small>
         </div>
@@ -265,7 +265,7 @@ function AcessoTurma() {
       <header className="acesso-hero">
         <div>
           <span className="acesso-kicker">Área de estudos</span>
-          <h1>Acesso da Turma</h1>
+          <h1>Acesso do Curso</h1>
           <p>Continue suas aulas, acompanhe o progresso e marque as etapas concluídas.</p>
         </div>
         <Link to="/page17" className="acesso-back-link">Voltar para inscrições</Link>
@@ -278,7 +278,7 @@ function AcessoTurma() {
         <section className="acesso-shell">
           <div className="acesso-summary">
             <div className="acesso-course-info">
-              <strong>{inscricao.turmaNome || `Turma #${inscricao.turmaId}`}</strong>
+              <strong>{inscricao.turmaNome || `Curso #${inscricao.turmaId}`}</strong>
               <span>{inscricao.modalidadeNome || 'Modalidade não informada'}</span>
             </div>
 
@@ -308,10 +308,10 @@ function AcessoTurma() {
           <div className="acesso-content-layout">
             <aside className="acesso-lessons">
               <div className="acesso-panel-title">
-                <strong>Conteúdo da turma</strong>
+                <strong>Conteúdo do curso</strong>
                 <span>{aulas.length} aula(s)</span>
               </div>
-              {aulas.length === 0 && <span className="acesso-empty">Esta turma ainda não possui aulas cadastradas.</span>}
+              {aulas.length === 0 && <span className="acesso-empty">Este curso ainda não possui aulas cadastradas.</span>}
               {aulas.map((aula, index) => {
                 const ativa = Number(aulaAtualId) === Number(aula.id);
                 return (
