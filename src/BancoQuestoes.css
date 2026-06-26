@@ -272,16 +272,16 @@
 }
 
 .question-alternative-row.is-correct {
-  border-color: #d1fae5;
+  border-color: #e2e8f0;
   background: #ffffff;
 }
 
 .question-alternative-row.is-correct .alternative-correct-control {
-  color: #047857;
+  color: #475569;
 }
 
 .question-alternative-row.is-correct .alternative-text-field input {
-  border-color: #bbf7d0;
+  border-color: #cbd5e1;
   background: #ffffff;
 }
 
