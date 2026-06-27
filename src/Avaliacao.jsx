@@ -35,10 +35,26 @@ function getUserName(user) {
   return user?.full_name || user?.fullName || user?.name || user?.email || 'Aluno';
 }
 
+function formatDateTime(value) {
+  if (!value) return 'Data não informada';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Data não informada';
+
+  return new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(date);
+}
+
 function Avaliacao() {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [latestResult, setLatestResult] = useState(null);
+  const [isResultsModalOpen, setIsResultsModalOpen] = useState(false);
+  const [previousResults, setPreviousResults] = useState([]);
+  const [loadingResults, setLoadingResults] = useState(false);
+  const [resultsError, setResultsError] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -114,6 +130,31 @@ function Avaliacao() {
     setError('');
   }
 
+  async function openResultsModal() {
+    setIsResultsModalOpen(true);
+    await loadPreviousResults();
+  }
+
+  function closeResultsModal() {
+    setIsResultsModalOpen(false);
+    setResultsError('');
+  }
+
+  async function loadPreviousResults() {
+    try {
+      setLoadingResults(true);
+      setResultsError('');
+      const alunoId = Number(user?.id) || null;
+      const path = alunoId ? `/api/avaliacoes/respostas?alunoId=${alunoId}` : '/api/avaliacoes/respostas';
+      const data = await request(path);
+      setPreviousResults(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setResultsError(err.message || 'Não foi possível carregar os resultados anteriores.');
+    } finally {
+      setLoadingResults(false);
+    }
+  }
+
   return (
     <div className="assessment-page">
       <header className="assessment-header">
@@ -127,6 +168,10 @@ function Avaliacao() {
           <strong>{answeredCount}/{questions.length}</strong>
           <small>respondidas</small>
         </div>
+
+        <button type="button" className="assessment-history-button" onClick={openResultsModal}>
+          Resultados anteriores
+        </button>
       </header>
 
       {latestResult && (
@@ -189,6 +234,55 @@ function Avaliacao() {
           </button>
         </div>
       </form>
+
+      {isResultsModalOpen && (
+        <div className="assessment-modal-backdrop" role="presentation" onMouseDown={closeResultsModal}>
+          <section
+            className="assessment-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="assessment-results-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <header className="assessment-modal-header">
+              <div>
+                <h2 id="assessment-results-title">Resultados anteriores</h2>
+                <p>Histórico de tentativas salvas para este usuário.</p>
+              </div>
+              <button type="button" onClick={closeResultsModal}>
+                Fechar
+              </button>
+            </header>
+
+            <div className="assessment-modal-body">
+              {loadingResults && <p className="assessment-empty">Carregando resultados...</p>}
+              {resultsError && <p className="assessment-message error">Erro: {resultsError}</p>}
+
+              {!loadingResults && !resultsError && previousResults.length === 0 && (
+                <p className="assessment-empty">Nenhum resultado anterior encontrado.</p>
+              )}
+
+              {!loadingResults && !resultsError && previousResults.length > 0 && (
+                <div className="assessment-history-list">
+                  {previousResults.map((result) => (
+                    <article key={result.id} className="assessment-history-item">
+                      <div>
+                        <span>#{result.id}</span>
+                        <strong>{formatDateTime(result.createdAt)}</strong>
+                        <small>{result.alunoNome || getUserName(user)}</small>
+                      </div>
+                      <div className="assessment-history-score">
+                        <strong>{result.totalCorretas} de {result.totalPerguntas}</strong>
+                        <span>{Number(result.percentual || 0).toFixed(0)}%</span>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }
