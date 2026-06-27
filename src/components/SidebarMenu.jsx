@@ -46,18 +46,18 @@ function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, o
   const menuItems = [
     { name: 'home', icon: '🏠', path: '/page17' },
     { name: 'Dashbord', icon: '📊', path: '/home2' },
-    { name: 'Alunos', icon: '🔎', path: '/aluno' },
-    { name: 'Modalidades', icon: '📝', path: '/modalidade' },
-    { name: 'Cursos', icon: '📗', path: '/turma' },
-    { name: 'Inscrições', icon: '📝', path: '/inscricao' },
-    { name: 'Módulos / Aulas', icon: '🧑', path: '/professor/conteudo' },
-    { name: 'Avaliações', icon: '🎓', path: '/avaliacao' },
+    { name: 'Aluno', icon: '🔎', path: '/aluno' },
+    { name: 'Modalidade', icon: '📝', path: '/modalidade' },
+    { name: 'Curso', icon: '📗', path: '/turma' },
+    { name: 'Inscrição', icon: '📝', path: '/inscricao' },
+    { name: 'Módulo / Aula', icon: '🧑', path: '/professor/conteudo' },
+    { name: 'Prova', icon: '🎓', path: '/avaliacao' },
     { name: 'Banco de questões', icon: '📋', path: '/banco-questoes' },
-    { name: 'Arquivos', icon: '📁', path: '/arquivo' },
-    { name: 'Mensagens', icon: '✉️', path: '/mensagem' },
-    { name: 'Notificações', icon: '🔔', path: '#' },
-    { name: 'Localizações', icon: '📍', path: '#' },
-    { name: 'Gráficos', icon: '📊', path: '#' }
+    { name: 'Arquivo', icon: '📁', path: '/arquivo' },
+    { name: 'Mensagem', icon: '✉️', path: '/mensagem' },
+    { name: 'Notificação', icon: '🔔', path: '#' },
+    { name: 'Localização', icon: '📍', path: '#' },
+    { name: 'Gráfico', icon: '📊', path: '#' }
   ].filter((item) => !(isAlunoUser(userType) && item.path === '/modalidade'));
 
   return (
