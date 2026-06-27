@@ -495,7 +495,14 @@ function Aluno() {
       <div className="alunos-layout">
         <section className="alunos-list-card">
           <div className="alunos-list-header">
-            <h2>Alunos</h2>
+            <div className="alunos-list-title">
+              <h2>Alunos</h2>
+              <span>
+                {searchTerm.trim()
+                  ? `${sortedAlunos.length} de ${alunos.length} aluno(s)`
+                  : `${alunos.length} aluno(s)`}
+              </span>
+            </div>
             <div className="alunos-list-tools">
               <label className="alunos-search">
                 <span>Buscar aluno</span>

@@ -77,6 +77,18 @@
   font-size: 1.1rem;
 }
 
+.alunos-list-title {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.alunos-list-title span {
+  color: #64748b;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
 .alunos-list-tools {
   display: flex;
   align-items: center;
