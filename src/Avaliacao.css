@@ -81,7 +81,7 @@
 }
 
 .assessment-history-button {
-  min-height: 42px;
+  min-height: 40px;
   padding: 0 16px;
   border: 0;
   border-radius: 6px;
@@ -91,7 +91,6 @@
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
-  align-self: stretch;
 }
 
 .assessment-history-button:hover {
@@ -396,10 +395,6 @@
     align-items: stretch;
   }
 
-  .assessment-history-button {
-    width: 100%;
-  }
-
   .assessment-result {
     grid-template-columns: 1fr;
   }
@@ -448,10 +443,6 @@
   .assessment-option {
     grid-template-columns: 18px 24px minmax(0, 1fr);
     gap: 8px;
-  }
-
-  .assessment-header-actions {
-    grid-template-columns: 1fr;
   }
 
   .assessment-progress {
