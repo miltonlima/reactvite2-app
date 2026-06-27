@@ -144,10 +144,18 @@ function Avaliacao() {
     try {
       setLoadingResults(true);
       setResultsError('');
+      const data = await request('/api/avaliacoes/respostas');
       const alunoId = Number(user?.id) || null;
-      const path = alunoId ? `/api/avaliacoes/respostas?alunoId=${alunoId}` : '/api/avaliacoes/respostas';
-      const data = await request(path);
-      setPreviousResults(Array.isArray(data) ? data : []);
+      const sortedResults = Array.isArray(data)
+        ? [...data].sort((a, b) => {
+            const aIsMine = alunoId && Number(a.alunoId) === alunoId ? 1 : 0;
+            const bIsMine = alunoId && Number(b.alunoId) === alunoId ? 1 : 0;
+
+            if (aIsMine !== bIsMine) return bIsMine - aIsMine;
+            return Number(b.id) - Number(a.id);
+          })
+        : [];
+      setPreviousResults(sortedResults);
     } catch (err) {
       setResultsError(err.message || 'Não foi possível carregar os resultados anteriores.');
     } finally {
@@ -249,7 +257,7 @@ function Avaliacao() {
             <header className="assessment-modal-header">
               <div>
                 <h2 id="assessment-results-title">Resultados anteriores</h2>
-                <p>Histórico de tentativas salvas para este usuário.</p>
+                <p>Histórico de tentativas salvas por todos os usuários.</p>
               </div>
               <button type="button" onClick={closeResultsModal}>
                 Fechar
