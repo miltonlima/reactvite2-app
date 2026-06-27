@@ -255,28 +255,6 @@ function BancoQuestoes() {
         </div>
       </header>
 
-      <section className="question-bank-toolbar" aria-label="Filtros do banco de questões">
-        <label>
-          Buscar
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Nome da questão ou alternativa"
-          />
-        </label>
-
-        <label>
-          Dificuldade
-          <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
-            <option>Todas</option>
-            <option value="Facil">Fácil</option>
-            <option value="Media">Média</option>
-            <option value="Dificil">Difícil</option>
-          </select>
-        </label>
-      </section>
-
       <section className="question-bank-create">
         <form onSubmit={handleCreateQuestion}>
           <div className="question-create-heading">
@@ -380,6 +358,28 @@ function BancoQuestoes() {
             </button>
           </div>
         </form>
+      </section>
+
+      <section className="question-bank-toolbar" aria-label="Filtros do banco de questões">
+        <label>
+          Buscar
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Nome da questão ou alternativa"
+          />
+        </label>
+
+        <label>
+          Dificuldade
+          <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
+            <option>Todas</option>
+            <option value="Facil">Fácil</option>
+            <option value="Media">Média</option>
+            <option value="Dificil">Difícil</option>
+          </select>
+        </label>
       </section>
 
       <section className="question-bank-list" aria-label="Lista de questões cadastradas">
