@@ -43,6 +43,15 @@ function getUserInitials(userName, userEmail) {
 
 function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, onNavigate, onProfileClick }) {
   const location = useLocation();
+  const alunoAllowedPaths = new Set([
+    '/page17',
+    '/home2',
+    '/inscricao',
+    '/avaliacao',
+    '/arquivo',
+    '/mensagem',
+    '#',
+  ]);
   const menuItems = [
     { name: 'home', icon: '🏠', path: '/page17' },
     { name: 'Dashbord', icon: '📊', path: '/home2' },
@@ -58,7 +67,7 @@ function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, o
     { name: 'Notificação', icon: '🔔', path: '#' },
     { name: 'Localização', icon: '📍', path: '#' },
     { name: 'Gráfico', icon: '📊', path: '#' }
-  ].filter((item) => !(isAlunoUser(userType) && item.path === '/modalidade'));
+  ].filter((item) => !isAlunoUser(userType) || alunoAllowedPaths.has(item.path));
 
   return (
     <aside className={`dashboard-sidebar ${isMobileOpen ? 'open' : ''}`}>
