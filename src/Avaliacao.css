@@ -81,7 +81,7 @@
 }
 
 .assessment-history-button {
-  min-height: 40px;
+  min-height: 42px;
   padding: 0 16px;
   border: 0;
   border-radius: 6px;
@@ -91,6 +91,7 @@
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
+  align-self: stretch;
 }
 
 .assessment-history-button:hover {
@@ -395,6 +396,10 @@
     align-items: stretch;
   }
 
+  .assessment-history-button {
+    width: 100%;
+  }
+
   .assessment-result {
     grid-template-columns: 1fr;
   }
@@ -447,5 +452,9 @@
 
   .assessment-progress {
     width: 100%;
+  }
+
+  .assessment-header-actions {
+    grid-template-columns: 1fr;
   }
 }

@@ -169,6 +169,10 @@ function Avaliacao() {
             <strong>{answeredCount}/{questions.length}</strong>
             <small>respondidas</small>
           </div>
+
+          <button type="button" className="assessment-history-button" onClick={openResultsModal}>
+            Consultar resultados
+          </button>
         </div>
       </header>
 
@@ -224,9 +228,6 @@ function Avaliacao() {
         ))}
 
         <div className="assessment-actions">
-          <button type="button" className="assessment-history-button" onClick={openResultsModal}>
-            Consultar resultados
-          </button>
           <button type="button" className="assessment-secondary-button" onClick={handleClear} disabled={saving || answeredCount === 0}>
             Limpar respostas
           </button>
