@@ -83,10 +83,11 @@
 .assessment-history-button {
   min-height: 42px;
   padding: 0 16px;
-  border: 1px solid #cbd5e1;
+  border: 0;
   border-radius: 6px;
-  background: #ffffff;
-  color: #0f172a;
+  background: #2563eb;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
@@ -94,7 +95,7 @@
 }
 
 .assessment-history-button:hover {
-  background: #f8fafc;
+  background: #1d4ed8;
 }
 
 .assessment-result {
