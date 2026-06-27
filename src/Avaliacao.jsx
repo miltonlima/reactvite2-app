@@ -164,14 +164,16 @@ function Avaliacao() {
           <p>Selecione uma alternativa para cada questão cadastrada no banco de questões.</p>
         </div>
 
-        <div className="assessment-progress">
-          <strong>{answeredCount}/{questions.length}</strong>
-          <small>respondidas</small>
-        </div>
+        <div className="assessment-header-actions">
+          <div className="assessment-progress">
+            <strong>{answeredCount}/{questions.length}</strong>
+            <small>respondidas</small>
+          </div>
 
-        <button type="button" className="assessment-history-button" onClick={openResultsModal}>
-          Resultados anteriores
-        </button>
+          <button type="button" className="assessment-history-button" onClick={openResultsModal}>
+            Resultados anteriores
+          </button>
+        </div>
       </header>
 
       {latestResult && (

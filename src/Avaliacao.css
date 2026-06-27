@@ -57,6 +57,14 @@
   text-align: left;
 }
 
+.assessment-header-actions {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .assessment-progress strong,
 .assessment-result strong {
   display: block;
@@ -82,6 +90,7 @@
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
+  align-self: stretch;
 }
 
 .assessment-history-button:hover {
@@ -376,8 +385,14 @@
   }
 
   .assessment-progress {
-    width: 100%;
     text-align: left;
+  }
+
+  .assessment-header-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(112px, 0.45fr) minmax(0, 1fr);
+    align-items: stretch;
   }
 
   .assessment-history-button {
@@ -432,5 +447,13 @@
   .assessment-option {
     grid-template-columns: 18px 24px minmax(0, 1fr);
     gap: 8px;
+  }
+
+  .assessment-header-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .assessment-progress {
+    width: 100%;
   }
 }
