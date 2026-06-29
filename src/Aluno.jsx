@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import './Aluno.css';
 import { API_BASE } from './config/apiBase';
 
+let alunoPageAccessLogged = false;
+
 function toInputDate(value) {
   if (!value) return '';
   if (typeof value === 'string' && value.length >= 10) {
@@ -117,6 +119,66 @@ function formatDateTime(value) {
   return parsed.toLocaleString('pt-BR');
 }
 
+function getAccessSessionId() {
+  const storageKey = 'access_session_id';
+  const existing = localStorage.getItem(storageKey);
+  if (existing) return existing;
+
+  const nextId = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  localStorage.setItem(storageKey, nextId);
+  return nextId;
+}
+
+function getStoredUser() {
+  try {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function logAlunoEvent({
+  action,
+  statusCode = 200,
+  httpMethod = 'POST',
+  metadata = {},
+}) {
+  try {
+    const user = getStoredUser();
+
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath: window.location.pathname,
+        pageTitle: 'Gestão de Alunos',
+        action,
+        httpMethod,
+        referrer: document.referrer || null,
+        statusCode,
+        metadata: {
+          source: 'Aluno',
+          route: '/aluno',
+          ...metadata,
+        },
+      }),
+    });
+  } catch (error) {
+    console.warn('Falha ao registrar log de alunos:', error);
+  }
+}
+
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -218,6 +280,20 @@ function Aluno() {
   useEffect(() => {
     loadAlunos(includeInactive);
   }, [includeInactive]);
+
+  useEffect(() => {
+    if (alunoPageAccessLogged) return;
+    alunoPageAccessLogged = true;
+
+    logAlunoEvent({
+      action: 'page_view',
+      statusCode: 200,
+      httpMethod: 'GET',
+      metadata: {
+        includeInactive,
+      },
+    });
+  }, []);
 
   async function loadAlunos(showInactive) {
     try {
@@ -358,9 +434,18 @@ function Aluno() {
       });
 
       setCreateSuccess(response?.mensagem || 'Aluno inscrito com sucesso.');
+      const createdAluno = normalizeAluno(response?.usuario || response?.user || response?.aluno);
+      await logAlunoEvent({
+        action: 'student_create_success',
+        statusCode: 201,
+        metadata: {
+          alunoId: createdAluno?.id || null,
+          alunoNome: createdAluno?.fullName || payload.fullName,
+          alunoEmail: createdAluno?.email || payload.email,
+        },
+      });
       await loadAlunos(includeInactive);
 
-      const createdAluno = normalizeAluno(response?.usuario || response?.user || response?.aluno);
       if (createdAluno?.id) {
         setIsCreateModalOpen(false);
         resetCreateForm();
@@ -369,6 +454,15 @@ function Aluno() {
         resetCreateForm();
       }
     } catch (error) {
+      await logAlunoEvent({
+        action: 'student_create_failed',
+        statusCode: error.status || 0,
+        metadata: {
+          alunoNome: createForm.fullName.trim() || null,
+          alunoEmail: createForm.email.trim() || null,
+          reason: error.message || 'create_error',
+        },
+      });
       setCreateError(error.message || 'Falha ao inscrever aluno.');
     } finally {
       setIsCreating(false);
@@ -401,10 +495,29 @@ function Aluno() {
         setSelectedAluno(alunoAtualizado);
       }
 
+      await logAlunoEvent({
+        action: 'student_update_success',
+        statusCode: 200,
+        metadata: {
+          alunoId: selectedId,
+          alunoNome: alunoAtualizado?.fullName || payload.fullName,
+          alunoEmail: alunoAtualizado?.email || payload.email,
+        },
+      });
       setSuccessMessage(response?.mensagem || 'Aluno atualizado com sucesso.');
       setIsEditing(false);
       await loadAlunos(includeInactive);
     } catch (error) {
+      await logAlunoEvent({
+        action: 'student_update_failed',
+        statusCode: error.status || 0,
+        metadata: {
+          alunoId: selectedId,
+          alunoNome: form.fullName.trim() || null,
+          alunoEmail: form.email.trim() || null,
+          reason: error.message || 'update_error',
+        },
+      });
       setDetailError(error.message || 'Falha ao atualizar aluno.');
     } finally {
       setIsSaving(false);
@@ -426,6 +539,16 @@ function Aluno() {
         method: 'DELETE',
       });
 
+      await logAlunoEvent({
+        action: 'student_inactivate_success',
+        statusCode: 200,
+        httpMethod: 'DELETE',
+        metadata: {
+          alunoId: selectedId,
+          alunoNome: selectedAlunoNome,
+          alunoEmail: selectedAluno?.email || null,
+        },
+      });
       setSuccessMessage(response?.mensagem || 'Aluno inativado com sucesso.');
       setSelectedAluno((current) => {
         if (!current) return current;
@@ -438,6 +561,17 @@ function Aluno() {
 
       await loadAlunos(includeInactive);
     } catch (error) {
+      await logAlunoEvent({
+        action: 'student_inactivate_failed',
+        statusCode: error.status || 0,
+        httpMethod: 'DELETE',
+        metadata: {
+          alunoId: selectedId,
+          alunoNome: selectedAlunoNome,
+          alunoEmail: selectedAluno?.email || null,
+          reason: error.message || 'inactivate_error',
+        },
+      });
       setDetailError(error.message || 'Falha ao inativar aluno.');
     } finally {
       setIsInactivating(false);
@@ -459,6 +593,15 @@ function Aluno() {
         method: 'POST',
       });
 
+      await logAlunoEvent({
+        action: 'student_reactivate_success',
+        statusCode: 200,
+        metadata: {
+          alunoId: selectedId,
+          alunoNome: selectedAlunoNome,
+          alunoEmail: selectedAluno?.email || null,
+        },
+      });
       setSuccessMessage(response?.mensagem || 'Aluno reativado com sucesso.');
       setSelectedAluno((current) => {
         if (!current) return current;
@@ -471,6 +614,16 @@ function Aluno() {
 
       await loadAlunos(includeInactive);
     } catch (error) {
+      await logAlunoEvent({
+        action: 'student_reactivate_failed',
+        statusCode: error.status || 0,
+        metadata: {
+          alunoId: selectedId,
+          alunoNome: selectedAlunoNome,
+          alunoEmail: selectedAluno?.email || null,
+          reason: error.message || 'reactivate_error',
+        },
+      });
       setDetailError(error.message || 'Falha ao reativar aluno.');
     } finally {
       setIsReactivating(false);
