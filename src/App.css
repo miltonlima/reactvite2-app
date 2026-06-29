@@ -120,6 +120,12 @@ body {
   background-color: #1d4ed8;
 }
 
+.form-grid button.create-account-button,
+.form-grid button.create-account-button:disabled {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
 .lottery-results {
   margin-top: 1.5rem;
   display: flex;

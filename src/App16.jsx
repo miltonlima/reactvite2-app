@@ -138,7 +138,7 @@ function App16() {
             />
           </label>
 
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="create-account-button" disabled={loading}>
             {loading ? 'Criando conta...' : 'Criar conta'}
           </button>
         </form>
