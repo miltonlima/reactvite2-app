@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import './App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_BASE } from './config/apiBase'
@@ -26,6 +26,43 @@ function getStoredUser() {
   }
 }
 
+async function logAccessEvent({
+  action,
+  statusCode = 200,
+  user = null,
+  metadata = {},
+}) {
+  try {
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath: window.location.pathname,
+        pageTitle: 'Página 15',
+        action,
+        httpMethod: 'GET',
+        referrer: document.referrer || null,
+        statusCode,
+        metadata: {
+          source: 'App15',
+          route: '/page15',
+          ...metadata,
+        },
+      }),
+    })
+  } catch (err) {
+    console.warn('Falha ao registrar log de acesso:', err)
+  }
+}
+
 function App15() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -40,35 +77,7 @@ function App15() {
       page15AccessLogged = true
 
       const user = getStoredUser()
-
-      try {
-        await fetch(`${API_BASE}/api/access-logs`, {
-          method: 'POST',
-          keepalive: true,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: Number(user?.id) || null,
-            userEmail: user?.email || null,
-            userName: user?.full_name || user?.fullName || user?.name || null,
-            userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
-            sessionId: getAccessSessionId(),
-            pagePath: window.location.pathname,
-            pageTitle: 'Página 15',
-            action: 'page_view',
-            httpMethod: 'GET',
-            referrer: document.referrer || null,
-            statusCode: 200,
-            metadata: {
-              source: 'App15',
-              route: '/page15',
-            },
-          }),
-        })
-      } catch (err) {
-        console.warn('Falha ao registrar log de acesso:', err)
-      }
+      await logAccessEvent({ action: 'page_view', statusCode: 200, user })
     }
 
     logPageAccess()
@@ -81,6 +90,14 @@ function App15() {
 
     if (!email.trim() || !password.trim()) {
       setError('Informe e-mail e senha.')
+      await logAccessEvent({
+        action: 'login_failed',
+        statusCode: 400,
+        metadata: {
+          attemptedEmail: email.trim() || null,
+          reason: 'missing_credentials',
+        },
+      })
       return
     }
 
@@ -101,19 +118,52 @@ function App15() {
         setMessage(data?.mensagem ?? 'Login validado com sucesso.')
         // Armazena dados do usuário em localStorage para proteção de rotas
         localStorage.setItem('user', JSON.stringify(data.usuario))
+        await logAccessEvent({
+          action: 'login_success',
+          statusCode: response.status,
+          user: data.usuario,
+          metadata: {
+            attemptedEmail: email.trim(),
+            destination: '/page17',
+          },
+        })
         navigate('/page17')
         return
       }
 
       if (response.status === 401) {
         setError(data?.mensagem ?? 'E-mail ou senha inválidos.')
+        await logAccessEvent({
+          action: 'login_failed',
+          statusCode: response.status,
+          metadata: {
+            attemptedEmail: email.trim(),
+            reason: 'invalid_credentials',
+          },
+        })
         return
       }
 
       setError(data?.mensagem ?? 'Falha ao autenticar. Tente novamente.')
+      await logAccessEvent({
+        action: 'login_failed',
+        statusCode: response.status,
+        metadata: {
+          attemptedEmail: email.trim(),
+          reason: data?.mensagem || response.statusText || 'authentication_error',
+        },
+      })
     } catch (err) {
       console.error('Erro ao autenticar:', err)
       setError('Erro ao conectar à API de login.')
+      await logAccessEvent({
+        action: 'login_failed',
+        statusCode: 0,
+        metadata: {
+          attemptedEmail: email.trim(),
+          reason: 'network_error',
+        },
+      })
     } finally {
       setLoading(false)
     }
@@ -198,3 +248,4 @@ function App15() {
 }
 
 export default App15
+
