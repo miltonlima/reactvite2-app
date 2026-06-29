@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import './Avaliacao.css';
 import { API_BASE } from './config/apiBase';
 
+let avaliacaoPageAccessLogged = false;
+
 async function request(path, options = {}) {
   const hasBody = typeof options.body !== 'undefined';
   const response = await fetch(`${API_BASE}${path}`, {
@@ -16,7 +18,9 @@ async function request(path, options = {}) {
   const data = isJson ? await response.json() : null;
 
   if (!response.ok) {
-    throw new Error(data?.mensagem || data?.detail || data?.message || response.statusText);
+    const error = new Error(data?.mensagem || data?.detail || data?.message || response.statusText);
+    error.status = response.status;
+    throw error;
   }
 
   return data;
@@ -33,6 +37,57 @@ function getStoredUser() {
 
 function getUserName(user) {
   return user?.full_name || user?.fullName || user?.name || user?.email || 'Aluno';
+}
+
+function getAccessSessionId() {
+  const storageKey = 'access_session_id';
+  const existing = localStorage.getItem(storageKey);
+  if (existing) return existing;
+
+  const nextId = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  localStorage.setItem(storageKey, nextId);
+  return nextId;
+}
+
+async function logAvaliacaoEvent({
+  action,
+  statusCode = 200,
+  httpMethod = 'POST',
+  metadata = {},
+}) {
+  try {
+    const user = getStoredUser();
+
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath: window.location.pathname,
+        pageTitle: 'Avaliação',
+        action,
+        httpMethod,
+        referrer: document.referrer || null,
+        statusCode,
+        metadata: {
+          source: 'Avaliacao',
+          route: '/avaliacao',
+          ...metadata,
+        },
+      }),
+    });
+  } catch (error) {
+    console.warn('Falha ao registrar log de avaliação:', error);
+  }
 }
 
 function formatDateTime(value) {
@@ -63,6 +118,17 @@ function Avaliacao() {
 
   useEffect(() => {
     loadQuestions();
+  }, []);
+
+  useEffect(() => {
+    if (avaliacaoPageAccessLogged) return;
+    avaliacaoPageAccessLogged = true;
+
+    logAvaliacaoEvent({
+      action: 'page_view',
+      statusCode: 200,
+      httpMethod: 'GET',
+    });
   }, []);
 
   async function loadQuestions() {
@@ -116,7 +182,31 @@ function Avaliacao() {
       });
       setLatestResult(result);
       setSuccess('Respostas salvas com sucesso.');
+      await logAvaliacaoEvent({
+        action: 'assessment_submit_success',
+        statusCode: 201,
+        metadata: {
+          respostaId: result?.id || null,
+          alunoId: payload.alunoId,
+          alunoNome: payload.alunoNome,
+          totalPerguntas: result?.totalPerguntas ?? questions.length,
+          totalRespondidas: payload.respostas.length,
+          totalCorretas: result?.totalCorretas ?? null,
+          percentual: result?.percentual ?? null,
+        },
+      });
     } catch (err) {
+      await logAvaliacaoEvent({
+        action: 'assessment_submit_failed',
+        statusCode: err.status || 0,
+        metadata: {
+          alunoId: payload.alunoId,
+          alunoNome: payload.alunoNome,
+          totalPerguntas: questions.length,
+          totalRespondidas: payload.respostas.length,
+          reason: err.message || 'assessment_submit_error',
+        },
+      });
       setError(err.message || 'Não foi possível salvar as respostas.');
     } finally {
       setSaving(false);
