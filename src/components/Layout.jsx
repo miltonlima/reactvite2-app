@@ -161,7 +161,7 @@ async function logLogoutEvent(user, pagePath) {
   }
 }
 
-async function logLoginPageAfterLogout(user) {
+async function logLoginPageAfterLogout() {
   try {
     await fetch(`${API_BASE}/api/access-logs`, {
       method: 'POST',
@@ -170,10 +170,10 @@ async function logLoginPageAfterLogout(user) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userId: Number(user?.id) || null,
-        userEmail: user?.email || null,
-        userName: user?.full_name || user?.fullName || user?.name || null,
-        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        userId: null,
+        userEmail: null,
+        userName: null,
+        userType: null,
         sessionId: getAccessSessionId(),
         pagePath: '/page15',
         pageTitle: 'Página 15',
@@ -234,7 +234,7 @@ function Layout() {
     }
 
     await logLogoutEvent(user, location.pathname);
-    await logLoginPageAfterLogout(user);
+    await logLoginPageAfterLogout();
     localStorage.removeItem('user');
     setUser(null);
     navigate('/page15');
