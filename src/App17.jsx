@@ -5,6 +5,60 @@ import { API_BASE } from './config/apiBase';
 import './App17.css';
 
 let apiCapabilitiesPromise = null;
+let page17AccessLogged = false;
+
+function getAccessSessionId() {
+  const storageKey = 'access_session_id';
+  const existing = localStorage.getItem(storageKey);
+  if (existing) return existing;
+
+  const nextId = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  localStorage.setItem(storageKey, nextId);
+  return nextId;
+}
+
+function getStoredUser() {
+  try {
+    const rawUser = localStorage.getItem('user');
+    return rawUser ? JSON.parse(rawUser) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function logAccessEvent({ action, statusCode = 200, user = null, metadata = {} }) {
+  try {
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath: window.location.pathname,
+        pageTitle: 'Página 17',
+        action,
+        httpMethod: 'GET',
+        referrer: document.referrer || null,
+        statusCode,
+        metadata: {
+          source: 'App17',
+          route: '/page17',
+          ...metadata,
+        },
+      }),
+    });
+  } catch (err) {
+    console.warn('Falha ao registrar log de acesso:', err);
+  }
+}
 
 async function request(path, options = {}) {
   const hasBody = typeof options.body !== 'undefined';
@@ -84,9 +138,7 @@ function formatDate(value) {
 
 function getAlunoIdFromStorage() {
   try {
-    const rawUser = localStorage.getItem('user');
-    if (!rawUser) return null;
-    const user = JSON.parse(rawUser);
+    const user = getStoredUser();
     const alunoId = Number(user?.id);
     return alunoId > 0 ? alunoId : null;
   } catch {
@@ -109,6 +161,10 @@ function App17() {
   const [canCreateInscricao, setCanCreateInscricao] = useState(false);
 
   useEffect(() => {
+    if (!page17AccessLogged) {
+      page17AccessLogged = true;
+      logAccessEvent({ action: 'page_view', statusCode: 200, user: getStoredUser() });
+    }
     loadCatalog();
   }, []);
 
