@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_BASE } from './config/apiBase'
@@ -46,7 +46,7 @@ async function logAccessEvent({
         userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
         sessionId: getAccessSessionId(),
         pagePath: window.location.pathname,
-        pageTitle: 'P\u00e1gina 15',
+        pageTitle: 'Página 15',
         action,
         httpMethod: 'GET',
         referrer: document.referrer || null,
