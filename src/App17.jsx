@@ -43,7 +43,7 @@ async function logAccessEvent({ action, statusCode = 200, user = null, metadata 
         userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
         sessionId: getAccessSessionId(),
         pagePath: window.location.pathname,
-        pageTitle: 'PÃ¡gina 17',
+        pageTitle: 'P\u00e1gina 17',
         action,
         httpMethod: 'GET',
         referrer: document.referrer || null,
