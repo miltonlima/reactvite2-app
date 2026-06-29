@@ -3,6 +3,8 @@ import './App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_BASE } from './config/apiBase'
 
+let page15AccessLogged = false
+
 function getAccessSessionId() {
   const storageKey = 'access_session_id'
   const existing = localStorage.getItem(storageKey)
@@ -34,6 +36,9 @@ function App15() {
 
   useEffect(() => {
     async function logPageAccess() {
+      if (page15AccessLogged) return
+      page15AccessLogged = true
+
       const user = getStoredUser()
 
       try {
@@ -50,7 +55,7 @@ function App15() {
             userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
             sessionId: getAccessSessionId(),
             pagePath: window.location.pathname,
-            pageTitle: document.title || 'Login',
+            pageTitle: 'Página 15',
             action: 'page_view',
             httpMethod: 'GET',
             referrer: document.referrer || null,
