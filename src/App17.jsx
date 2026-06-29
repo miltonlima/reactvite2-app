@@ -1,4 +1,4 @@
-﻿
+
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
@@ -43,7 +43,7 @@ async function logAccessEvent({ action, statusCode = 200, user = null, metadata 
         userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
         sessionId: getAccessSessionId(),
         pagePath: window.location.pathname,
-        pageTitle: 'P\u00e1gina 17',
+        pageTitle: 'Página 17',
         action,
         httpMethod: 'GET',
         referrer: document.referrer || null,
@@ -214,7 +214,7 @@ function App17() {
         setDashboard([]);
       }
     } catch (err) {
-      setError(err.message || 'Falha ao carregar catÃ¡logo de inscriÃ§Ãµes.');
+      setError(err.message || 'Falha ao carregar catálogo de inscrições.');
     } finally {
       setLoading(false);
     }
@@ -281,7 +281,7 @@ function App17() {
       setError('');
 
       if (!alunoId) {
-        setError('FaÃ§a login para realizar a inscriÃ§Ã£o.');
+        setError('Faça login para realizar a inscrição.');
         await logAccessEvent({
           action: 'course_enrollment_failed',
           statusCode: 401,
@@ -295,7 +295,7 @@ function App17() {
       }
 
       if (!canCreateInscricao) {
-        setError('InscriÃ§Ãµes indisponÃ­veis no momento. Atualize a API publicada no Render e tente novamente.');
+        setError('Inscrições indisponíveis no momento. Atualize a API publicada no Render e tente novamente.');
         await logAccessEvent({
           action: 'course_enrollment_failed',
           statusCode: 503,
@@ -316,7 +316,7 @@ function App17() {
       });
 
       setInscricaoMensagem(
-        data?.mensagem || `InscriÃ§Ã£o realizada em ${modalidade.courseName} - ${turma.nomeTurma}.`
+        data?.mensagem || `Inscrição realizada em ${modalidade.courseName} - ${turma.nomeTurma}.`
       );
       await logAccessEvent({
         action: 'course_enrollment_success',
@@ -331,7 +331,7 @@ function App17() {
       await loadCatalog();
     } catch (err) {
       if (err?.status === 404) {
-        setError('Endpoint de inscriÃ§Ã£o nÃ£o encontrado em produÃ§Ã£o. Publique a versÃ£o mais recente da API no Render.');
+        setError('Endpoint de inscrição não encontrado em produção. Publique a versão mais recente da API no Render.');
         await logAccessEvent({
           action: 'course_enrollment_failed',
           statusCode: 404,
@@ -342,9 +342,9 @@ function App17() {
           },
         });
       } else 
-      if (err?.status === 409 || /jÃ¡\s+estÃ¡\s+inscrito/i.test(err?.message || '')) {
+      if (err?.status === 409 || /já\s+está\s+inscrito/i.test(err?.message || '')) {
         setError('');
-        setInscricaoMensagem(`VocÃª jÃ¡ estÃ¡ inscrito em ${turma.nomeTurma}.`);
+        setInscricaoMensagem(`Você já está inscrito em ${turma.nomeTurma}.`);
         await logAccessEvent({
           action: 'course_enrollment_existing',
           statusCode: err?.status || 409,
@@ -356,7 +356,7 @@ function App17() {
         });
         setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
       } else {
-        setError(err.message || 'NÃ£o foi possÃ­vel concluir a inscriÃ§Ã£o.');
+        setError(err.message || 'Não foi possível concluir a inscrição.');
         await logAccessEvent({
           action: 'course_enrollment_failed',
           statusCode: err?.status || 0,
@@ -376,7 +376,7 @@ function App17() {
     <div className="student-home-page">
       <header className="student-hero">
         <div className="student-hero-copy">
-          <span className="student-kicker">Ãrea do aluno</span>
+          <span className="student-kicker">Área do aluno</span>
           <h1>Minha Escola Online</h1>
           <p>Encontre seus cursos, acompanhe o progresso e descubra novas oportunidades de aprendizagem.</p>
         </div>
@@ -435,10 +435,10 @@ function App17() {
                   />
                 </div>
                 <small>
-                  {Number(item.percentualProgresso || 0)}% concluÃ­do
+                  {Number(item.percentualProgresso || 0)}% concluído
                   {item.totalAulas > 0 ? (
                     <span>
-                      â€¢ {item.totalAulas} {item.totalAulas === 1 ? 'aula' : 'aulas'}
+                      • {item.totalAulas} {item.totalAulas === 1 ? 'aula' : 'aulas'}
                     </span>
                   ) : null}
                 </small>
@@ -467,13 +467,13 @@ function App17() {
             <header className="student-section-header">
               <strong>{modalidade.courseName}</strong>
               <span>
-                {cursos.length} {cursos.length === 1 ? 'curso' : 'cursos'} disponÃ­veis
+                {cursos.length} {cursos.length === 1 ? 'curso' : 'cursos'} disponíveis
               </span>
             </header>
 
             <div>
               {cursos.length === 0 ? (
-                <p className="student-empty">Ainda nÃ£o hÃ¡ cursos ativos vinculados a esta modalidade.</p>
+                <p className="student-empty">Ainda não há cursos ativos vinculados a esta modalidade.</p>
               ) : (
                 <div className="student-course-grid">
                   {cursos.map((turma) => {
@@ -488,7 +488,7 @@ function App17() {
                         <strong>{turma.nomeTurma}</strong>
                         <span>{modalidade.courseName}</span>
                         <div className="student-date-row">
-                          <span>InÃ­cio: {formatDate(turma.dataInicio)}</span>
+                          <span>Início: {formatDate(turma.dataInicio)}</span>
                           <span>Fim: {formatDate(turma.dataFim)}</span>
                         </div>
 
@@ -520,7 +520,7 @@ function App17() {
                             className="student-primary-action"
                           >
                             {!canCreateInscricao
-                              ? 'InscriÃ§Ã£o indisponÃ­vel'
+                              ? 'Inscrição indisponível'
                               : inscrevendoTurmaId === turma.id
                                 ? 'Inscrevendo...'
                                 : 'Inscrever-se'}
