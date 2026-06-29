@@ -182,6 +182,7 @@ function Avaliacao() {
       });
       setLatestResult(result);
       setSuccess('Respostas salvas com sucesso.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       await logAvaliacaoEvent({
         action: 'assessment_submit_success',
         statusCode: 201,
