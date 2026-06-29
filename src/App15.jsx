@@ -1,7 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_BASE } from './config/apiBase'
+
+function getAccessSessionId() {
+  const storageKey = 'access_session_id'
+  const existing = localStorage.getItem(storageKey)
+  if (existing) return existing
+
+  const nextId = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  localStorage.setItem(storageKey, nextId)
+  return nextId
+}
+
+function getStoredUser() {
+  try {
+    const userData = localStorage.getItem('user')
+    return userData ? JSON.parse(userData) : null
+  } catch {
+    return null
+  }
+}
 
 function App15() {
   const [email, setEmail] = useState('')
@@ -10,6 +31,43 @@ function App15() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    async function logPageAccess() {
+      const user = getStoredUser()
+
+      try {
+        await fetch(`${API_BASE}/api/access-logs`, {
+          method: 'POST',
+          keepalive: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: Number(user?.id) || null,
+            userEmail: user?.email || null,
+            userName: user?.full_name || user?.fullName || user?.name || null,
+            userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+            sessionId: getAccessSessionId(),
+            pagePath: window.location.pathname,
+            pageTitle: document.title || 'Login',
+            action: 'page_view',
+            httpMethod: 'GET',
+            referrer: document.referrer || null,
+            statusCode: 200,
+            metadata: {
+              source: 'App15',
+              route: '/page15',
+            },
+          }),
+        })
+      } catch (err) {
+        console.warn('Falha ao registrar log de acesso:', err)
+      }
+    }
+
+    logPageAccess()
+  }, [])
 
   async function handleSubmit(event) {
     event.preventDefault()
