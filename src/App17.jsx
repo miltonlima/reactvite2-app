@@ -1,4 +1,4 @@
-
+﻿
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
@@ -43,7 +43,7 @@ async function logAccessEvent({ action, statusCode = 200, user = null, metadata 
         userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
         sessionId: getAccessSessionId(),
         pagePath: window.location.pathname,
-        pageTitle: 'Página 17',
+        pageTitle: 'PÃ¡gina 17',
         action,
         httpMethod: 'GET',
         referrer: document.referrer || null,
@@ -214,7 +214,7 @@ function App17() {
         setDashboard([]);
       }
     } catch (err) {
-      setError(err.message || 'Falha ao carregar catálogo de inscrições.');
+      setError(err.message || 'Falha ao carregar catÃ¡logo de inscriÃ§Ãµes.');
     } finally {
       setLoading(false);
     }
@@ -268,17 +268,43 @@ function App17() {
   }, [turmasNaoInscritas]);
 
   async function handleInscricao(modalidade, turma) {
+    const enrollmentMetadata = {
+      alunoId,
+      turmaId: Number(turma?.id) || null,
+      turmaNome: turma?.nomeTurma || null,
+      modalidadeId: Number(modalidade?.id) || Number(turma?.modalidadeId) || null,
+      modalidadeNome: modalidade?.courseName || turma?.modalidadeNome || null,
+    };
+
     try {
       setInscricaoMensagem('');
       setError('');
 
       if (!alunoId) {
-        setError('Faça login para realizar a inscrição.');
+        setError('FaÃ§a login para realizar a inscriÃ§Ã£o.');
+        await logAccessEvent({
+          action: 'course_enrollment_failed',
+          statusCode: 401,
+          user: getStoredUser(),
+          metadata: {
+            ...enrollmentMetadata,
+            reason: 'missing_login',
+          },
+        });
         return;
       }
 
       if (!canCreateInscricao) {
-        setError('Inscrições indisponíveis no momento. Atualize a API publicada no Render e tente novamente.');
+        setError('InscriÃ§Ãµes indisponÃ­veis no momento. Atualize a API publicada no Render e tente novamente.');
+        await logAccessEvent({
+          action: 'course_enrollment_failed',
+          statusCode: 503,
+          user: getStoredUser(),
+          metadata: {
+            ...enrollmentMetadata,
+            reason: 'enrollment_endpoint_unavailable',
+          },
+        });
         return;
       }
 
@@ -290,20 +316,56 @@ function App17() {
       });
 
       setInscricaoMensagem(
-        data?.mensagem || `Inscrição realizada em ${modalidade.courseName} - ${turma.nomeTurma}.`
+        data?.mensagem || `InscriÃ§Ã£o realizada em ${modalidade.courseName} - ${turma.nomeTurma}.`
       );
+      await logAccessEvent({
+        action: 'course_enrollment_success',
+        statusCode: 201,
+        user: getStoredUser(),
+        metadata: {
+          ...enrollmentMetadata,
+          inscricaoId: data?.inscricao?.id || null,
+        },
+      });
       setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
       await loadCatalog();
     } catch (err) {
       if (err?.status === 404) {
-        setError('Endpoint de inscrição não encontrado em produção. Publique a versão mais recente da API no Render.');
+        setError('Endpoint de inscriÃ§Ã£o nÃ£o encontrado em produÃ§Ã£o. Publique a versÃ£o mais recente da API no Render.');
+        await logAccessEvent({
+          action: 'course_enrollment_failed',
+          statusCode: 404,
+          user: getStoredUser(),
+          metadata: {
+            ...enrollmentMetadata,
+            reason: 'endpoint_not_found',
+          },
+        });
       } else 
-      if (err?.status === 409 || /já\s+está\s+inscrito/i.test(err?.message || '')) {
+      if (err?.status === 409 || /jÃ¡\s+estÃ¡\s+inscrito/i.test(err?.message || '')) {
         setError('');
-        setInscricaoMensagem(`Você já está inscrito em ${turma.nomeTurma}.`);
+        setInscricaoMensagem(`VocÃª jÃ¡ estÃ¡ inscrito em ${turma.nomeTurma}.`);
+        await logAccessEvent({
+          action: 'course_enrollment_existing',
+          statusCode: err?.status || 409,
+          user: getStoredUser(),
+          metadata: {
+            ...enrollmentMetadata,
+            reason: 'already_enrolled',
+          },
+        });
         setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
       } else {
-        setError(err.message || 'Não foi possível concluir a inscrição.');
+        setError(err.message || 'NÃ£o foi possÃ­vel concluir a inscriÃ§Ã£o.');
+        await logAccessEvent({
+          action: 'course_enrollment_failed',
+          statusCode: err?.status || 0,
+          user: getStoredUser(),
+          metadata: {
+            ...enrollmentMetadata,
+            reason: err?.message || 'enrollment_error',
+          },
+        });
       }
     } finally {
       setInscrevendoTurmaId(null);
@@ -314,7 +376,7 @@ function App17() {
     <div className="student-home-page">
       <header className="student-hero">
         <div className="student-hero-copy">
-          <span className="student-kicker">Área do aluno</span>
+          <span className="student-kicker">Ãrea do aluno</span>
           <h1>Minha Escola Online</h1>
           <p>Encontre seus cursos, acompanhe o progresso e descubra novas oportunidades de aprendizagem.</p>
         </div>
@@ -373,10 +435,10 @@ function App17() {
                   />
                 </div>
                 <small>
-                  {Number(item.percentualProgresso || 0)}% concluído
+                  {Number(item.percentualProgresso || 0)}% concluÃ­do
                   {item.totalAulas > 0 ? (
                     <span>
-                      • {item.totalAulas} {item.totalAulas === 1 ? 'aula' : 'aulas'}
+                      â€¢ {item.totalAulas} {item.totalAulas === 1 ? 'aula' : 'aulas'}
                     </span>
                   ) : null}
                 </small>
@@ -405,13 +467,13 @@ function App17() {
             <header className="student-section-header">
               <strong>{modalidade.courseName}</strong>
               <span>
-                {cursos.length} {cursos.length === 1 ? 'curso' : 'cursos'} disponíveis
+                {cursos.length} {cursos.length === 1 ? 'curso' : 'cursos'} disponÃ­veis
               </span>
             </header>
 
             <div>
               {cursos.length === 0 ? (
-                <p className="student-empty">Ainda não há cursos ativos vinculados a esta modalidade.</p>
+                <p className="student-empty">Ainda nÃ£o hÃ¡ cursos ativos vinculados a esta modalidade.</p>
               ) : (
                 <div className="student-course-grid">
                   {cursos.map((turma) => {
@@ -426,7 +488,7 @@ function App17() {
                         <strong>{turma.nomeTurma}</strong>
                         <span>{modalidade.courseName}</span>
                         <div className="student-date-row">
-                          <span>Início: {formatDate(turma.dataInicio)}</span>
+                          <span>InÃ­cio: {formatDate(turma.dataInicio)}</span>
                           <span>Fim: {formatDate(turma.dataFim)}</span>
                         </div>
 
@@ -458,7 +520,7 @@ function App17() {
                             className="student-primary-action"
                           >
                             {!canCreateInscricao
-                              ? 'Inscrição indisponível'
+                              ? 'InscriÃ§Ã£o indisponÃ­vel'
                               : inscrevendoTurmaId === turma.id
                                 ? 'Inscrevendo...'
                                 : 'Inscrever-se'}
@@ -478,3 +540,4 @@ function App17() {
 }
 
 export default App17;
+
