@@ -118,6 +118,81 @@ function getStoredUser() {
   }
 }
 
+function getAccessSessionId() {
+  const storageKey = 'access_session_id';
+  const existing = localStorage.getItem(storageKey);
+  if (existing) return existing;
+
+  const nextId = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  localStorage.setItem(storageKey, nextId);
+  return nextId;
+}
+
+async function logLogoutEvent(user, pagePath) {
+  try {
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath,
+        pageTitle: 'Logout',
+        action: 'logout',
+        httpMethod: 'POST',
+        referrer: document.referrer || null,
+        statusCode: 200,
+        metadata: {
+          source: 'Layout',
+          route: pagePath,
+        },
+      }),
+    });
+  } catch (error) {
+    console.warn('Falha ao registrar log de logout:', error);
+  }
+}
+
+async function logLoginPageAfterLogout(user) {
+  try {
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath: '/page15',
+        pageTitle: 'Página 15',
+        action: 'page_view',
+        httpMethod: 'GET',
+        referrer: window.location.pathname,
+        statusCode: 200,
+        metadata: {
+          source: 'Layout',
+          route: '/page15',
+          reason: 'after_logout',
+        },
+      }),
+    });
+  } catch (error) {
+    console.warn('Falha ao registrar log da tela de login:', error);
+  }
+}
+
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(() => getStoredUser());
@@ -152,12 +227,14 @@ function Layout() {
   }, [isAuthenticated, location.pathname, navigate, userType]);
 
   // Função de logout que será compartilhada via Context.
-  function handleLogout() {
+  async function handleLogout() {
     const shouldLogout = window.confirm('Deseja realmente deslogar da plataforma?');
     if (!shouldLogout) {
       return;
     }
 
+    await logLogoutEvent(user, location.pathname);
+    await logLoginPageAfterLogout(user);
     localStorage.removeItem('user');
     setUser(null);
     navigate('/page15');
