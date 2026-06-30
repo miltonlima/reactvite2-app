@@ -171,40 +171,6 @@ async function logLogoutEvent(user, pagePath) {
   }
 }
 
-async function logLoginPageAfterLogout() {
-  try {
-    await fetch(`${API_BASE}/api/access-logs`, {
-      method: 'POST',
-      keepalive: true,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId: null,
-        userEmail: null,
-        userName: null,
-        userType: null,
-        sessionId: getAccessSessionId(),
-        pagePath: '/page15',
-        pageTitle: 'Página 15',
-        action: 'page_view',
-        httpMethod: 'GET',
-        referrer: window.location.pathname,
-        userAgent: getClientUserAgent(),
-        statusCode: 200,
-        metadata: {
-          source: 'Layout',
-          route: '/page15',
-          reason: 'after_logout',
-          clientPlatform: getClientPlatform(),
-        },
-      }),
-    });
-  } catch (error) {
-    console.warn('Falha ao registrar log da tela de login:', error);
-  }
-}
-
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(() => getStoredUser());
@@ -246,7 +212,6 @@ function Layout() {
     }
 
     await logLogoutEvent(user, location.pathname);
-    await logLoginPageAfterLogout();
     localStorage.removeItem('user');
     setUser(null);
     navigate('/page15');
