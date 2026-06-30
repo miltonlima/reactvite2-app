@@ -84,7 +84,9 @@ async function request(path, options = {}) {
 
   if (!response.ok) {
     const message = body?.mensagem || body?.detail || body?.message || response.statusText;
-    throw new Error(message);
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
   }
 
   return body;
@@ -202,6 +204,43 @@ async function logLogoutEvent(user, pagePath) {
   }
 }
 
+async function logProfileEvent({ user, action, statusCode = 200, metadata = {} }) {
+  try {
+    const clientUserAgent = await getClientUserAgent();
+    const clientPlatform = getClientPlatform();
+
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath: window.location.pathname,
+        pageTitle: 'Editar cadastro',
+        action,
+        httpMethod: 'PUT',
+        referrer: document.referrer || null,
+        userAgent: clientUserAgent,
+        statusCode,
+        metadata: {
+          source: 'Layout',
+          route: window.location.pathname,
+          clientPlatform,
+          ...metadata,
+        },
+      }),
+    });
+  } catch (error) {
+    console.warn('Falha ao registrar log de cadastro:', error);
+  }
+}
+
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(() => getStoredUser());
@@ -310,8 +349,27 @@ function Layout() {
 
       localStorage.setItem('user', JSON.stringify(nextUser));
       setUser(nextUser);
+      await logProfileEvent({
+        user: nextUser,
+        action: 'profile_update_success',
+        statusCode: 200,
+        metadata: {
+          profileUserId: userId,
+          updatedFields: ['fullName', 'birthDate', 'sex'],
+        },
+      });
       setProfileSuccess(response?.mensagem || 'Cadastro atualizado com sucesso.');
     } catch (error) {
+      await logProfileEvent({
+        user,
+        action: 'profile_update_failed',
+        statusCode: error.status || 0,
+        metadata: {
+          profileUserId: userId,
+          updatedFields: ['fullName', 'birthDate', 'sex'],
+          reason: error.message || 'profile_update_error',
+        },
+      });
       setProfileError(error.message || 'Falha ao atualizar cadastro.');
     } finally {
       setProfileSaving(false);
