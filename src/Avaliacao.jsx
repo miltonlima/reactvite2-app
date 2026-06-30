@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import './Avaliacao.css';
 import { API_BASE } from './config/apiBase';
 
-let avaliacaoPageAccessLogged = false;
+let avaliacaoLastPageViewAt = 0;
 
 async function request(path, options = {}) {
   const hasBody = typeof options.body !== 'undefined';
@@ -121,8 +121,9 @@ function Avaliacao() {
   }, []);
 
   useEffect(() => {
-    if (avaliacaoPageAccessLogged) return;
-    avaliacaoPageAccessLogged = true;
+    const now = Date.now();
+    if (now - avaliacaoLastPageViewAt < 1000) return;
+    avaliacaoLastPageViewAt = now;
 
     logAvaliacaoEvent({
       action: 'page_view',

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Aluno.css';
 import { API_BASE } from './config/apiBase';
 
-let alunoPageAccessLogged = false;
+let alunoLastPageViewAt = 0;
 
 function toInputDate(value) {
   if (!value) return '';
@@ -282,8 +282,9 @@ function Aluno() {
   }, [includeInactive]);
 
   useEffect(() => {
-    if (alunoPageAccessLogged) return;
-    alunoPageAccessLogged = true;
+    const now = Date.now();
+    if (now - alunoLastPageViewAt < 1000) return;
+    alunoLastPageViewAt = now;
 
     logAlunoEvent({
       action: 'page_view',

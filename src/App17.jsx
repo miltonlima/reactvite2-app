@@ -5,7 +5,7 @@ import { API_BASE } from './config/apiBase';
 import './App17.css';
 
 let apiCapabilitiesPromise = null;
-let page17AccessLogged = false;
+let page17LastPageViewAt = 0;
 
 function getAccessSessionId() {
   const storageKey = 'access_session_id';
@@ -161,8 +161,9 @@ function App17() {
   const [canCreateInscricao, setCanCreateInscricao] = useState(false);
 
   useEffect(() => {
-    if (!page17AccessLogged) {
-      page17AccessLogged = true;
+    const now = Date.now();
+    if (now - page17LastPageViewAt >= 1000) {
+      page17LastPageViewAt = now;
       logAccessEvent({ action: 'page_view', statusCode: 200, user: getStoredUser() });
     }
     loadCatalog();

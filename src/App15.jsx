@@ -3,7 +3,7 @@ import './App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_BASE } from './config/apiBase'
 
-let page15AccessLogged = false
+let page15LastPageViewAt = 0
 
 function getAccessSessionId() {
   const storageKey = 'access_session_id'
@@ -73,8 +73,9 @@ function App15() {
 
   useEffect(() => {
     async function logPageAccess() {
-      if (page15AccessLogged) return
-      page15AccessLogged = true
+      const now = Date.now()
+      if (now - page15LastPageViewAt < 1000) return
+      page15LastPageViewAt = now
 
       const user = getStoredUser()
       await logAccessEvent({ action: 'page_view', statusCode: 200, user })

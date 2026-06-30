@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
 import './AcessoTurma.css';
 
-const loggedAcessoTurmaIds = new Set();
+const acessoTurmaLastPageViewById = new Map();
 
 function getAccessSessionId() {
   const storageKey = 'access_session_id';
@@ -122,8 +122,11 @@ function AcessoTurma() {
   const [salvandoProgresso, setSalvandoProgresso] = useState(false);
 
   useEffect(() => {
-    if (turmaIdNumero && !loggedAcessoTurmaIds.has(turmaIdNumero)) {
-      loggedAcessoTurmaIds.add(turmaIdNumero);
+    const lastPageViewAt = acessoTurmaLastPageViewById.get(turmaIdNumero) || 0;
+    const now = Date.now();
+
+    if (turmaIdNumero && now - lastPageViewAt >= 1000) {
+      acessoTurmaLastPageViewById.set(turmaIdNumero, now);
       logAccessEvent({
         action: 'page_view',
         statusCode: 200,
