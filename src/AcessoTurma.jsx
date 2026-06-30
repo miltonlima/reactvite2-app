@@ -26,6 +26,14 @@ function getStoredUser() {
   }
 }
 
+function getClientUserAgent() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgent || null;
+}
+
+function getClientPlatform() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgentData?.platform || navigator.platform || null;
+}
+
 async function logAccessEvent({ action, statusCode = 200, user = null, metadata = {} }) {
   try {
     await fetch(`${API_BASE}/api/access-logs`, {
@@ -45,10 +53,12 @@ async function logAccessEvent({ action, statusCode = 200, user = null, metadata 
         action,
         httpMethod: 'GET',
         referrer: document.referrer || null,
+        userAgent: getClientUserAgent(),
         statusCode,
         metadata: {
           source: 'AcessoTurma',
           route: '/acesso-turma/:turmaId',
+          clientPlatform: getClientPlatform(),
           ...metadata,
         },
       }),

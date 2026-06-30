@@ -51,6 +51,14 @@ function getAccessSessionId() {
   return nextId;
 }
 
+function getClientUserAgent() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgent || null;
+}
+
+function getClientPlatform() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgentData?.platform || navigator.platform || null;
+}
+
 async function logAvaliacaoEvent({
   action,
   statusCode = 200,
@@ -77,10 +85,12 @@ async function logAvaliacaoEvent({
         action,
         httpMethod,
         referrer: document.referrer || null,
+        userAgent: getClientUserAgent(),
         statusCode,
         metadata: {
           source: 'Avaliacao',
           route: '/avaliacao',
+          clientPlatform: getClientPlatform(),
           ...metadata,
         },
       }),

@@ -140,6 +140,14 @@ function getStoredUser() {
   }
 }
 
+function getClientUserAgent() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgent || null;
+}
+
+function getClientPlatform() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgentData?.platform || navigator.platform || null;
+}
+
 async function logAlunoEvent({
   action,
   statusCode = 200,
@@ -166,10 +174,12 @@ async function logAlunoEvent({
         action,
         httpMethod,
         referrer: document.referrer || null,
+        userAgent: getClientUserAgent(),
         statusCode,
         metadata: {
           source: 'Aluno',
           route: '/aluno',
+          clientPlatform: getClientPlatform(),
           ...metadata,
         },
       }),

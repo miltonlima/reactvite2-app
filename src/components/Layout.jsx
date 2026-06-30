@@ -130,6 +130,14 @@ function getAccessSessionId() {
   return nextId;
 }
 
+function getClientUserAgent() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgent || null;
+}
+
+function getClientPlatform() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgentData?.platform || navigator.platform || null;
+}
+
 async function logLogoutEvent(user, pagePath) {
   try {
     await fetch(`${API_BASE}/api/access-logs`, {
@@ -149,10 +157,12 @@ async function logLogoutEvent(user, pagePath) {
         action: 'logout',
         httpMethod: 'POST',
         referrer: document.referrer || null,
+        userAgent: getClientUserAgent(),
         statusCode: 200,
         metadata: {
           source: 'Layout',
           route: pagePath,
+          clientPlatform: getClientPlatform(),
         },
       }),
     });
@@ -180,11 +190,13 @@ async function logLoginPageAfterLogout() {
         action: 'page_view',
         httpMethod: 'GET',
         referrer: window.location.pathname,
+        userAgent: getClientUserAgent(),
         statusCode: 200,
         metadata: {
           source: 'Layout',
           route: '/page15',
           reason: 'after_logout',
+          clientPlatform: getClientPlatform(),
         },
       }),
     });
