@@ -130,8 +130,36 @@ function getAccessSessionId() {
   return nextId;
 }
 
-function getClientUserAgent() {
-  return typeof navigator === 'undefined' ? null : navigator.userAgent || null;
+async function getClientUserAgent() {
+  if (typeof navigator === 'undefined') return null;
+
+  const baseUserAgent = navigator.userAgent || '';
+
+  try {
+    if (navigator.userAgentData?.getHighEntropyValues) {
+      const hints = await navigator.userAgentData.getHighEntropyValues([
+        'platform',
+        'platformVersion',
+        'model',
+        'uaFullVersion',
+        'fullVersionList',
+      ]);
+      const browserVersion = hints.fullVersionList?.map((item) => `${item.brand} ${item.version}`).join(', ') || hints.uaFullVersion;
+      const details = [
+        baseUserAgent,
+        hints.platform ? `platform=${hints.platform}` : '',
+        hints.platformVersion ? `platformVersion=${hints.platformVersion}` : '',
+        hints.model ? `model=${hints.model}` : '',
+        browserVersion ? `browser=${browserVersion}` : '',
+      ].filter(Boolean);
+
+      return details.join(' | ');
+    }
+  } catch {
+    return baseUserAgent || null;
+  }
+
+  return baseUserAgent || null;
 }
 
 function getClientPlatform() {
@@ -140,6 +168,9 @@ function getClientPlatform() {
 
 async function logLogoutEvent(user, pagePath) {
   try {
+    const clientUserAgent = await getClientUserAgent();
+    const clientPlatform = getClientPlatform();
+
     await fetch(`${API_BASE}/api/access-logs`, {
       method: 'POST',
       keepalive: true,
@@ -157,12 +188,12 @@ async function logLogoutEvent(user, pagePath) {
         action: 'logout',
         httpMethod: 'POST',
         referrer: document.referrer || null,
-        userAgent: getClientUserAgent(),
+        userAgent: clientUserAgent,
         statusCode: 200,
         metadata: {
           source: 'Layout',
           route: pagePath,
-          clientPlatform: getClientPlatform(),
+          clientPlatform,
         },
       }),
     });
