@@ -108,9 +108,6 @@ function ProfessorConteudo() {
       const turmasData = await request('/api/professor/turmas');
       const lista = Array.isArray(turmasData) ? turmasData : [];
       setTurmas(lista);
-      if (lista[0]?.id) {
-        setTurmaId(String(lista[0].id));
-      }
     } catch (err) {
       if (err?.status === 403) {
         const bootstrapped = await tryBootstrapAdmin();
@@ -119,9 +116,6 @@ function ProfessorConteudo() {
             const turmasData = await request('/api/professor/turmas');
             const lista = Array.isArray(turmasData) ? turmasData : [];
             setTurmas(lista);
-            if (lista[0]?.id) {
-              setTurmaId(String(lista[0].id));
-            }
             return;
           } catch {
             // Mantem a mensagem amigavel abaixo se o retry falhar.
@@ -350,7 +344,7 @@ function ProfessorConteudo() {
         <label className="professor-field">
           <span>Curso</span>
           <select value={turmaId} onChange={(event) => setTurmaId(event.target.value)} disabled={loading || saving}>
-            {!turmas.length && <option value="">Nenhum curso disponível</option>}
+            <option value="">{turmas.length ? 'Selecione um curso' : 'Nenhum curso disponível'}</option>
             {turmas.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.nomeTurma} - {item.modalidadeNome}
