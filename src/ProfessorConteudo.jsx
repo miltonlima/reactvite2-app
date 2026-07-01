@@ -67,6 +67,12 @@ async function tryBootstrapAdmin() {
   }
 }
 
+function toNumberOrZero(value) {
+  if (value === '' || value === null || value === undefined) return 0;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 function ProfessorConteudo() {
   const [turmas, setTurmas] = useState([]);
   const [turmaId, setTurmaId] = useState('');
@@ -82,7 +88,7 @@ function ProfessorConteudo() {
     moduloId: '',
     titulo: '',
     descricao: '',
-    duracaoMinutos: 10,
+    duracaoMinutos: '',
     ordem: 1,
     videoUrl: '',
     active: true,
@@ -159,13 +165,13 @@ function ProfessorConteudo() {
         body: JSON.stringify({
           titulo: novoModulo.titulo,
           descricao: novoModulo.descricao,
-          ordem: Number(novoModulo.ordem),
+          ordem: toNumberOrZero(novoModulo.ordem),
           active: Boolean(novoModulo.active),
         }),
       });
 
       setSuccess('Módulo criado com sucesso.');
-      setNovoModulo({ titulo: '', descricao: '', ordem: modulos.length + 1, active: true });
+      setNovoModulo({ titulo: '', descricao: '', ordem: '', active: true });
       await loadConteudoTurma(Number(turmaId));
     } catch (err) {
       setError(err.message || 'Não foi possível criar módulo.');
@@ -185,7 +191,7 @@ function ProfessorConteudo() {
         body: JSON.stringify({
           titulo: modulo.titulo,
           descricao: modulo.descricao,
-          ordem: Number(modulo.ordem),
+          ordem: toNumberOrZero(modulo.ordem),
           active: Boolean(modulo.active),
         }),
       });
@@ -233,8 +239,8 @@ function ProfessorConteudo() {
           moduloId: novaAula.moduloId ? Number(novaAula.moduloId) : null,
           titulo: novaAula.titulo,
           descricao: novaAula.descricao,
-          duracaoMinutos: Number(novaAula.duracaoMinutos),
-          ordem: Number(novaAula.ordem),
+          duracaoMinutos: toNumberOrZero(novaAula.duracaoMinutos),
+          ordem: toNumberOrZero(novaAula.ordem),
           videoUrl: novaAula.videoUrl,
           active: Boolean(novaAula.active),
         }),
@@ -245,8 +251,8 @@ function ProfessorConteudo() {
         moduloId: '',
         titulo: '',
         descricao: '',
-        duracaoMinutos: 10,
-        ordem: aulas.length + 1,
+        duracaoMinutos: '',
+        ordem: '',
         videoUrl: '',
         active: true,
       });
@@ -270,8 +276,8 @@ function ProfessorConteudo() {
           moduloId: aula.moduloId ? Number(aula.moduloId) : null,
           titulo: aula.titulo,
           descricao: aula.descricao,
-          duracaoMinutos: Number(aula.duracaoMinutos),
-          ordem: Number(aula.ordem),
+          duracaoMinutos: toNumberOrZero(aula.duracaoMinutos),
+          ordem: toNumberOrZero(aula.ordem),
           videoUrl: aula.videoUrl,
           active: Boolean(aula.active),
         }),
@@ -396,7 +402,7 @@ function ProfessorConteudo() {
                   type="number"
                   min={1}
                   value={novoModulo.ordem}
-                  onChange={(event) => setNovoModulo((prev) => ({ ...prev, ordem: Number(event.target.value) || 1 }))}
+                  onChange={(event) => setNovoModulo((prev) => ({ ...prev, ordem: event.target.value }))}
                   className="small-input"
                 />
                 <label className="check-label">
@@ -436,7 +442,7 @@ function ProfessorConteudo() {
                     min={1}
                     value={modulo.ordem}
                     onChange={(event) => setModulos((prev) => prev.map((item) => (
-                      item.id === modulo.id ? { ...item, ordem: Number(event.target.value) || 1 } : item
+                      item.id === modulo.id ? { ...item, ordem: event.target.value } : item
                     )))}
                     className="small-input"
                   />
@@ -486,22 +492,24 @@ function ProfessorConteudo() {
               </select>
               <div className="professor-two-field-grid">
                 <label className="professor-mini-field">
-                  <span>Duração (min)</span>
                   <input
                     type="number"
                     min={0}
                     value={novaAula.duracaoMinutos}
-                    onChange={(event) => setNovaAula((prev) => ({ ...prev, duracaoMinutos: Number(event.target.value) || 0 }))}
+                    onChange={(event) => setNovaAula((prev) => ({ ...prev, duracaoMinutos: event.target.value }))}
+                    placeholder="Duração (min)"
+                    aria-label="Duração em minutos"
                     className="small-input"
                   />
                 </label>
                 <label className="professor-mini-field">
-                  <span>Ordem</span>
                   <input
                     type="number"
                     min={1}
                     value={novaAula.ordem}
-                    onChange={(event) => setNovaAula((prev) => ({ ...prev, ordem: Number(event.target.value) || 1 }))}
+                    onChange={(event) => setNovaAula((prev) => ({ ...prev, ordem: event.target.value }))}
+                    placeholder="Ordem"
+                    aria-label="Ordem"
                     className="small-input"
                   />
                 </label>
@@ -552,26 +560,28 @@ function ProfessorConteudo() {
                 </select>
                 <div className="professor-two-field-grid">
                   <label className="professor-mini-field">
-                    <span>Duração (min)</span>
                     <input
                       type="number"
                       min={0}
                       value={aula.duracaoMinutos}
                       onChange={(event) => setAulas((prev) => prev.map((item) => (
-                        item.id === aula.id ? { ...item, duracaoMinutos: Number(event.target.value) || 0 } : item
+                        item.id === aula.id ? { ...item, duracaoMinutos: event.target.value } : item
                       )))}
+                      placeholder="Duração (min)"
+                      aria-label="Duração em minutos"
                       className="small-input"
                     />
                   </label>
                   <label className="professor-mini-field">
-                    <span>Ordem</span>
                     <input
                       type="number"
                       min={1}
                       value={aula.ordem}
                       onChange={(event) => setAulas((prev) => prev.map((item) => (
-                        item.id === aula.id ? { ...item, ordem: Number(event.target.value) || 1 } : item
+                        item.id === aula.id ? { ...item, ordem: event.target.value } : item
                       )))}
+                      placeholder="Ordem"
+                      aria-label="Ordem"
                       className="small-input"
                     />
                   </label>
