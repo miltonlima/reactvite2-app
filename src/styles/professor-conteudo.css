@@ -183,8 +183,27 @@
   flex-wrap: wrap;
 }
 
+.professor-two-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.professor-mini-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.professor-mini-field span {
+  line-height: 1.2;
+}
+
 .small-input {
-  max-width: 130px;
+  max-width: 100%;
 }
 
 .check-label {
@@ -255,5 +274,9 @@
 
   .small-input {
     max-width: 100%;
+  }
+
+  .professor-two-field-grid {
+    grid-template-columns: 1fr;
   }
 }

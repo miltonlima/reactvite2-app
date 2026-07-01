@@ -484,23 +484,27 @@ function ProfessorConteudo() {
                   <option key={item.id} value={item.id}>{item.titulo}</option>
                 ))}
               </select>
-              <div className="professor-row wrap-row">
-                <input
-                  type="number"
-                  min={0}
-                  value={novaAula.duracaoMinutos}
-                  onChange={(event) => setNovaAula((prev) => ({ ...prev, duracaoMinutos: Number(event.target.value) || 0 }))}
-                  placeholder="Duração (min)"
-                  className="small-input"
-                />
-                <input
-                  type="number"
-                  min={1}
-                  value={novaAula.ordem}
-                  onChange={(event) => setNovaAula((prev) => ({ ...prev, ordem: Number(event.target.value) || 1 }))}
-                  placeholder="Ordem"
-                  className="small-input"
-                />
+              <div className="professor-two-field-grid">
+                <label className="professor-mini-field">
+                  <span>Duração (min)</span>
+                  <input
+                    type="number"
+                    min={0}
+                    value={novaAula.duracaoMinutos}
+                    onChange={(event) => setNovaAula((prev) => ({ ...prev, duracaoMinutos: Number(event.target.value) || 0 }))}
+                    className="small-input"
+                  />
+                </label>
+                <label className="professor-mini-field">
+                  <span>Ordem</span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={novaAula.ordem}
+                    onChange={(event) => setNovaAula((prev) => ({ ...prev, ordem: Number(event.target.value) || 1 }))}
+                    className="small-input"
+                  />
+                </label>
               </div>
               <input
                 placeholder="URL do vídeo (opcional)"
@@ -546,25 +550,31 @@ function ProfessorConteudo() {
                     <option key={item.id} value={item.id}>{item.titulo}</option>
                   ))}
                 </select>
-                <div className="professor-row wrap-row">
-                  <input
-                    type="number"
-                    min={0}
-                    value={aula.duracaoMinutos}
-                    onChange={(event) => setAulas((prev) => prev.map((item) => (
-                      item.id === aula.id ? { ...item, duracaoMinutos: Number(event.target.value) || 0 } : item
-                    )))}
-                    className="small-input"
-                  />
-                  <input
-                    type="number"
-                    min={1}
-                    value={aula.ordem}
-                    onChange={(event) => setAulas((prev) => prev.map((item) => (
-                      item.id === aula.id ? { ...item, ordem: Number(event.target.value) || 1 } : item
-                    )))}
-                    className="small-input"
-                  />
+                <div className="professor-two-field-grid">
+                  <label className="professor-mini-field">
+                    <span>Duração (min)</span>
+                    <input
+                      type="number"
+                      min={0}
+                      value={aula.duracaoMinutos}
+                      onChange={(event) => setAulas((prev) => prev.map((item) => (
+                        item.id === aula.id ? { ...item, duracaoMinutos: Number(event.target.value) || 0 } : item
+                      )))}
+                      className="small-input"
+                    />
+                  </label>
+                  <label className="professor-mini-field">
+                    <span>Ordem</span>
+                    <input
+                      type="number"
+                      min={1}
+                      value={aula.ordem}
+                      onChange={(event) => setAulas((prev) => prev.map((item) => (
+                        item.id === aula.id ? { ...item, ordem: Number(event.target.value) || 1 } : item
+                      )))}
+                      className="small-input"
+                    />
+                  </label>
                 </div>
                 <input
                   value={aula.videoUrl || ''}
