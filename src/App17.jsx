@@ -177,6 +177,13 @@ function formatDate(value) {
   return parsed.toLocaleDateString('pt-BR');
 }
 
+function compareByText(a, b) {
+  return String(a || '').localeCompare(String(b || ''), 'pt-BR', {
+    sensitivity: 'base',
+    numeric: true,
+  });
+}
+
 function getAlunoIdFromStorage() {
   try {
     const user = getStoredUser();
@@ -263,12 +270,20 @@ function App17() {
   }
 
   const turmasAtivas = useMemo(
-    () => turmas.filter((item) => item.active).filter((item) => {
-      if (!busca.trim()) return true;
-      const termo = busca.trim().toLowerCase();
-      return `${item.nomeTurma} ${item.modalidadeNome || ''}`.toLowerCase().includes(termo);
-    }),
+    () => turmas
+      .filter((item) => item.active)
+      .filter((item) => {
+        if (!busca.trim()) return true;
+        const termo = busca.trim().toLowerCase();
+        return `${item.nomeTurma} ${item.modalidadeNome || ''}`.toLowerCase().includes(termo);
+      })
+      .sort((a, b) => compareByText(a.nomeTurma, b.nomeTurma)),
     [turmas, busca]
+  );
+
+  const modalidadesOrdenadas = useMemo(
+    () => [...modalidades].sort((a, b) => compareByText(a.courseName, b.courseName)),
+    [modalidades]
   );
 
   const progressoMap = useMemo(() => {
@@ -291,7 +306,8 @@ function App17() {
           percentualProgresso: Number(progresso?.percentualProgresso || 0),
           totalAulas: Number(progresso?.totalAulas || 0),
         };
-      });
+      })
+      .sort((a, b) => compareByText(a.turmaNome, b.turmaNome));
   }, [progressoMap, turmasAtivas, turmasInscritas]);
 
   const turmasNaoInscritas = useMemo(
@@ -306,6 +322,11 @@ function App17() {
       const current = grouped.get(key) || [];
       grouped.set(key, [...current, turma]);
     }
+
+    for (const [key, cursos] of grouped) {
+      grouped.set(key, [...cursos].sort((a, b) => compareByText(a.nomeTurma, b.nomeTurma)));
+    }
+
     return grouped;
   }, [turmasNaoInscritas]);
 
@@ -501,7 +522,7 @@ function App17() {
         <p>Nenhuma modalidade cadastrada no momento.</p>
       )}
 
-      {!loading && !error && modalidades.map((modalidade) => {
+      {!loading && !error && modalidadesOrdenadas.map((modalidade) => {
         const cursos = turmasPorModalidade.get(Number(modalidade.id)) || [];
 
         return (
