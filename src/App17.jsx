@@ -549,23 +549,11 @@ function App17() {
                           </Link>
                         ) : (
                           <Link
-                            to="#"
-                            onClick={(event) => {
-                              event.preventDefault();
-                              if (!canCreateInscricao || inscrevendoTurmaId === turma.id) return;
-                              handleInscricao(modalidade, turma);
-                            }}
-                            style={{
-                              cursor: !canCreateInscricao || inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
-                              opacity: !canCreateInscricao || inscrevendoTurmaId === turma.id ? 0.75 : 1,
-                            }}
+                            to={`/curso/${turmaId}`}
+                            state={{ turma, modalidade, canCreateInscricao }}
                             className="student-primary-action"
                           >
-                            {!canCreateInscricao
-                              ? 'Inscrição indisponível'
-                              : inscrevendoTurmaId === turma.id
-                                ? 'Inscrevendo...'
-                                : 'Inscrever-se'}
+                            Inscrever-se
                           </Link>
                         )}
                       </article>

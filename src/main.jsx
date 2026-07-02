@@ -32,6 +32,7 @@ import BancoQuestoes from './BancoQuestoes.jsx'
 import Inscricao from './Inscricao.jsx'
 import AcessoTurma from './AcessoTurma.jsx'
 import ProfessorConteudo from './ProfessorConteudo.jsx'
+import CursoDetalhe from './CursoDetalhe.jsx'
 import Layout from './components/Layout.jsx';
 
 // Higher-order component para atribuir título personalizado por página.
@@ -72,6 +73,7 @@ const BancoQuestoesPage = withTitle(BancoQuestoes, 'Banco de questões');
 const InscricaoPage = withTitle(Inscricao, 'Inscrições');
 const AcessoTurmaPage = withTitle(AcessoTurma, 'Acesso do Curso');
 const ProfessorConteudoPage = withTitle(ProfessorConteudo, 'Professor - Conteúdo');
+const CursoDetalhePage = withTitle(CursoDetalhe, 'Detalhes do curso');
 
 
 createRoot(document.getElementById('root')).render(
@@ -111,6 +113,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/avaliacao" element={<AvaliacaoPage />} />
           <Route path="/banco-questoes" element={<BancoQuestoesPage />} />
           <Route path="/inscricao" element={<InscricaoPage />} />
+          <Route path="/curso/:turmaId" element={<CursoDetalhePage />} />
           <Route path="/acesso-turma/:turmaId" element={<AcessoTurmaPage />} />
           <Route path="/professor/conteudo" element={<ProfessorConteudoPage />} />
 
