@@ -96,6 +96,7 @@ function Turma() {
   const [success, setSuccess] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'asc' });
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [viewingTurma, setViewingTurma] = useState(null);
 
   useEffect(() => {
     loadInitialData();
@@ -195,6 +196,7 @@ function Turma() {
   }
 
   function startEdit(item) {
+    setViewingTurma(null);
     setEditingId(item.id);
     setEditingForm({
       nomeTurma: item.nomeTurma || '',
@@ -219,6 +221,7 @@ function Turma() {
   }
 
   function openCreateModal() {
+    setViewingTurma(null);
     setForm(createEmptyTurmaForm());
     setError('');
     setSuccess('');
@@ -281,6 +284,17 @@ function Turma() {
     }
   }
 
+  function openViewModal(item) {
+    if (saving || deletingId === item.id) return;
+    setViewingTurma(item);
+    setError('');
+    setSuccess('');
+  }
+
+  function closeViewModal() {
+    setViewingTurma(null);
+  }
+
   return (
     <div className="turma-report-page">
       <header className="turma-report-header">
@@ -323,7 +337,18 @@ function Turma() {
               sortedTurmas.map((item) => {
                 const isEditing = editingId === item.id;
                 return (
-                  <tr key={item.id}>
+                  <tr
+                    key={item.id}
+                    className="turma-clickable-row"
+                    onClick={() => openViewModal(item)}
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        openViewModal(item);
+                      }
+                    }}
+                  >
                     <td data-label="ID">{item.id}</td>
                     <td data-label="Curso">{item.nomeTurma}</td>
                     <td data-label="Modalidade">{item.modalidadeNome}</td>
@@ -339,14 +364,20 @@ function Turma() {
                       <div className="compact-actions">
                         <button
                           type="button"
-                          onClick={() => startEdit(item)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            startEdit(item);
+                          }}
                           disabled={deletingId === item.id || saving}
                         >
                           {isEditing ? 'Editando...' : 'Editar'}
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleDelete(item.id, item.nomeTurma)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleDelete(item.id, item.nomeTurma);
+                          }}
                           disabled={deletingId === item.id || saving}
                         >
                           {deletingId === item.id ? 'Excluindo...' : 'Excluir'}
@@ -507,6 +538,75 @@ function Turma() {
                 </button>
               </div>
             </form>
+          </section>
+        </div>
+      )}
+
+      {viewingTurma && (
+        <div
+          className="turma-modal-overlay"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeViewModal();
+          }}
+        >
+          <section className="turma-edit-modal" role="dialog" aria-modal="true" aria-labelledby="turma-view-title">
+            <header className="turma-edit-modal-header">
+              <div>
+                <h2 id="turma-view-title">Dados do curso</h2>
+                <p>{viewingTurma.nomeTurma}</p>
+              </div>
+              <button type="button" onClick={closeViewModal}>
+                Fechar
+              </button>
+            </header>
+
+            <div className="turma-view-grid">
+              <div>
+                <span>ID</span>
+                <strong>{viewingTurma.id}</strong>
+              </div>
+              <div>
+                <span>Status</span>
+                <strong>{viewingTurma.active ? 'Ativa' : 'Inativa'}</strong>
+              </div>
+              <div>
+                <span>Curso</span>
+                <strong>{viewingTurma.nomeTurma}</strong>
+              </div>
+              <div>
+                <span>Modalidade</span>
+                <strong>{viewingTurma.modalidadeNome}</strong>
+              </div>
+              <div>
+                <span>Início da inscrição</span>
+                <strong>{formatDate(viewingTurma.inicioInscricao)}</strong>
+              </div>
+              <div>
+                <span>Fim da inscrição</span>
+                <strong>{formatDate(viewingTurma.fimInscricao)}</strong>
+              </div>
+              <div>
+                <span>Data de início</span>
+                <strong>{formatDate(viewingTurma.dataInicio)}</strong>
+              </div>
+              <div>
+                <span>Data de fim</span>
+                <strong>{formatDate(viewingTurma.dataFim)}</strong>
+              </div>
+              <div>
+                <span>Preço</span>
+                <strong>{Number(viewingTurma.preco || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+              </div>
+              <div>
+                <span>Imagem do curso</span>
+                <strong>{viewingTurma.imgCurso || '-'}</strong>
+              </div>
+              <div className="turma-view-full">
+                <span>Descrição</span>
+                <strong>{viewingTurma.descricao || '-'}</strong>
+              </div>
+            </div>
           </section>
         </div>
       )}
