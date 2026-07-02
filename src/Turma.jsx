@@ -34,26 +34,46 @@ function formatDate(value) {
   return parsed.toLocaleDateString('pt-BR');
 }
 
+function createEmptyTurmaForm() {
+  return {
+    nomeTurma: '',
+    modalidadeId: '',
+    dataInicio: '',
+    dataFim: '',
+    inicioInscricao: '',
+    fimInscricao: '',
+    imgCurso: '',
+    descricao: '',
+    classificacao: '',
+    preco: '',
+    active: true,
+  };
+}
+
+function buildTurmaPayload(values) {
+  return {
+    nomeTurma: values.nomeTurma.trim(),
+    modalidadeId: Number(values.modalidadeId),
+    dataInicio: values.dataInicio || null,
+    dataFim: values.dataFim || null,
+    inicioInscricao: values.inicioInscricao || null,
+    fimInscricao: values.fimInscricao || null,
+    imgCurso: values.imgCurso.trim() || null,
+    descricao: values.descricao.trim() || null,
+    classificacao: values.classificacao.trim() || null,
+    preco: values.preco === '' ? 0 : Number(values.preco),
+    active: values.active,
+  };
+}
+
 function Turma() {
   const [turmas, setTurmas] = useState([]);
   const [modalidades, setModalidades] = useState([]);
 
-  const [form, setForm] = useState({
-    nomeTurma: '',
-    modalidadeId: '',
-    dataInicio: '',
-    dataFim: '',
-    active: true,
-  });
+  const [form, setForm] = useState(() => createEmptyTurmaForm());
 
   const [editingId, setEditingId] = useState(null);
-  const [editingForm, setEditingForm] = useState({
-    nomeTurma: '',
-    modalidadeId: '',
-    dataInicio: '',
-    dataFim: '',
-    active: true,
-  });
+  const [editingForm, setEditingForm] = useState(() => createEmptyTurmaForm());
 
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
@@ -86,6 +106,8 @@ function Turma() {
     if (key === 'modalidadeNome') return String(item.modalidadeNome || '').toLowerCase();
     if (key === 'dataInicio') return item.dataInicio ? new Date(item.dataInicio).getTime() : 0;
     if (key === 'dataFim') return item.dataFim ? new Date(item.dataFim).getTime() : 0;
+    if (key === 'classificacao') return String(item.classificacao || '').toLowerCase();
+    if (key === 'preco') return Number(item.preco) || 0;
     if (key === 'active') return item.active ? 1 : 0;
     return '';
   }
@@ -144,17 +166,11 @@ function Turma() {
 
       const created = await request('/api/turmas', {
         method: 'POST',
-        body: JSON.stringify({
-          nomeTurma: form.nomeTurma.trim(),
-          modalidadeId: Number(form.modalidadeId),
-          dataInicio: form.dataInicio || null,
-          dataFim: form.dataFim || null,
-          active: form.active,
-        }),
+        body: JSON.stringify(buildTurmaPayload(form)),
       });
 
       setTurmas((current) => [...current, created]);
-      setForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
+      setForm(createEmptyTurmaForm());
       setIsCreateModalOpen(false);
       setSuccess('Curso cadastrado com sucesso.');
     } catch (err) {
@@ -171,6 +187,12 @@ function Turma() {
       modalidadeId: String(item.modalidadeId || ''),
       dataInicio: toInputDate(item.dataInicio),
       dataFim: toInputDate(item.dataFim),
+      inicioInscricao: toInputDate(item.inicioInscricao),
+      fimInscricao: toInputDate(item.fimInscricao),
+      imgCurso: item.imgCurso || '',
+      descricao: item.descricao || '',
+      classificacao: item.classificacao || '',
+      preco: item.preco === null || item.preco === undefined ? '' : String(item.preco),
       active: item.active,
     });
     setError('');
@@ -180,11 +202,11 @@ function Turma() {
   function cancelEdit() {
     if (saving) return;
     setEditingId(null);
-    setEditingForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
+    setEditingForm(createEmptyTurmaForm());
   }
 
   function openCreateModal() {
-    setForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
+    setForm(createEmptyTurmaForm());
     setError('');
     setSuccess('');
     setIsCreateModalOpen(true);
@@ -193,7 +215,7 @@ function Turma() {
   function closeCreateModal() {
     if (saving) return;
     setIsCreateModalOpen(false);
-    setForm({ nomeTurma: '', modalidadeId: '', dataInicio: '', dataFim: '', active: true });
+    setForm(createEmptyTurmaForm());
   }
 
   async function handleUpdate() {
@@ -211,13 +233,7 @@ function Turma() {
 
       const updated = await request(`/api/turmas/${editingId}`, {
         method: 'PUT',
-        body: JSON.stringify({
-          nomeTurma: editingForm.nomeTurma.trim(),
-          modalidadeId: Number(editingForm.modalidadeId),
-          dataInicio: editingForm.dataInicio || null,
-          dataFim: editingForm.dataFim || null,
-          active: editingForm.active,
-        }),
+        body: JSON.stringify(buildTurmaPayload(editingForm)),
       });
 
       setTurmas((current) => current.map((item) => (item.id === editingId ? updated : item)));
@@ -280,6 +296,8 @@ function Turma() {
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('modalidadeNome')}>Modalidade{getSortIndicator('modalidadeNome')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('dataInicio')}>Início{getSortIndicator('dataInicio')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('dataFim')}>Fim{getSortIndicator('dataFim')}</button></th>
+              <th><button type="button" className="sort-header-button" onClick={() => handleSort('classificacao')}>Classificação{getSortIndicator('classificacao')}</button></th>
+              <th><button type="button" className="sort-header-button" onClick={() => handleSort('preco')}>Preço{getSortIndicator('preco')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('active')}>Status{getSortIndicator('active')}</button></th>
               <th className="th-actions">Ações</th>
             </tr>
@@ -287,7 +305,7 @@ function Turma() {
           <tbody>
             {sortedTurmas.length === 0 ? (
               <tr>
-                <td colSpan={7} className="td-empty">Nenhum curso cadastrado.</td>
+                <td colSpan={9} className="td-empty">Nenhum curso cadastrado.</td>
               </tr>
             ) : (
               sortedTurmas.map((item) => {
@@ -299,6 +317,8 @@ function Turma() {
                     <td data-label="Modalidade">{item.modalidadeNome}</td>
                     <td data-label="Início">{formatDate(item.dataInicio)}</td>
                     <td data-label="Fim">{formatDate(item.dataFim)}</td>
+                    <td data-label="Classificação">{item.classificacao || '-'}</td>
+                    <td data-label="Preço">{Number(item.preco || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                     <td data-label="Status">
                       <span className={item.active ? 'status-active' : 'status-inactive'}>
                         {item.active ? 'Ativa' : 'Inativa'}
@@ -398,6 +418,77 @@ function Turma() {
                 />
               </label>
 
+              <label>
+                Início da inscrição
+                <input
+                  name="inicioInscricao"
+                  type="date"
+                  value={form.inicioInscricao}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Fim da inscrição
+                <input
+                  name="fimInscricao"
+                  type="date"
+                  value={form.fimInscricao}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Imagem do curso
+                <input
+                  name="imgCurso"
+                  type="url"
+                  value={form.imgCurso}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                  placeholder="https://..."
+                />
+              </label>
+
+              <label>
+                Classificação
+                <input
+                  name="classificacao"
+                  type="text"
+                  value={form.classificacao}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                  placeholder="Livre, iniciante, avançado..."
+                />
+              </label>
+
+              <label>
+                Preço
+                <input
+                  name="preco"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.preco}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                  placeholder="0,00"
+                />
+              </label>
+
+              <label className="turma-description-field">
+                Descrição
+                <textarea
+                  name="descricao"
+                  value={form.descricao}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                  rows={3}
+                />
+              </label>
+
               <label className="active-flag turma-edit-active">
                 <input
                   name="active"
@@ -493,6 +584,77 @@ function Turma() {
                   value={editingForm.dataFim}
                   onChange={handleEditInputChange}
                   disabled={saving}
+                />
+              </label>
+
+              <label>
+                Início da inscrição
+                <input
+                  name="inicioInscricao"
+                  type="date"
+                  value={editingForm.inicioInscricao}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Fim da inscrição
+                <input
+                  name="fimInscricao"
+                  type="date"
+                  value={editingForm.fimInscricao}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Imagem do curso
+                <input
+                  name="imgCurso"
+                  type="url"
+                  value={editingForm.imgCurso}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                  placeholder="https://..."
+                />
+              </label>
+
+              <label>
+                Classificação
+                <input
+                  name="classificacao"
+                  type="text"
+                  value={editingForm.classificacao}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                  placeholder="Livre, iniciante, avançado..."
+                />
+              </label>
+
+              <label>
+                Preço
+                <input
+                  name="preco"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={editingForm.preco}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                  placeholder="0,00"
+                />
+              </label>
+
+              <label className="turma-description-field">
+                Descrição
+                <textarea
+                  name="descricao"
+                  value={editingForm.descricao}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                  rows={3}
                 />
               </label>
 
