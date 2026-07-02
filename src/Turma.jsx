@@ -408,28 +408,6 @@ function Turma() {
               </label>
 
               <label>
-                Data de início
-                <input
-                  name="dataInicio"
-                  type="date"
-                  value={form.dataInicio}
-                  onChange={handleCreateInputChange}
-                  disabled={saving}
-                />
-              </label>
-
-              <label>
-                Data de fim
-                <input
-                  name="dataFim"
-                  type="date"
-                  value={form.dataFim}
-                  onChange={handleCreateInputChange}
-                  disabled={saving}
-                />
-              </label>
-
-              <label>
                 Início da inscrição
                 <input
                   name="inicioInscricao"
@@ -446,6 +424,28 @@ function Turma() {
                   name="fimInscricao"
                   type="date"
                   value={form.fimInscricao}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Data de início
+                <input
+                  name="dataInicio"
+                  type="date"
+                  value={form.dataInicio}
+                  onChange={handleCreateInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Data de fim
+                <input
+                  name="dataFim"
+                  type="date"
+                  value={form.dataFim}
                   onChange={handleCreateInputChange}
                   disabled={saving}
                 />
@@ -564,28 +564,6 @@ function Turma() {
               </label>
 
               <label>
-                Data de início
-                <input
-                  name="dataInicio"
-                  type="date"
-                  value={editingForm.dataInicio}
-                  onChange={handleEditInputChange}
-                  disabled={saving}
-                />
-              </label>
-
-              <label>
-                Data de fim
-                <input
-                  name="dataFim"
-                  type="date"
-                  value={editingForm.dataFim}
-                  onChange={handleEditInputChange}
-                  disabled={saving}
-                />
-              </label>
-
-              <label>
                 Início da inscrição
                 <input
                   name="inicioInscricao"
@@ -602,6 +580,28 @@ function Turma() {
                   name="fimInscricao"
                   type="date"
                   value={editingForm.fimInscricao}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Data de início
+                <input
+                  name="dataInicio"
+                  type="date"
+                  value={editingForm.dataInicio}
+                  onChange={handleEditInputChange}
+                  disabled={saving}
+                />
+              </label>
+
+              <label>
+                Data de fim
+                <input
+                  name="dataFim"
+                  type="date"
+                  value={editingForm.dataFim}
                   onChange={handleEditInputChange}
                   disabled={saving}
                 />
