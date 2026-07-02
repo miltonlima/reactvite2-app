@@ -118,6 +118,60 @@
   width: 220px;
 }
 
+.modalidade-name-cell {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.modalidade-name-cell strong {
+  color: #0f172a;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.modalidade-course-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.modalidade-course-count,
+.modalidade-course-chip,
+.modalidade-course-empty {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  border-radius: 999px;
+  padding: 0 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.modalidade-course-count {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.modalidade-course-chip {
+  max-width: 180px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modalidade-course-empty {
+  background: #f8fafc;
+  color: #94a3b8;
+  border: 1px dashed #cbd5e1;
+  font-weight: 600;
+}
+
 .compact-actions {
   display: flex;
   gap: 6px;
@@ -234,7 +288,7 @@
 
   .modalidade-report-table td {
     display: grid;
-    grid-template-columns: 76px minmax(0, 1fr);
+    grid-template-columns: 86px minmax(0, 1fr);
     gap: 8px;
     align-items: center;
     min-height: 38px;
@@ -275,6 +329,10 @@
     min-height: 34px;
     padding: 0 8px;
     font-size: 0.8rem;
+  }
+
+  .modalidade-course-chip {
+    max-width: 100%;
   }
 }
 

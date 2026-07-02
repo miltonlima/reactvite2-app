@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Modalidade.css';
 import { API_BASE } from './config/apiBase';
@@ -29,6 +29,7 @@ function formatDate(dateValue) {
 
 function Modalidade() {
   const [modalidades, setModalidades] = useState([]);
+  const [turmas, setTurmas] = useState([]);
   const [courseName, setCourseName] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editingName, setEditingName] = useState('');
@@ -41,10 +42,24 @@ function Modalidade() {
     loadModalidades();
   }, []);
 
+  const cursosPorModalidade = useMemo(() => {
+    const grouped = new Map();
+    for (const turma of turmas) {
+      const modalidadeId = Number(turma.modalidadeId);
+      const current = grouped.get(modalidadeId) || [];
+      grouped.set(modalidadeId, [...current, turma]);
+    }
+    return grouped;
+  }, [turmas]);
+
   async function loadModalidades() {
     try {
-      const data = await request('/api/modalidades');
-      setModalidades(Array.isArray(data) ? data : []);
+      const [modalidadesData, turmasData] = await Promise.all([
+        request('/api/modalidades'),
+        request('/api/turmas'),
+      ]);
+      setModalidades(Array.isArray(modalidadesData) ? modalidadesData : []);
+      setTurmas(Array.isArray(turmasData) ? turmasData : []);
     } catch (err) {
       setError(err.message || 'Falha ao carregar modalidades.');
     }
@@ -185,6 +200,7 @@ function Modalidade() {
             ) : (
               modalidades.map((item) => {
                 const isEditing = editingId === item.id;
+                const cursos = cursosPorModalidade.get(Number(item.id)) || [];
                 return (
                   <tr key={item.id}>
                     <td data-label="ID">{item.id}</td>
@@ -198,7 +214,25 @@ function Modalidade() {
                           disabled={saving}
                         />
                       ) : (
-                        item.courseName
+                        <div className="modalidade-name-cell">
+                          <strong>{item.courseName}</strong>
+                          <div className="modalidade-course-list">
+                            {cursos.length === 0 ? (
+                              <span className="modalidade-course-empty">Sem cursos associados</span>
+                            ) : (
+                              <>
+                                <span className="modalidade-course-count">
+                                  {cursos.length} {cursos.length === 1 ? 'curso' : 'cursos'}
+                                </span>
+                                {cursos.map((curso) => (
+                                  <span key={curso.id} className="modalidade-course-chip">
+                                    {curso.nomeTurma}
+                                  </span>
+                                ))}
+                              </>
+                            )}
+                          </div>
+                        </div>
                       )}
                     </td>
                     <td data-label="Criado">{formatDate(item.createdAt)}</td>
