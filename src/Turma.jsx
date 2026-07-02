@@ -44,7 +44,6 @@ function createEmptyTurmaForm() {
     fimInscricao: '',
     imgCurso: '',
     descricao: '',
-    classificacao: '',
     preco: '',
     active: true,
   };
@@ -60,7 +59,6 @@ function buildTurmaPayload(values) {
     fimInscricao: values.fimInscricao || null,
     imgCurso: values.imgCurso.trim() || null,
     descricao: values.descricao.trim() || null,
-    classificacao: values.classificacao.trim() || null,
     preco: values.preco === '' ? 0 : Number(values.preco),
     active: values.active,
   };
@@ -106,7 +104,6 @@ function Turma() {
     if (key === 'modalidadeNome') return String(item.modalidadeNome || '').toLowerCase();
     if (key === 'dataInicio') return item.dataInicio ? new Date(item.dataInicio).getTime() : 0;
     if (key === 'dataFim') return item.dataFim ? new Date(item.dataFim).getTime() : 0;
-    if (key === 'classificacao') return String(item.classificacao || '').toLowerCase();
     if (key === 'preco') return Number(item.preco) || 0;
     if (key === 'active') return item.active ? 1 : 0;
     return '';
@@ -191,7 +188,6 @@ function Turma() {
       fimInscricao: toInputDate(item.fimInscricao),
       imgCurso: item.imgCurso || '',
       descricao: item.descricao || '',
-      classificacao: item.classificacao || '',
       preco: item.preco === null || item.preco === undefined ? '' : String(item.preco),
       active: item.active,
     });
@@ -296,7 +292,6 @@ function Turma() {
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('modalidadeNome')}>Modalidade{getSortIndicator('modalidadeNome')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('dataInicio')}>Início{getSortIndicator('dataInicio')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('dataFim')}>Fim{getSortIndicator('dataFim')}</button></th>
-              <th><button type="button" className="sort-header-button" onClick={() => handleSort('classificacao')}>Classificação{getSortIndicator('classificacao')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('preco')}>Preço{getSortIndicator('preco')}</button></th>
               <th><button type="button" className="sort-header-button" onClick={() => handleSort('active')}>Status{getSortIndicator('active')}</button></th>
               <th className="th-actions">Ações</th>
@@ -305,7 +300,7 @@ function Turma() {
           <tbody>
             {sortedTurmas.length === 0 ? (
               <tr>
-                <td colSpan={9} className="td-empty">Nenhum curso cadastrado.</td>
+                <td colSpan={8} className="td-empty">Nenhum curso cadastrado.</td>
               </tr>
             ) : (
               sortedTurmas.map((item) => {
@@ -317,7 +312,6 @@ function Turma() {
                     <td data-label="Modalidade">{item.modalidadeNome}</td>
                     <td data-label="Início">{formatDate(item.dataInicio)}</td>
                     <td data-label="Fim">{formatDate(item.dataFim)}</td>
-                    <td data-label="Classificação">{item.classificacao || '-'}</td>
                     <td data-label="Preço">{Number(item.preco || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                     <td data-label="Status">
                       <span className={item.active ? 'status-active' : 'status-inactive'}>
@@ -449,18 +443,6 @@ function Turma() {
                   onChange={handleCreateInputChange}
                   disabled={saving}
                   placeholder="https://..."
-                />
-              </label>
-
-              <label>
-                Classificação
-                <input
-                  name="classificacao"
-                  type="text"
-                  value={form.classificacao}
-                  onChange={handleCreateInputChange}
-                  disabled={saving}
-                  placeholder="Livre, iniciante, avançado..."
                 />
               </label>
 
@@ -618,18 +600,6 @@ function Turma() {
                   onChange={handleEditInputChange}
                   disabled={saving}
                   placeholder="https://..."
-                />
-              </label>
-
-              <label>
-                Classificação
-                <input
-                  name="classificacao"
-                  type="text"
-                  value={editingForm.classificacao}
-                  onChange={handleEditInputChange}
-                  disabled={saving}
-                  placeholder="Livre, iniciante, avançado..."
                 />
               </label>
 

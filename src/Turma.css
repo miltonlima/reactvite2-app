@@ -230,14 +230,12 @@
 }
 
 .turma-report-table th:nth-child(6),
-.turma-report-table td:nth-child(6),
-.turma-report-table th:nth-child(7),
-.turma-report-table td:nth-child(7) {
+.turma-report-table td:nth-child(6) {
   width: 96px;
 }
 
-.turma-report-table th:nth-child(8),
-.turma-report-table td:nth-child(8) {
+.turma-report-table th:nth-child(7),
+.turma-report-table td:nth-child(7) {
   width: 92px;
 }
 
@@ -468,14 +466,12 @@
   }
 
   .turma-report-table th:nth-child(6),
-  .turma-report-table td:nth-child(6),
-  .turma-report-table th:nth-child(7),
-  .turma-report-table td:nth-child(7) {
+  .turma-report-table td:nth-child(6) {
     width: 76px;
   }
 
-  .turma-report-table th:nth-child(8),
-  .turma-report-table td:nth-child(8) {
+  .turma-report-table th:nth-child(7),
+  .turma-report-table td:nth-child(7) {
     width: 72px;
   }
 
@@ -564,7 +560,7 @@
       "turma turma"
       "modalidade modalidade"
       "inicio fim"
-      "classificacao preco"
+      "preco status"
       "acoes acoes";
     gap: 0;
     margin-bottom: 10px;
@@ -622,23 +618,18 @@
   }
 
   .turma-report-table td:nth-child(6) {
-    grid-area: classificacao;
+    grid-area: preco;
     width: auto;
     border-right: 1px solid #e2e8f0;
   }
 
   .turma-report-table td:nth-child(7) {
-    grid-area: preco;
-    width: auto;
-  }
-
-  .turma-report-table td:nth-child(8) {
     grid-area: status;
     width: auto;
     align-items: flex-end;
   }
 
-  .turma-report-table td:nth-child(9) {
+  .turma-report-table td:nth-child(8) {
     grid-area: acoes;
     width: auto;
   }
