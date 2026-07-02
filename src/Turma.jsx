@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import './Turma.css';
 import { API_BASE } from './config/apiBase';
 
+let turmaLastPageViewAt = 0;
+
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -14,10 +16,112 @@ async function request(path, options = {}) {
 
   if (!response.ok) {
     const message = body?.mensagem || body?.detail || body?.message || response.statusText;
-    throw new Error(message);
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
   }
 
   return body;
+}
+
+function getAccessSessionId() {
+  const storageKey = 'access_session_id';
+  const existing = localStorage.getItem(storageKey);
+  if (existing) return existing;
+
+  const nextId = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  localStorage.setItem(storageKey, nextId);
+  return nextId;
+}
+
+function getStoredUser() {
+  try {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function getClientUserAgent() {
+  if (typeof navigator === 'undefined') return null;
+
+  const baseUserAgent = navigator.userAgent || '';
+
+  try {
+    if (navigator.userAgentData?.getHighEntropyValues) {
+      const hints = await navigator.userAgentData.getHighEntropyValues([
+        'platform',
+        'platformVersion',
+        'model',
+        'uaFullVersion',
+        'fullVersionList',
+      ]);
+      const browserVersion = hints.fullVersionList?.map((item) => `${item.brand} ${item.version}`).join(', ') || hints.uaFullVersion;
+      const details = [
+        baseUserAgent,
+        hints.platform ? `platform=${hints.platform}` : '',
+        hints.platformVersion ? `platformVersion=${hints.platformVersion}` : '',
+        hints.model ? `model=${hints.model}` : '',
+        browserVersion ? `browser=${browserVersion}` : '',
+      ].filter(Boolean);
+
+      return details.join(' | ');
+    }
+  } catch {
+    return baseUserAgent || null;
+  }
+
+  return baseUserAgent || null;
+}
+
+function getClientPlatform() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgentData?.platform || navigator.platform || null;
+}
+
+async function logTurmaEvent({
+  action,
+  statusCode = 200,
+  httpMethod = 'POST',
+  metadata = {},
+}) {
+  try {
+    const user = getStoredUser();
+    const clientUserAgent = await getClientUserAgent();
+    const clientPlatform = getClientPlatform();
+
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath: window.location.pathname,
+        pageTitle: 'Cursos',
+        action,
+        httpMethod,
+        referrer: document.referrer || null,
+        userAgent: clientUserAgent,
+        statusCode,
+        metadata: {
+          source: 'Turma',
+          route: '/turma',
+          clientPlatform,
+          ...metadata,
+        },
+      }),
+    });
+  } catch (error) {
+    console.warn('Falha ao registrar log de cursos:', error);
+  }
 }
 
 function toInputDate(value) {
@@ -102,6 +206,18 @@ function Turma() {
     loadInitialData();
   }, []);
 
+  useEffect(() => {
+    const now = Date.now();
+    if (now - turmaLastPageViewAt < 1000) return;
+    turmaLastPageViewAt = now;
+
+    logTurmaEvent({
+      action: 'page_view',
+      statusCode: 200,
+      httpMethod: 'GET',
+    });
+  }, []);
+
   async function loadInitialData() {
     try {
       setError('');
@@ -171,6 +287,16 @@ function Turma() {
 
     if (!form.nomeTurma.trim() || !form.modalidadeId) {
       setError('Nome do curso e modalidade são obrigatórios.');
+      logTurmaEvent({
+        action: 'course_create_failed',
+        statusCode: 400,
+        httpMethod: 'POST',
+        metadata: {
+          reason: 'validation',
+          nomeTurma: form.nomeTurma,
+          modalidadeId: form.modalidadeId || null,
+        },
+      });
       return;
     }
 
@@ -188,8 +314,29 @@ function Turma() {
       setForm(createEmptyTurmaForm());
       setIsCreateModalOpen(false);
       setSuccess('Curso cadastrado com sucesso.');
+      await logTurmaEvent({
+        action: 'course_create_success',
+        statusCode: 201,
+        httpMethod: 'POST',
+        metadata: {
+          turmaId: created.id,
+          nomeTurma: created.nomeTurma,
+          modalidadeId: created.modalidadeId,
+          modalidadeNome: created.modalidadeNome,
+        },
+      });
     } catch (err) {
       setError(err.message || 'Falha ao cadastrar curso.');
+      await logTurmaEvent({
+        action: 'course_create_failed',
+        statusCode: err.status || 500,
+        httpMethod: 'POST',
+        metadata: {
+          reason: err.message || 'Falha ao cadastrar curso.',
+          nomeTurma: form.nomeTurma,
+          modalidadeId: form.modalidadeId || null,
+        },
+      });
     } finally {
       setSaving(false);
     }
@@ -212,6 +359,17 @@ function Turma() {
     });
     setError('');
     setSuccess('');
+    logTurmaEvent({
+      action: 'course_edit_modal_open',
+      statusCode: 200,
+      httpMethod: 'GET',
+      metadata: {
+        turmaId: item.id,
+        nomeTurma: item.nomeTurma,
+        modalidadeId: item.modalidadeId,
+        modalidadeNome: item.modalidadeNome,
+      },
+    });
   }
 
   function cancelEdit() {
@@ -226,6 +384,11 @@ function Turma() {
     setError('');
     setSuccess('');
     setIsCreateModalOpen(true);
+    logTurmaEvent({
+      action: 'course_create_modal_open',
+      statusCode: 200,
+      httpMethod: 'GET',
+    });
   }
 
   function closeCreateModal() {
@@ -239,6 +402,17 @@ function Turma() {
 
     if (!editingForm.nomeTurma.trim() || !editingForm.modalidadeId) {
       setError('Nome do curso e modalidade são obrigatórios.');
+      logTurmaEvent({
+        action: 'course_update_failed',
+        statusCode: 400,
+        httpMethod: 'PUT',
+        metadata: {
+          reason: 'validation',
+          turmaId: editingId,
+          nomeTurma: editingForm.nomeTurma,
+          modalidadeId: editingForm.modalidadeId || null,
+        },
+      });
       return;
     }
 
@@ -255,8 +429,30 @@ function Turma() {
       setTurmas((current) => current.map((item) => (item.id === editingId ? updated : item)));
       cancelEdit();
       setSuccess('Curso atualizado com sucesso.');
+      await logTurmaEvent({
+        action: 'course_update_success',
+        statusCode: 200,
+        httpMethod: 'PUT',
+        metadata: {
+          turmaId: updated.id,
+          nomeTurma: updated.nomeTurma,
+          modalidadeId: updated.modalidadeId,
+          modalidadeNome: updated.modalidadeNome,
+        },
+      });
     } catch (err) {
       setError(err.message || 'Falha ao atualizar curso.');
+      await logTurmaEvent({
+        action: 'course_update_failed',
+        statusCode: err.status || 500,
+        httpMethod: 'PUT',
+        metadata: {
+          reason: err.message || 'Falha ao atualizar curso.',
+          turmaId: editingId,
+          nomeTurma: editingForm.nomeTurma,
+          modalidadeId: editingForm.modalidadeId || null,
+        },
+      });
     } finally {
       setSaving(false);
     }
@@ -277,8 +473,27 @@ function Turma() {
         cancelEdit();
       }
       setSuccess('Curso excluído com sucesso.');
+      await logTurmaEvent({
+        action: 'course_delete_success',
+        statusCode: 204,
+        httpMethod: 'DELETE',
+        metadata: {
+          turmaId: id,
+          nomeTurma,
+        },
+      });
     } catch (err) {
       setError(err.message || 'Falha ao excluir curso.');
+      await logTurmaEvent({
+        action: 'course_delete_failed',
+        statusCode: err.status || 500,
+        httpMethod: 'DELETE',
+        metadata: {
+          reason: err.message || 'Falha ao excluir curso.',
+          turmaId: id,
+          nomeTurma,
+        },
+      });
     } finally {
       setDeletingId(null);
     }
@@ -289,6 +504,17 @@ function Turma() {
     setViewingTurma(item);
     setError('');
     setSuccess('');
+    logTurmaEvent({
+      action: 'course_view_modal_open',
+      statusCode: 200,
+      httpMethod: 'GET',
+      metadata: {
+        turmaId: item.id,
+        nomeTurma: item.nomeTurma,
+        modalidadeId: item.modalidadeId,
+        modalidadeNome: item.modalidadeNome,
+      },
+    });
   }
 
   function closeViewModal() {
