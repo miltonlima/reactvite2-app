@@ -49,6 +49,23 @@ function createEmptyTurmaForm() {
   };
 }
 
+function formatPriceInput(value) {
+  const digits = String(value || '').replace(/\D/g, '');
+  if (!digits) return '';
+
+  const amount = Number(digits) / 100;
+  return amount.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function parsePriceInput(value) {
+  const digits = String(value || '').replace(/\D/g, '');
+  if (!digits) return 0;
+  return Number(digits) / 100;
+}
+
 function buildTurmaPayload(values) {
   return {
     nomeTurma: values.nomeTurma.trim(),
@@ -59,7 +76,7 @@ function buildTurmaPayload(values) {
     fimInscricao: values.fimInscricao || null,
     imgCurso: values.imgCurso.trim() || null,
     descricao: values.descricao.trim() || null,
-    preco: values.preco === '' ? 0 : Number(values.preco),
+    preco: parsePriceInput(values.preco),
     active: values.active,
   };
 }
@@ -136,7 +153,7 @@ function Turma() {
     const { name, type, checked, value } = event.target;
     setForm((current) => ({
       ...current,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: name === 'preco' ? formatPriceInput(value) : type === 'checkbox' ? checked : value,
     }));
   }
 
@@ -144,7 +161,7 @@ function Turma() {
     const { name, type, checked, value } = event.target;
     setEditingForm((current) => ({
       ...current,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: name === 'preco' ? formatPriceInput(value) : type === 'checkbox' ? checked : value,
     }));
   }
 
@@ -188,7 +205,7 @@ function Turma() {
       fimInscricao: toInputDate(item.fimInscricao),
       imgCurso: item.imgCurso || '',
       descricao: item.descricao || '',
-      preco: item.preco === null || item.preco === undefined ? '' : String(item.preco),
+      preco: item.preco === null || item.preco === undefined ? '' : formatPriceInput(Math.round(Number(item.preco || 0) * 100)),
       active: item.active,
     });
     setError('');
@@ -450,9 +467,8 @@ function Turma() {
                 Preço
                 <input
                   name="preco"
-                  type="number"
-                  min="0"
-                  step="0.01"
+                  type="text"
+                  inputMode="numeric"
                   value={form.preco}
                   onChange={handleCreateInputChange}
                   disabled={saving}
@@ -607,9 +623,8 @@ function Turma() {
                 Preço
                 <input
                   name="preco"
-                  type="number"
-                  min="0"
-                  step="0.01"
+                  type="text"
+                  inputMode="numeric"
                   value={editingForm.preco}
                   onChange={handleEditInputChange}
                   disabled={saving}
