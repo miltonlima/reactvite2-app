@@ -379,7 +379,14 @@ function ProfessorConteudo() {
 
       {loading && <p className="professor-loading">Carregando conteúdo do curso...</p>}
 
-      {!loading && (
+      {!loading && !turmaId && (
+        <section className="professor-empty-state">
+          <strong>Selecione um curso para organizar o conteúdo.</strong>
+          <span>Depois da seleção, você poderá criar módulos, cadastrar aulas e ajustar a ordem de exibição.</span>
+        </section>
+      )}
+
+      {!loading && turmaId && (
         <div className="professor-content-grid">
           <section className="professor-column">
             <h2>Módulos</h2>

@@ -135,11 +135,27 @@
   color: #475569;
 }
 
+.professor-empty-state {
+  display: grid;
+  gap: 6px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 18px;
+  background: #ffffff;
+  color: #475569;
+}
+
+.professor-empty-state strong {
+  color: #0f172a;
+  font-size: 16px;
+}
+
 .professor-content-grid {
   display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  grid-template-columns: minmax(320px, 0.85fr) minmax(420px, 1.15fr);
   min-width: 0;
+  align-items: start;
 }
 
 .professor-column {
@@ -162,7 +178,7 @@
 .professor-card {
   border: 1px solid #e2e8f0;
   border-radius: 10px;
-  padding: 10px;
+  padding: 12px;
   display: grid;
   gap: 8px;
   background: #fcfdff;
@@ -170,7 +186,65 @@
 }
 
 .create-card {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
   background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  border-color: #bfdbfe;
+}
+
+.create-card > strong {
+  grid-column: 1 / -1;
+  color: #0f172a;
+  font-size: 15px;
+}
+
+.create-card > textarea,
+.create-card > select {
+  grid-column: 1 / -1;
+}
+
+.create-card > input:first-of-type {
+  grid-column: 1 / -1;
+}
+
+.create-card > input[placeholder*="URL"] {
+  grid-column: 1 / -1;
+}
+
+.create-card > .professor-two-field-grid {
+  grid-column: 1 / -1;
+}
+
+.create-card > .check-label {
+  min-height: 38px;
+  align-self: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0 10px;
+  background: #ffffff;
+}
+
+.create-card > .btn {
+  justify-self: end;
+  min-width: 132px;
+}
+
+.professor-column:first-child .create-card > .professor-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(90px, 150px) minmax(120px, 1fr);
+}
+
+.professor-column:first-child .create-card > .btn {
+  grid-column: 1 / -1;
+}
+
+.professor-column:nth-child(2) .create-card > .check-label {
+  grid-column: 1 / 2;
+}
+
+.professor-column:nth-child(2) .create-card > .btn {
+  grid-column: 2 / 3;
 }
 
 .professor-row {
@@ -217,6 +291,8 @@
 .professor-actions {
   display: flex;
   gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -224,6 +300,7 @@
   border: 1px solid transparent;
   padding: 8px 12px;
   font-weight: 600;
+  cursor: pointer;
 }
 
 .btn-primary {
@@ -278,5 +355,25 @@
 
   .professor-two-field-grid {
     grid-template-columns: 1fr;
+  }
+
+  .create-card {
+    grid-template-columns: 1fr;
+  }
+
+  .create-card > .btn,
+  .professor-column:nth-child(2) .create-card > .btn,
+  .professor-column:nth-child(2) .create-card > .check-label {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .professor-column:first-child .create-card > .professor-row {
+    grid-template-columns: 1fr;
+  }
+
+  .professor-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 }
