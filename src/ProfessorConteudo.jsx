@@ -429,7 +429,7 @@ function ProfessorConteudo() {
             {!modulos.length && <p className="professor-empty">Nenhum módulo criado ainda para este curso.</p>}
 
             {modulos.map((modulo) => (
-              <article key={modulo.id} className="professor-card">
+              <article key={modulo.id} className="professor-card content-card module-card">
                 <input
                   value={modulo.titulo}
                   onChange={(event) => setModulos((prev) => prev.map((item) => (
@@ -540,7 +540,7 @@ function ProfessorConteudo() {
             {!aulas.length && <p className="professor-empty">Nenhuma aula criada ainda para este curso.</p>}
 
             {aulas.map((aula) => (
-              <article key={aula.id} className="professor-card">
+              <article key={aula.id} className="professor-card content-card lesson-card">
                 <input
                   value={aula.titulo}
                   onChange={(event) => setAulas((prev) => prev.map((item) => (
