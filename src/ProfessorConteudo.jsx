@@ -579,19 +579,27 @@ function ProfessorConteudo() {
             {aulas.map((aula, index) => (
               <article key={aula.id} className="professor-card content-card lesson-card">
                 <span className="lesson-index-label">Aula {index + 1}#</span>
-                <input
-                  value={aula.titulo}
-                  onChange={(event) => setAulas((prev) => prev.map((item) => (
-                    item.id === aula.id ? { ...item, titulo: event.target.value } : item
-                  )))}
-                />
-                <textarea
-                  rows={2}
-                  value={aula.descricao || ''}
-                  onChange={(event) => setAulas((prev) => prev.map((item) => (
-                    item.id === aula.id ? { ...item, descricao: event.target.value } : item
-                  )))}
-                />
+                <label className="saved-field">
+                  <span>Título</span>
+                  <input
+                    value={aula.titulo}
+                    onChange={(event) => setAulas((prev) => prev.map((item) => (
+                      item.id === aula.id ? { ...item, titulo: event.target.value } : item
+                    )))}
+                  />
+                </label>
+                <label className="saved-field">
+                  <span>Descrição</span>
+                  <textarea
+                    rows={2}
+                    value={aula.descricao || ''}
+                    onChange={(event) => setAulas((prev) => prev.map((item) => (
+                      item.id === aula.id ? { ...item, descricao: event.target.value } : item
+                    )))}
+                  />
+                </label>
+                <label className="saved-field">
+                  <span>Módulo</span>
                 <select
                   value={aula.moduloId || ''}
                   onChange={(event) => setAulas((prev) => prev.map((item) => (
@@ -603,8 +611,10 @@ function ProfessorConteudo() {
                     <option key={item.id} value={item.id}>{item.titulo}</option>
                   ))}
                 </select>
+                </label>
                 <div className="professor-two-field-grid">
                   <label className="professor-mini-field">
+                    <span>Duração</span>
                     <input
                       type="number"
                       min={0}
@@ -618,6 +628,7 @@ function ProfessorConteudo() {
                     />
                   </label>
                   <label className="professor-mini-field">
+                    <span>Ordem</span>
                     <input
                       type="number"
                       min={1}
@@ -631,12 +642,15 @@ function ProfessorConteudo() {
                     />
                   </label>
                 </div>
-                <input
-                  value={aula.videoUrl || ''}
-                  onChange={(event) => setAulas((prev) => prev.map((item) => (
-                    item.id === aula.id ? { ...item, videoUrl: event.target.value } : item
-                  )))}
-                />
+                <label className="saved-field">
+                  <span>URL do vídeo</span>
+                  <input
+                    value={aula.videoUrl || ''}
+                    onChange={(event) => setAulas((prev) => prev.map((item) => (
+                      item.id === aula.id ? { ...item, videoUrl: event.target.value } : item
+                    )))}
+                  />
+                </label>
                 <label className="check-label">
                   <input
                     type="checkbox"

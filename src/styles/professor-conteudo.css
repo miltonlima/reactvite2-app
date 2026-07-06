@@ -306,6 +306,20 @@
   line-height: 1.2;
 }
 
+.saved-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.saved-field > span,
+.professor-mini-field > span {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
 .small-input {
   max-width: 100%;
 }
@@ -358,6 +372,11 @@
 }
 
 .content-card > input:first-of-type {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.lesson-card .saved-field:first-of-type input {
   font-weight: 700;
   color: #0f172a;
 }
