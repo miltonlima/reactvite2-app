@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
 import './styles/professor-conteudo.css';
 
@@ -74,8 +75,10 @@ function toNumberOrZero(value) {
 }
 
 function ProfessorConteudo() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryTurmaId = searchParams.get('turmaId') || '';
   const [turmas, setTurmas] = useState([]);
-  const [turmaId, setTurmaId] = useState('');
+  const [turmaId, setTurmaId] = useState(queryTurmaId);
   const [modulos, setModulos] = useState([]);
   const [aulas, setAulas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -99,6 +102,11 @@ function ProfessorConteudo() {
   }, []);
 
   useEffect(() => {
+    const nextTurmaId = searchParams.get('turmaId') || '';
+    setTurmaId((current) => (current === nextTurmaId ? current : nextTurmaId));
+  }, [searchParams]);
+
+  useEffect(() => {
     if (!turmaId) {
       setModulos([]);
       setAulas([]);
@@ -106,6 +114,26 @@ function ProfessorConteudo() {
     }
     loadConteudoTurma(Number(turmaId));
   }, [turmaId]);
+
+  function handleTurmaChange(value) {
+    setError('');
+    setSuccess('');
+    setTurmaId(value);
+
+    const nextParams = new URLSearchParams(searchParams);
+    if (value) {
+      nextParams.set('turmaId', value);
+    } else {
+      nextParams.delete('turmaId');
+    }
+    setSearchParams(nextParams);
+  }
+
+  function withTurmaQuery(path) {
+    if (!turmaId) return path;
+    const separator = path.includes('?') ? '&' : '?';
+    return `${path}${separator}turmaId=${encodeURIComponent(turmaId)}`;
+  }
 
   async function loadTurmas() {
     try {
@@ -160,7 +188,7 @@ function ProfessorConteudo() {
       setError('');
       setSuccess('');
 
-      await request(`/api/professor/turmas/${turmaId}/modulos`, {
+      await request(withTurmaQuery(`/api/professor/turmas/${turmaId}/modulos`), {
         method: 'POST',
         body: JSON.stringify({
           titulo: novoModulo.titulo,
@@ -186,7 +214,7 @@ function ProfessorConteudo() {
       setError('');
       setSuccess('');
 
-      await request(`/api/professor/modulos/${modulo.id}`, {
+      await request(withTurmaQuery(`/api/professor/modulos/${modulo.id}`), {
         method: 'PUT',
         body: JSON.stringify({
           titulo: modulo.titulo,
@@ -215,7 +243,7 @@ function ProfessorConteudo() {
       setSaving(true);
       setError('');
       setSuccess('');
-      await request(`/api/professor/modulos/${id}`, { method: 'DELETE' });
+      await request(withTurmaQuery(`/api/professor/modulos/${id}`), { method: 'DELETE' });
       setSuccess('Módulo removido.');
       await loadConteudoTurma(Number(turmaId));
     } catch (err) {
@@ -233,7 +261,7 @@ function ProfessorConteudo() {
       setError('');
       setSuccess('');
 
-      await request(`/api/professor/turmas/${turmaId}/aulas`, {
+      await request(withTurmaQuery(`/api/professor/turmas/${turmaId}/aulas`), {
         method: 'POST',
         body: JSON.stringify({
           moduloId: novaAula.moduloId ? Number(novaAula.moduloId) : null,
@@ -270,7 +298,7 @@ function ProfessorConteudo() {
       setError('');
       setSuccess('');
 
-      await request(`/api/professor/aulas/${aula.id}`, {
+      await request(withTurmaQuery(`/api/professor/aulas/${aula.id}`), {
         method: 'PUT',
         body: JSON.stringify({
           moduloId: aula.moduloId ? Number(aula.moduloId) : null,
@@ -302,7 +330,7 @@ function ProfessorConteudo() {
       setSaving(true);
       setError('');
       setSuccess('');
-      await request(`/api/professor/aulas/${id}`, { method: 'DELETE' });
+      await request(withTurmaQuery(`/api/professor/aulas/${id}`), { method: 'DELETE' });
       setSuccess('Aula removida.');
       await loadConteudoTurma(Number(turmaId));
     } catch (err) {
@@ -349,7 +377,7 @@ function ProfessorConteudo() {
       <section className="professor-toolbar">
         <label className="professor-field">
           <span>Curso</span>
-          <select value={turmaId} onChange={(event) => setTurmaId(event.target.value)} disabled={loading || saving}>
+          <select value={turmaId} onChange={(event) => handleTurmaChange(event.target.value)} disabled={loading || saving}>
             <option value="">{turmas.length ? 'Selecione um curso' : 'Nenhum curso disponível'}</option>
             {turmas.map((item) => (
               <option key={item.id} value={item.id}>
