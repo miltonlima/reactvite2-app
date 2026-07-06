@@ -512,7 +512,7 @@ function ProfessorConteudo() {
             <div className="professor-card create-card">
               <div className="create-title-row">
                 <strong>Nova aula</strong>
-                <span>Aula #{aulas.length + 1}</span>
+                <span>#{aulas.length + 1}</span>
               </div>
               <input
                 placeholder="Título da aula"
