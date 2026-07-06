@@ -345,6 +345,44 @@ function ProfessorConteudo() {
     [turmas, turmaId]
   );
 
+  const aulasPorModulo = useMemo(() => {
+    const aulasOrdenadas = [...aulas].sort((a, b) => {
+      const ordemA = Number(a.ordem) || 0;
+      const ordemB = Number(b.ordem) || 0;
+      if (ordemA !== ordemB) return ordemA - ordemB;
+      return String(a.titulo || '').localeCompare(String(b.titulo || ''), 'pt-BR');
+    });
+
+    let aulaIndex = 0;
+    const grupos = modulos
+      .map((modulo, index) => {
+        const aulasDoModulo = aulasOrdenadas
+          .filter((aula) => String(aula.moduloId || '') === String(modulo.id))
+          .map((aula) => ({ ...aula, displayIndex: ++aulaIndex }));
+
+        return {
+          key: `modulo-${modulo.id}`,
+          titulo: `Módulo ${index + 1}# - ${modulo.titulo || 'Sem título'}`,
+          aulas: aulasDoModulo,
+        };
+      })
+      .filter((grupo) => grupo.aulas.length > 0);
+
+    const aulasSemModulo = aulasOrdenadas
+      .filter((aula) => !aula.moduloId)
+      .map((aula) => ({ ...aula, displayIndex: ++aulaIndex }));
+
+    if (aulasSemModulo.length) {
+      grupos.push({
+        key: 'sem-modulo',
+        titulo: 'Sem módulo',
+        aulas: aulasSemModulo,
+      });
+    }
+
+    return grupos;
+  }, [aulas, modulos]);
+
   function formatDate(value) {
     if (!value) return 'N/I';
     const parsed = new Date(value);
@@ -588,9 +626,16 @@ function ProfessorConteudo() {
 
             {!aulas.length && <p className="professor-empty">Nenhuma aula criada ainda para este curso.</p>}
 
-            {aulas.map((aula, index) => (
-              <article key={aula.id} className="professor-card content-card lesson-card">
-                <span className="lesson-index-label">Aula {index + 1}#</span>
+            {aulasPorModulo.map((grupo) => (
+              <section key={grupo.key} className="lesson-module-group">
+                <div className="lesson-module-title">
+                  <strong>{grupo.titulo}</strong>
+                  <span>{grupo.aulas.length} aula(s)</span>
+                </div>
+
+                {grupo.aulas.map((aula) => (
+                  <article key={aula.id} className="professor-card content-card lesson-card">
+                <span className="lesson-index-label">Aula {aula.displayIndex}#</span>
                 <label className="saved-field">
                   <span>Título</span>
                   <input
@@ -677,7 +722,9 @@ function ProfessorConteudo() {
                   <button type="button" onClick={() => updateAula(aula)} disabled={saving} className="btn btn-primary">Salvar</button>
                   <button type="button" onClick={() => deleteAula(aula.id)} disabled={saving} className="btn btn-danger">Excluir</button>
                 </div>
-              </article>
+                  </article>
+                ))}
+              </section>
             ))}
           </section>
         </div>
