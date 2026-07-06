@@ -570,8 +570,9 @@ function ProfessorConteudo() {
 
             {!aulas.length && <p className="professor-empty">Nenhuma aula criada ainda para este curso.</p>}
 
-            {aulas.map((aula) => (
+            {aulas.map((aula, index) => (
               <article key={aula.id} className="professor-card content-card lesson-card">
+                <span className="lesson-index-label">Aula {index + 1}#</span>
                 <input
                   value={aula.titulo}
                   onChange={(event) => setAulas((prev) => prev.map((item) => (
