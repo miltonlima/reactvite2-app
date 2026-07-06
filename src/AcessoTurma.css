@@ -187,6 +187,37 @@
   color: #64748b;
 }
 
+.acesso-module-group {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+}
+
+.acesso-module-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  color: #1e40af;
+}
+
+.acesso-module-title strong {
+  font-size: 0.82rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.acesso-module-title span {
+  color: #60a5fa;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .acesso-lesson-button {
   width: 100%;
   min-width: 0;

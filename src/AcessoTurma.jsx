@@ -149,6 +149,26 @@ function getAlunoIdFromStorage() {
   }
 }
 
+function sortAulasForAccess(lista) {
+  return [...lista].sort((a, b) => {
+    const moduloOrdemA = Number.isFinite(Number(a.moduloOrdem)) ? Number(a.moduloOrdem) : Number.MAX_SAFE_INTEGER;
+    const moduloOrdemB = Number.isFinite(Number(b.moduloOrdem)) ? Number(b.moduloOrdem) : Number.MAX_SAFE_INTEGER;
+    if (moduloOrdemA !== moduloOrdemB) return moduloOrdemA - moduloOrdemB;
+
+    const moduloTituloCompare = String(a.moduloTitulo || '').localeCompare(String(b.moduloTitulo || ''), 'pt-BR');
+    if (moduloTituloCompare !== 0) return moduloTituloCompare;
+
+    const ordemA = Number(a.ordem) || 0;
+    const ordemB = Number(b.ordem) || 0;
+    if (ordemA !== ordemB) return ordemA - ordemB;
+
+    const tituloCompare = String(a.titulo || '').localeCompare(String(b.titulo || ''), 'pt-BR');
+    if (tituloCompare !== 0) return tituloCompare;
+
+    return (Number(a.id) || 0) - (Number(b.id) || 0);
+  });
+}
+
 function AcessoTurma() {
   const { turmaId } = useParams();
   const turmaIdNumero = useMemo(() => Number(turmaId), [turmaId]);
@@ -233,7 +253,7 @@ function AcessoTurma() {
         return;
       }
 
-      const aulasLista = Array.isArray(aulasData) ? aulasData : [];
+      const aulasLista = sortAulasForAccess(Array.isArray(aulasData) ? aulasData : []);
       setAulas(aulasLista);
       setAulaAtualId(aulasLista[0]?.id || null);
     } catch (err) {
@@ -261,6 +281,30 @@ function AcessoTurma() {
     const concluidas = aulas.filter((item) => item.concluida).length;
     const percentual = total > 0 ? Math.round((concluidas * 100) / total) : 0;
     return { total, concluidas, percentual };
+  }, [aulas]);
+
+  const aulasPorModulo = useMemo(() => {
+    const grupos = [];
+    const gruposPorChave = new Map();
+
+    aulas.forEach((aula, index) => {
+      const hasModulo = Boolean(aula.moduloId);
+      const key = hasModulo ? `modulo-${aula.moduloId}` : 'sem-modulo';
+
+      if (!gruposPorChave.has(key)) {
+        const grupo = {
+          key,
+          titulo: hasModulo ? aula.moduloTitulo || 'Módulo do curso' : 'Sem módulo',
+          aulas: [],
+        };
+        gruposPorChave.set(key, grupo);
+        grupos.push(grupo);
+      }
+
+      gruposPorChave.get(key).aulas.push({ ...aula, displayIndex: index + 1 });
+    });
+
+    return grupos;
   }, [aulas]);
 
   async function atualizarConclusao(concluir) {
@@ -420,9 +464,16 @@ function AcessoTurma() {
                 <span>{aulas.length} aula(s)</span>
               </div>
               {aulas.length === 0 && <span className="acesso-empty">Este curso ainda não possui aulas cadastradas.</span>}
-              {aulas.map((aula, index) => {
-                const ativa = Number(aulaAtualId) === Number(aula.id);
-                return (
+              {aulasPorModulo.map((grupo) => (
+                <section key={grupo.key} className="acesso-module-group">
+                  <div className="acesso-module-title">
+                    <strong>{grupo.titulo}</strong>
+                    <span>{grupo.aulas.length} aula(s)</span>
+                  </div>
+
+                  {grupo.aulas.map((aula) => {
+                    const ativa = Number(aulaAtualId) === Number(aula.id);
+                    return (
                   <button
                     key={aula.id}
                     type="button"
@@ -432,13 +483,15 @@ function AcessoTurma() {
                     <span className={aula.concluida ? 'lesson-status done' : 'lesson-status pending'}>
                       {aula.concluida ? 'Concluída' : 'Pendente'}
                     </span>
-                    <div className="lesson-title">Aula {index + 1}: {aula.titulo}</div>
+                    <div className="lesson-title">Aula {aula.displayIndex}: {aula.titulo}</div>
                     <div className="lesson-meta">
                       {aula.moduloTitulo || 'Módulo'} • {aula.duracaoMinutos || 0} min
                     </div>
                   </button>
-                );
-              })}
+                    );
+                  })}
+                </section>
+              ))}
             </aside>
 
             <article className="acesso-lesson-detail">
