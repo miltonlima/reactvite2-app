@@ -74,6 +74,14 @@ function toNumberOrZero(value) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function sortTurmasByModalidadeCurso(lista) {
+  return [...lista].sort((a, b) => {
+    const modalidadeCompare = String(a.modalidadeNome || '').localeCompare(String(b.modalidadeNome || ''), 'pt-BR');
+    if (modalidadeCompare !== 0) return modalidadeCompare;
+    return String(a.nomeTurma || '').localeCompare(String(b.nomeTurma || ''), 'pt-BR');
+  });
+}
+
 function ProfessorConteudo() {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryTurmaId = searchParams.get('turmaId') || '';
@@ -140,7 +148,7 @@ function ProfessorConteudo() {
       setLoading(true);
       setError('');
       const turmasData = await request('/api/professor/turmas');
-      const lista = Array.isArray(turmasData) ? turmasData : [];
+      const lista = sortTurmasByModalidadeCurso(Array.isArray(turmasData) ? turmasData : []);
       setTurmas(lista);
     } catch (err) {
       if (err?.status === 403) {
@@ -148,7 +156,7 @@ function ProfessorConteudo() {
         if (bootstrapped) {
           try {
             const turmasData = await request('/api/professor/turmas');
-            const lista = Array.isArray(turmasData) ? turmasData : [];
+            const lista = sortTurmasByModalidadeCurso(Array.isArray(turmasData) ? turmasData : []);
             setTurmas(lista);
             return;
           } catch {
