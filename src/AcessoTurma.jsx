@@ -222,7 +222,7 @@ function AcessoTurma() {
 
       if (!turmaIdNumero) {
         setError('Curso inválido para acesso.');
-        return;
+        return false;
       }
 
       const alunoId = getAlunoIdFromStorage();
@@ -313,7 +313,7 @@ function AcessoTurma() {
   }, [aulas]);
 
   async function atualizarConclusao(concluir) {
-    if (!aulaAtual || !inscricao) return;
+    if (!aulaAtual || !inscricao) return false;
 
     try {
       setSalvandoProgresso(true);
@@ -322,7 +322,7 @@ function AcessoTurma() {
       const alunoId = getAlunoIdFromStorage();
       if (!alunoId) {
         setError('Faça login novamente para salvar o progresso.');
-        return;
+        return false;
       }
 
       await request(`/api/aulas/${aulaAtual.id}/progresso`, {
@@ -340,11 +340,24 @@ function AcessoTurma() {
           ? { ...item, concluida: concluir, percentual: concluir ? 100 : 0 }
           : item
       )));
+      return true;
     } catch (err) {
       setError(err.message || 'Não foi possível atualizar o progresso da aula.');
+      return false;
     } finally {
       setSalvandoProgresso(false);
     }
+  }
+
+  async function handleProximaAula() {
+    if (!proximaAula || salvandoProgresso) return;
+
+    if (!aulaAtual?.concluida) {
+      const saved = await atualizarConclusao(true);
+      if (!saved) return;
+    }
+
+    setAulaAtualId(proximaAula.id);
   }
 
   function handleSelectAula(id) {
@@ -378,18 +391,16 @@ function AcessoTurma() {
         )}
 
         <div className="lesson-actions">
-          <button
-            type="button"
-            onClick={() => atualizarConclusao(!aulaAtual.concluida)}
-            disabled={salvandoProgresso}
-            className={aulaAtual.concluida ? 'secondary-action' : 'primary-action'}
-          >
-            {salvandoProgresso
-              ? 'Salvando...'
-              : aulaAtual.concluida
-                ? 'Desmarcar conclusão'
-                : 'Marcar como concluída'}
-          </button>
+          {aulaAtual.concluida && (
+            <button
+              type="button"
+              onClick={() => atualizarConclusao(false)}
+              disabled={salvandoProgresso}
+              className="secondary-action"
+            >
+              {salvandoProgresso ? 'Salvando...' : 'Desmarcar conclusão'}
+            </button>
+          )}
 
           <button
             type="button"
@@ -404,13 +415,11 @@ function AcessoTurma() {
 
           <button
             type="button"
-            onClick={() => {
-              if (proximaAula) setAulaAtualId(proximaAula.id);
-            }}
-            disabled={!proximaAula}
+            onClick={handleProximaAula}
+            disabled={!proximaAula || salvandoProgresso}
             className="outline-action"
           >
-            Próxima aula
+            {salvandoProgresso && !aulaAtual.concluida ? 'Computando...' : 'Próxima aula'}
           </button>
         </div>
       </>
