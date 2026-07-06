@@ -410,6 +410,8 @@ function ProfessorConteudo() {
                   min={1}
                   value={novoModulo.ordem}
                   onChange={(event) => setNovoModulo((prev) => ({ ...prev, ordem: event.target.value }))}
+                  placeholder="Ordem"
+                  aria-label="Ordem do módulo"
                   className="small-input"
                 />
                 <label className="check-label">
