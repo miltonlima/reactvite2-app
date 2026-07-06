@@ -381,7 +381,7 @@ function ProfessorConteudo() {
             <option value="">{turmas.length ? 'Selecione um curso' : 'Nenhum curso disponível'}</option>
             {turmas.map((item) => (
               <option key={item.id} value={item.id}>
-                {item.nomeTurma} - {item.modalidadeNome}
+                {item.modalidadeNome} - {item.nomeTurma}
               </option>
             ))}
           </select>
