@@ -458,8 +458,9 @@ function ProfessorConteudo() {
 
             {!modulos.length && <p className="professor-empty">Nenhum módulo criado ainda para este curso.</p>}
 
-            {modulos.map((modulo) => (
+            {modulos.map((modulo, index) => (
               <article key={modulo.id} className="professor-card content-card module-card">
+                <span className="module-index-label">Módulo {index + 1}#</span>
                 <input
                   value={modulo.titulo}
                   onChange={(event) => setModulos((prev) => prev.map((item) => (

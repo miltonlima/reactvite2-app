@@ -320,11 +320,18 @@
   border-left: 4px solid #38bdf8;
 }
 
+.module-index-label {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
 .lesson-card {
   border-left: 4px solid #22c55e;
 }
 
-.content-card > input:first-child {
+.content-card > input:first-of-type {
   font-weight: 700;
   color: #0f172a;
 }
