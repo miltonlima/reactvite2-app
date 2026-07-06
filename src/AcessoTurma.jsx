@@ -485,7 +485,7 @@ function AcessoTurma() {
                     </span>
                     <div className="lesson-title">Aula {aula.displayIndex}: {aula.titulo}</div>
                     <div className="lesson-meta">
-                      {aula.moduloTitulo || 'Módulo'} • {aula.duracaoMinutos || 0} min
+                      {aula.duracaoMinutos || 0} min
                     </div>
                   </button>
                     );
