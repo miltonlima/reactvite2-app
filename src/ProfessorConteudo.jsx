@@ -420,7 +420,10 @@ function ProfessorConteudo() {
             <h2>Módulos</h2>
 
             <div className="professor-card create-card">
-              <strong>Novo módulo</strong>
+              <div className="create-title-row">
+                <strong>Novo módulo</strong>
+                <span>#{modulos.length + 1}</span>
+              </div>
               <input
                 placeholder="Título"
                 value={novoModulo.titulo}
@@ -507,7 +510,10 @@ function ProfessorConteudo() {
             <h2>Aulas</h2>
 
             <div className="professor-card create-card">
-              <strong>Nova aula</strong>
+              <div className="create-title-row">
+                <strong>Nova aula</strong>
+                <span>Aula #{aulas.length + 1}</span>
+              </div>
               <input
                 placeholder="Título da aula"
                 value={novaAula.titulo}

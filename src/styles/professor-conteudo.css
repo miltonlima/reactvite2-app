@@ -208,6 +208,25 @@
   padding-bottom: 2px;
 }
 
+.create-title-row {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 2px;
+}
+
+.create-title-row strong {
+  color: #0f172a;
+  font-size: 15px;
+}
+
+.create-title-row span {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+}
+
 .create-card > textarea,
 .create-card > select {
   grid-column: 1 / -1;
