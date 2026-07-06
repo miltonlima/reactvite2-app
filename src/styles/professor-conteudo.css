@@ -312,7 +312,14 @@
   min-width: 0;
 }
 
+.saved-check-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
 .saved-field > span,
+.saved-check-field > span,
 .professor-mini-field > span {
   color: #94a3b8;
   font-size: 11px;
@@ -377,6 +384,11 @@
 }
 
 .lesson-card .saved-field:first-of-type input {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.module-card .saved-field:first-of-type input {
   font-weight: 700;
   color: #0f172a;
 }

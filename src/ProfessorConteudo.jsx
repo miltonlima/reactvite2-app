@@ -464,39 +464,51 @@ function ProfessorConteudo() {
             {modulos.map((modulo, index) => (
               <article key={modulo.id} className="professor-card content-card module-card">
                 <span className="module-index-label">Módulo {index + 1}#</span>
-                <input
-                  value={modulo.titulo}
-                  onChange={(event) => setModulos((prev) => prev.map((item) => (
-                    item.id === modulo.id ? { ...item, titulo: event.target.value } : item
-                  )))}
-                />
-                <textarea
-                  rows={2}
-                  value={modulo.descricao || ''}
-                  onChange={(event) => setModulos((prev) => prev.map((item) => (
-                    item.id === modulo.id ? { ...item, descricao: event.target.value } : item
-                  )))}
-                />
-                <div className="professor-row">
+                <label className="saved-field">
+                  <span>Título</span>
                   <input
-                    type="number"
-                    min={1}
-                    value={modulo.ordem}
+                    value={modulo.titulo}
                     onChange={(event) => setModulos((prev) => prev.map((item) => (
-                      item.id === modulo.id ? { ...item, ordem: event.target.value } : item
+                      item.id === modulo.id ? { ...item, titulo: event.target.value } : item
                     )))}
-                    className="small-input"
                   />
-                  <label className="check-label">
+                </label>
+                <label className="saved-field">
+                  <span>Descrição</span>
+                  <textarea
+                    rows={2}
+                    value={modulo.descricao || ''}
+                    onChange={(event) => setModulos((prev) => prev.map((item) => (
+                      item.id === modulo.id ? { ...item, descricao: event.target.value } : item
+                    )))}
+                  />
+                </label>
+                <div className="professor-row">
+                  <label className="professor-mini-field">
+                    <span>Ordem</span>
                     <input
-                      type="checkbox"
-                      checked={Boolean(modulo.active)}
+                      type="number"
+                      min={1}
+                      value={modulo.ordem}
                       onChange={(event) => setModulos((prev) => prev.map((item) => (
-                        item.id === modulo.id ? { ...item, active: event.target.checked } : item
+                        item.id === modulo.id ? { ...item, ordem: event.target.value } : item
                       )))}
+                      className="small-input"
                     />
-                    Ativo
                   </label>
+                  <div className="saved-check-field">
+                    <span>Status</span>
+                    <label className="check-label">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(modulo.active)}
+                        onChange={(event) => setModulos((prev) => prev.map((item) => (
+                          item.id === modulo.id ? { ...item, active: event.target.checked } : item
+                        )))}
+                      />
+                      Ativo
+                    </label>
+                  </div>
                 </div>
                 <div className="professor-actions">
                   <button type="button" onClick={() => updateModulo(modulo)} disabled={saving} className="btn btn-primary">Salvar</button>
