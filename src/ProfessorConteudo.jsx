@@ -82,6 +82,13 @@ function sortTurmasByModalidadeCurso(lista) {
   });
 }
 
+function prepareAulasForDisplay(lista) {
+  return lista.map((aula) => ({
+    ...aula,
+    displayModuloId: aula.moduloId ?? null,
+  }));
+}
+
 function ProfessorConteudo() {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryTurmaId = searchParams.get('turmaId') || '';
@@ -180,7 +187,7 @@ function ProfessorConteudo() {
         request(`/api/professor/turmas/${id}/aulas`),
       ]);
       setModulos(Array.isArray(modulosData) ? modulosData : []);
-      setAulas(Array.isArray(aulasData) ? aulasData : []);
+      setAulas(prepareAulasForDisplay(Array.isArray(aulasData) ? aulasData : []));
     } catch (err) {
       setError(err.message || 'Não foi possível carregar conteúdo do curso.');
     } finally {
@@ -354,18 +361,18 @@ function ProfessorConteudo() {
   );
 
   const aulasPorModulo = useMemo(() => {
-    const aulasOrdenadas = [...aulas].sort((a, b) => {
-      const ordemA = Number(a.ordem) || 0;
-      const ordemB = Number(b.ordem) || 0;
-      if (ordemA !== ordemB) return ordemA - ordemB;
-      return String(a.titulo || '').localeCompare(String(b.titulo || ''), 'pt-BR');
-    });
+    const aulasOrdenadas = aulas;
 
     let aulaIndex = 0;
     const grupos = modulos
       .map((modulo, index) => {
         const aulasDoModulo = aulasOrdenadas
-          .filter((aula) => String(aula.moduloId || '') === String(modulo.id))
+          .filter((aula) => {
+            const displayModuloId = Object.prototype.hasOwnProperty.call(aula, 'displayModuloId')
+              ? aula.displayModuloId
+              : aula.moduloId;
+            return String(displayModuloId || '') === String(modulo.id);
+          })
           .map((aula) => ({ ...aula, displayIndex: ++aulaIndex }));
 
         return {
@@ -377,7 +384,12 @@ function ProfessorConteudo() {
       .filter((grupo) => grupo.aulas.length > 0);
 
     const aulasSemModulo = aulasOrdenadas
-      .filter((aula) => !aula.moduloId)
+      .filter((aula) => {
+        const displayModuloId = Object.prototype.hasOwnProperty.call(aula, 'displayModuloId')
+          ? aula.displayModuloId
+          : aula.moduloId;
+        return !displayModuloId;
+      })
       .map((aula) => ({ ...aula, displayIndex: ++aulaIndex }));
 
     if (aulasSemModulo.length) {

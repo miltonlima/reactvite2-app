@@ -286,15 +286,20 @@ function AcessoTurma() {
   const aulasPorModulo = useMemo(() => {
     const grupos = [];
     const gruposPorChave = new Map();
+    let moduloIndex = 0;
 
     aulas.forEach((aula, index) => {
       const hasModulo = Boolean(aula.moduloId);
       const key = hasModulo ? `modulo-${aula.moduloId}` : 'sem-modulo';
 
       if (!gruposPorChave.has(key)) {
+        if (hasModulo) {
+          moduloIndex += 1;
+        }
+
         const grupo = {
           key,
-          titulo: hasModulo ? aula.moduloTitulo || 'Módulo do curso' : 'Sem módulo',
+          titulo: hasModulo ? `Módulo ${moduloIndex}: ${aula.moduloTitulo || 'Módulo do curso'}` : 'Sem módulo',
           aulas: [],
         };
         gruposPorChave.set(key, grupo);
