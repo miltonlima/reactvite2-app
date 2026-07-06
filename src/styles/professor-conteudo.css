@@ -232,6 +232,10 @@
   grid-column: 1 / -1;
 }
 
+.create-card > textarea {
+  min-height: 124px;
+}
+
 .create-card > input:first-of-type {
   grid-column: 1 / -1;
 }
@@ -427,7 +431,7 @@
 }
 
 .content-card textarea {
-  min-height: 74px;
+  min-height: 124px;
   resize: vertical;
 }
 
