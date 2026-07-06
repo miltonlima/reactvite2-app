@@ -364,7 +364,7 @@ function ProfessorConteudo() {
         <span className="professor-kicker">Painel do Professor</span>
         <h1>Conteúdo do Curso</h1>
         <p>
-          Crie e organize módulos e aulas pela interface, sem precisar editar SQL.
+          Crie e organize módulo(s) e aula(s) pela interface, sem precisar editar SQL.
         </p>
       </header>
 
@@ -389,11 +389,11 @@ function ProfessorConteudo() {
 
         <div className="professor-stats">
           <article>
-            <span>Módulos</span>
+            <span>Módulo(s)</span>
             <strong>{modulos.length}</strong>
           </article>
           <article>
-            <span>Aulas</span>
+            <span>Aula(s)</span>
             <strong>{aulas.length}</strong>
           </article>
         </div>
@@ -410,14 +410,14 @@ function ProfessorConteudo() {
       {!loading && !turmaId && (
         <section className="professor-empty-state">
           <strong>Selecione um curso para organizar o conteúdo.</strong>
-          <span>Depois da seleção, você poderá criar módulos, cadastrar aulas e ajustar a ordem de exibição.</span>
+          <span>Depois da seleção, você poderá criar módulo(s), cadastrar aula(s) e ajustar a ordem de exibição.</span>
         </section>
       )}
 
       {!loading && turmaId && (
         <div className="professor-content-grid">
           <section className="professor-column">
-            <h2>Módulos</h2>
+            <h2>Módulo(s)</h2>
 
             <div className="professor-card create-card">
               <div className="create-title-row">
@@ -519,7 +519,7 @@ function ProfessorConteudo() {
           </section>
 
           <section className="professor-column">
-            <h2>Aulas</h2>
+            <h2>Aula(s)</h2>
 
             <div className="professor-card create-card">
               <div className="create-title-row">
