@@ -17,7 +17,18 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
-  padding-bottom: 6px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  text-align: left;
+}
+
+.question-bank-header > div:first-child {
+  display: grid;
+  justify-items: start;
+  text-align: left;
+  min-width: 0;
 }
 
 .question-bank-eyebrow {
@@ -27,12 +38,14 @@
   font-weight: 700;
   letter-spacing: 0;
   color: #50627a;
+  text-align: left;
 }
 
 .question-bank-header h1 {
   margin: 0;
   font-size: clamp(1.55rem, 2vw, 2.15rem);
   color: #111827;
+  text-align: left;
 }
 
 .question-bank-header p {
@@ -40,6 +53,7 @@
   margin: 8px 0 0;
   color: #5b677a;
   line-height: 1.45;
+  text-align: left;
 }
 
 .question-bank-summary {
@@ -47,8 +61,8 @@
   padding: 12px 14px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  background: #ffffff;
-  text-align: right;
+  background: #f8fafc;
+  text-align: left;
 }
 
 .question-bank-summary span {
