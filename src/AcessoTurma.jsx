@@ -389,6 +389,9 @@ function AcessoTurma() {
           <span>{moduloDisplayTitle}</span>
           <strong>Aula {aulaDisplayIndex}: {aulaAtual.titulo}</strong>
           <small>{aulaAtual.duracaoMinutos || 0} minutos de estudo</small>
+          <span className={aulaAtual.concluida ? 'lesson-status done lesson-detail-status' : 'lesson-status pending lesson-detail-status'}>
+            {aulaAtual.concluida ? 'Concluída' : 'Pendente'}
+          </span>
         </div>
 
         <p>{aulaAtual.descricao || 'Sem descrição cadastrada para esta aula.'}</p>

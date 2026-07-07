@@ -284,6 +284,19 @@
   font-weight: 800;
 }
 
+.lesson-detail-heading .lesson-detail-status {
+  color: inherit;
+  margin-top: 2px;
+}
+
+.lesson-detail-heading .lesson-detail-status.done {
+  color: #166534;
+}
+
+.lesson-detail-heading .lesson-detail-status.pending {
+  color: #92400e;
+}
+
 .lesson-detail-heading strong {
   color: #0f172a;
   font-size: 1.55rem;
