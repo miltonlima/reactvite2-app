@@ -335,8 +335,9 @@
 
 .lesson-actions .outline-action {
   border: 1px solid #2563eb;
-  background: #ffffff;
-  color: #2563eb;
+  background: #2563eb;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .lesson-actions button:disabled {
