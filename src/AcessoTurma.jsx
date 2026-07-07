@@ -424,14 +424,16 @@ function AcessoTurma() {
             </button>
           )}
 
-          <button
-            type="button"
-            onClick={handleProximaAula}
-            disabled={!proximaAula || salvandoProgresso}
-            className="outline-action"
-          >
-            {salvandoProgresso && !aulaAtual.concluida ? 'Computando...' : 'Próxima aula'}
-          </button>
+          {proximaAula && (
+            <button
+              type="button"
+              onClick={handleProximaAula}
+              disabled={salvandoProgresso}
+              className="outline-action"
+            >
+              {salvandoProgresso && !aulaAtual.concluida ? 'Computando...' : 'Próxima aula'}
+            </button>
+          )}
         </div>
       </>
     );
