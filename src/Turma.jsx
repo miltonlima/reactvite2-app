@@ -185,6 +185,12 @@ function buildTurmaPayload(values) {
   };
 }
 
+function sortModalidadesByName(items) {
+  return [...items].sort((a, b) => (
+    String(a.courseName || '').localeCompare(String(b.courseName || ''), 'pt-BR')
+  ));
+}
+
 function Turma() {
   const [turmas, setTurmas] = useState([]);
   const [modalidades, setModalidades] = useState([]);
@@ -226,7 +232,7 @@ function Turma() {
         request('/api/modalidades'),
       ]);
       setTurmas(Array.isArray(turmasData) ? turmasData : []);
-      setModalidades(Array.isArray(modalidadesData) ? modalidadesData : []);
+      setModalidades(sortModalidadesByName(Array.isArray(modalidadesData) ? modalidadesData : []));
     } catch (err) {
       setError(err.message || 'Falha ao carregar cursos.');
     }
