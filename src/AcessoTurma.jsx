@@ -413,16 +413,16 @@ function AcessoTurma() {
             </button>
           )}
 
-          <button
-            type="button"
-            onClick={() => {
-              if (aulaAnterior) handleSelectAula(aulaAnterior.id);
-            }}
-            disabled={!aulaAnterior || salvandoProgresso}
-            className="outline-action"
-          >
-            Voltar aula
-          </button>
+          {aulaAnterior && (
+            <button
+              type="button"
+              onClick={() => handleSelectAula(aulaAnterior.id)}
+              disabled={salvandoProgresso}
+              className="outline-action"
+            >
+              Voltar aula
+            </button>
+          )}
 
           <button
             type="button"
