@@ -485,6 +485,7 @@
   resize: vertical;
   padding: 10px;
   font: inherit;
+  font-weight: 400;
 }
 
 .turma-description-field {
