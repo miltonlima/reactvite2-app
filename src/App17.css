@@ -128,12 +128,13 @@
 
 .student-course-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, min(100%, 300px)));
   gap: 12px;
 }
 
 .student-course-card {
   min-width: 0;
+  max-width: 300px;
   display: grid;
   gap: 8px;
   align-content: start;
@@ -248,6 +249,7 @@
   }
 
   .student-course-card {
+    max-width: none;
     padding: 10px;
   }
 
