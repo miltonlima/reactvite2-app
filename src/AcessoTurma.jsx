@@ -310,7 +310,8 @@ function AcessoTurma() {
         grupos.push(grupo);
       }
 
-      gruposPorChave.get(key).aulas.push({ ...aula, displayIndex: index + 1 });
+      const grupoAtual = gruposPorChave.get(key);
+      grupoAtual.aulas.push({ ...aula, displayIndex: index + 1, moduloDisplayTitle: grupoAtual.titulo });
     });
 
     return grupos;
@@ -375,11 +376,18 @@ function AcessoTurma() {
       return <span className="acesso-empty">Selecione uma aula para iniciar.</span>;
     }
 
+    const aulaAtualGrupo = aulasPorModulo.find((grupo) => (
+      grupo.aulas.some((aula) => Number(aula.id) === Number(aulaAtual.id))
+    ));
+    const aulaAtualAgrupada = aulaAtualGrupo?.aulas.find((aula) => Number(aula.id) === Number(aulaAtual.id));
+    const moduloDisplayTitle = aulaAtualGrupo?.titulo || aulaAtual.moduloTitulo || 'Módulo do curso';
+    const aulaDisplayIndex = aulaAtualAgrupada?.displayIndex || aulaAtualIndex + 1;
+
     return (
       <>
         <div className="lesson-detail-heading">
-          <span>{aulaAtual.moduloTitulo || 'Módulo do curso'}</span>
-          <strong>Aula {aulaAtual.displayIndex || aulaAtualIndex + 1}: {aulaAtual.titulo}</strong>
+          <span>{moduloDisplayTitle}</span>
+          <strong>Aula {aulaDisplayIndex}: {aulaAtual.titulo}</strong>
           <small>{aulaAtual.duracaoMinutos || 0} minutos de estudo</small>
         </div>
 
