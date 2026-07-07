@@ -537,8 +537,7 @@ function AcessoTurma() {
           <section className="acesso-lesson-modal" role="dialog" aria-modal="true" aria-labelledby="acesso-lesson-modal-title">
             <div className="acesso-lesson-modal-header">
               <div>
-                <span>Aula selecionada</span>
-                <h2 id="acesso-lesson-modal-title">{aulaAtual.titulo}</h2>
+                <h2 id="acesso-lesson-modal-title">Aula selecionada</h2>
               </div>
               <button type="button" onClick={() => setIsLessonModalOpen(false)}>
                 Fechar
