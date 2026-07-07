@@ -524,6 +524,7 @@ function App17() {
 
       {!loading && !error && modalidadesOrdenadas.map((modalidade) => {
         const cursos = turmasPorModalidade.get(Number(modalidade.id)) || [];
+        if (cursos.length === 0) return null;
 
         return (
           <section key={modalidade.id} className="student-section catalog-section">
@@ -534,12 +535,8 @@ function App17() {
               </span>
             </header>
 
-            <div>
-              {cursos.length === 0 ? (
-                <p className="student-empty">Ainda não há cursos ativos vinculados a esta modalidade.</p>
-              ) : (
-                <div className="student-course-grid">
-                  {cursos.map((turma) => {
+            <div className="student-course-grid">
+              {cursos.map((turma) => {
                     const turmaId = Number(turma.id);
                     const jaInscrito = turmasInscritas.has(turmaId);
 
@@ -579,9 +576,7 @@ function App17() {
                         )}
                       </article>
                     );
-                  })}
-                </div>
-              )}
+              })}
             </div>
           </section>
         );
