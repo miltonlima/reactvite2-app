@@ -331,6 +331,8 @@
   display: grid;
   gap: 4px;
   min-width: 0;
+  justify-items: start;
+  text-align: left;
 }
 
 .question-card-id {
@@ -343,6 +345,7 @@
   color: #111827;
   line-height: 1.35;
   overflow-wrap: anywhere;
+  text-align: left;
 }
 
 .question-card-main small {
