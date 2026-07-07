@@ -379,7 +379,7 @@ function AcessoTurma() {
       <>
         <div className="lesson-detail-heading">
           <span>{aulaAtual.moduloTitulo || 'Módulo do curso'}</span>
-          <strong>{aulaAtual.titulo}</strong>
+          <strong>Aula {aulaAtual.displayIndex || aulaAtualIndex + 1}: {aulaAtual.titulo}</strong>
           <small>{aulaAtual.duracaoMinutos || 0} minutos de estudo</small>
         </div>
 
