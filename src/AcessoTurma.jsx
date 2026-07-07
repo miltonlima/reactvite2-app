@@ -256,6 +256,10 @@ function AcessoTurma() {
       const aulasLista = sortAulasForAccess(Array.isArray(aulasData) ? aulasData : []);
       setAulas(aulasLista);
       setAulaAtualId(aulasLista[0]?.id || null);
+
+      if (aulasLista[0] && !aulasLista[0].concluida) {
+        await atualizarConclusao(true, aulasLista[0], encontrada);
+      }
     } catch (err) {
       setError(err.message || 'Não foi possível validar o acesso do curso.');
     } finally {
@@ -312,8 +316,8 @@ function AcessoTurma() {
     return grupos;
   }, [aulas]);
 
-  async function atualizarConclusao(concluir) {
-    if (!aulaAtual || !inscricao) return false;
+  async function atualizarConclusao(concluir, aulaAlvo = aulaAtual, inscricaoAlvo = inscricao) {
+    if (!aulaAlvo || !inscricaoAlvo) return false;
 
     try {
       setSalvandoProgresso(true);
@@ -325,18 +329,18 @@ function AcessoTurma() {
         return false;
       }
 
-      await request(`/api/aulas/${aulaAtual.id}/progresso`, {
+      await request(`/api/aulas/${aulaAlvo.id}/progresso`, {
         method: 'POST',
         body: JSON.stringify({
           alunoId,
-          turmaId: Number(inscricao.turmaId),
+          turmaId: Number(inscricaoAlvo.turmaId),
           percentual: concluir ? 100 : 0,
           concluida: concluir,
         }),
       });
 
       setAulas((prev) => prev.map((item) => (
-        Number(item.id) === Number(aulaAtual.id)
+        Number(item.id) === Number(aulaAlvo.id)
           ? { ...item, concluida: concluir, percentual: concluir ? 100 : 0 }
           : item
       )));
@@ -351,19 +355,18 @@ function AcessoTurma() {
 
   async function handleProximaAula() {
     if (!proximaAula || salvandoProgresso) return;
-
-    if (!aulaAtual?.concluida) {
-      const saved = await atualizarConclusao(true);
-      if (!saved) return;
-    }
-
-    setAulaAtualId(proximaAula.id);
+    await handleSelectAula(proximaAula.id);
   }
 
-  function handleSelectAula(id) {
+  async function handleSelectAula(id) {
+    const aulaSelecionada = aulas.find((item) => Number(item.id) === Number(id));
     setAulaAtualId(id);
     if (isCompactLayout) {
       setIsLessonModalOpen(true);
+    }
+
+    if (aulaSelecionada && !aulaSelecionada.concluida) {
+      await atualizarConclusao(true, aulaSelecionada);
     }
   }
 
@@ -405,9 +408,9 @@ function AcessoTurma() {
           <button
             type="button"
             onClick={() => {
-              if (aulaAnterior) setAulaAtualId(aulaAnterior.id);
+              if (aulaAnterior) handleSelectAula(aulaAnterior.id);
             }}
-            disabled={!aulaAnterior}
+            disabled={!aulaAnterior || salvandoProgresso}
             className="outline-action"
           >
             Voltar aula
