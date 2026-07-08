@@ -389,8 +389,12 @@ function AcessoTurma() {
           <span>{moduloDisplayTitle}</span>
           <strong>Aula {aulaDisplayIndex}: {aulaAtual.titulo}</strong>
           <small>{aulaAtual.duracaoMinutos || 0} minutos de estudo</small>
-          <span className={aulaAtual.concluida ? 'lesson-status done lesson-detail-status' : 'lesson-status pending lesson-detail-status'}>
-            {aulaAtual.concluida ? 'Concluída' : 'Pendente'}
+          <span
+            className={aulaAtual.concluida ? 'lesson-status done lesson-detail-status' : 'lesson-status pending lesson-detail-status'}
+            aria-label={aulaAtual.concluida ? 'Aula concluída' : 'Aula pendente'}
+            title={aulaAtual.concluida ? 'Aula concluída' : 'Aula pendente'}
+          >
+            {aulaAtual.concluida ? '✓' : 'Pendente'}
           </span>
         </div>
 
@@ -510,7 +514,11 @@ function AcessoTurma() {
                     onClick={() => handleSelectAula(aula.id)}
                     className={`acesso-lesson-button ${ativa ? 'active' : ''}`}
                   >
-                    <span className={aula.concluida ? 'lesson-status done' : 'lesson-status pending'}>
+                    <span
+                      className={aula.concluida ? 'lesson-status done' : 'lesson-status pending'}
+                      aria-label={aula.concluida ? 'Aula concluída' : 'Aula pendente'}
+                      title={aula.concluida ? 'Aula concluída' : 'Aula pendente'}
+                    >
                       {aula.concluida ? 'Concluída' : 'Pendente'}
                     </span>
                     <div className="lesson-title">Aula {aula.displayIndex}: {aula.titulo}</div>
