@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
 import './styles/professor-conteudo.css';
@@ -87,6 +87,77 @@ function prepareAulasForDisplay(lista) {
     ...aula,
     displayModuloId: aula.moduloId ?? null,
   }));
+}
+
+function RichTextEditor({ value, onChange, placeholder = 'Descrição' }) {
+  const editorRef = useRef(null);
+  const lastValueRef = useRef(value || '');
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    const nextValue = value || '';
+    if (nextValue !== editor.innerHTML) {
+      editor.innerHTML = nextValue;
+      lastValueRef.current = nextValue;
+    }
+  }, [value]);
+
+  function emitChange() {
+    const nextValue = editorRef.current?.innerHTML || '';
+    lastValueRef.current = nextValue;
+    onChange(nextValue);
+  }
+
+  function focusEditor() {
+    editorRef.current?.focus();
+  }
+
+  function runCommand(command) {
+    focusEditor();
+    document.execCommand(command, false, null);
+    emitChange();
+  }
+
+  function applyFontSize(size) {
+    focusEditor();
+    document.execCommand('fontSize', false, '7');
+    editorRef.current?.querySelectorAll('font[size="7"]').forEach((node) => {
+      const span = document.createElement('span');
+      span.style.fontSize = `${size}px`;
+      span.innerHTML = node.innerHTML;
+      node.replaceWith(span);
+    });
+    emitChange();
+  }
+
+  return (
+    <div className="rich-text-editor">
+      <div className="rich-text-toolbar" aria-label="Ferramentas de texto">
+        <button type="button" title="Negrito" onClick={() => runCommand('bold')}>B</button>
+        <button type="button" title="Itálico" onClick={() => runCommand('italic')}><i>I</i></button>
+        <button type="button" title="Sublinhado" onClick={() => runCommand('underline')}><u>U</u></button>
+        <select defaultValue="" title="Tamanho da fonte" onChange={(event) => {
+          if (event.target.value) applyFontSize(event.target.value);
+          event.target.value = '';
+        }}>
+          <option value="">Fonte</option>
+          {[8, 9, 10, 11, 12, 13, 14, 15, 16].map((size) => (
+            <option key={size} value={size}>{size}px</option>
+          ))}
+        </select>
+      </div>
+      <div
+        ref={editorRef}
+        className="rich-text-area"
+        contentEditable
+        data-placeholder={placeholder}
+        suppressContentEditableWarning
+        onInput={emitChange}
+        onBlur={emitChange}
+      />
+    </div>
+  );
 }
 
 function ProfessorConteudo() {
@@ -595,6 +666,10 @@ function ProfessorConteudo() {
                 value={novaAula.descricao}
                 onChange={(event) => setNovaAula((prev) => ({ ...prev, descricao: event.target.value }))}
               />
+              <RichTextEditor
+                value={novaAula.descricao}
+                onChange={(descricao) => setNovaAula((prev) => ({ ...prev, descricao }))}
+              />
               <select
                 value={novaAula.moduloId}
                 onChange={(event) => setNovaAula((prev) => ({ ...prev, moduloId: event.target.value }))}
@@ -672,6 +747,12 @@ function ProfessorConteudo() {
                     value={aula.descricao || ''}
                     onChange={(event) => setAulas((prev) => prev.map((item) => (
                       item.id === aula.id ? { ...item, descricao: event.target.value } : item
+                    )))}
+                  />
+                  <RichTextEditor
+                    value={aula.descricao || ''}
+                    onChange={(descricao) => setAulas((prev) => prev.map((item) => (
+                      item.id === aula.id ? { ...item, descricao } : item
                     )))}
                   />
                 </label>
