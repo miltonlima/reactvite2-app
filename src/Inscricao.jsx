@@ -52,8 +52,6 @@ function Inscricao() {
   const [turmas, setTurmas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [inscrevendoTurmaId, setInscrevendoTurmaId] = useState(null);
   const [turmasInscritas, setTurmasInscritas] = useState(() => new Set());
 
   useEffect(() => {
@@ -122,46 +120,6 @@ function Inscricao() {
     [modalidades, turmasPorModalidade]
   );
 
-  async function handleInscricao(turma) {
-    try {
-      setSuccess('');
-      setError('');
-
-      const rawUser = localStorage.getItem('user');
-      if (!rawUser) {
-        setError('Faça login para realizar a inscrição.');
-        return;
-      }
-
-      const user = JSON.parse(rawUser);
-      const alunoId = Number(user?.id);
-      if (!alunoId) {
-        setError('Usuário inválido para inscrição. Faça login novamente.');
-        return;
-      }
-
-      setInscrevendoTurmaId(turma.id);
-
-      const data = await request('/api/inscricoes', {
-        method: 'POST',
-        body: JSON.stringify({ alunoId, turmaId: turma.id }),
-      });
-
-      setSuccess(data?.mensagem || `Inscrição realizada com sucesso em ${turma.nomeTurma}.`);
-      setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
-    } catch (err) {
-      if (err?.status === 409 || /já\s+está\s+inscrito/i.test(err?.message || '')) {
-        setError('');
-        setSuccess(`Você já está inscrito em ${turma.nomeTurma}.`);
-        setTurmasInscritas((previous) => new Set([...previous, Number(turma.id)]));
-      } else {
-        setError(err.message || 'Não foi possível concluir a inscrição.');
-      }
-    } finally {
-      setInscrevendoTurmaId(null);
-    }
-  }
-
   return (
     <div className="inscricao-page">
       <header className="inscricao-hero">
@@ -169,7 +127,7 @@ function Inscricao() {
           <span className="inscricao-kicker">Inscrições abertas</span>
           <h1>Cursos disponíveis para inscrição</h1>
           <p>
-            Escolha uma turma ativa, confira o período do curso e conclua sua inscrição em poucos segundos.
+            Escolha um curso ativo, confira os detalhes e conclua sua inscrição na página do curso.
           </p>
           <Link to="/page17" className="inscricao-back-link">Voltar para catálogo</Link>
         </div>
@@ -193,7 +151,6 @@ function Inscricao() {
       <div className="inscricao-feedback" aria-live="polite">
         {loading && <p className="inscricao-state">Carregando cursos disponíveis...</p>}
         {error && <p className="inscricao-alert inscricao-alert-error">Erro: {error}</p>}
-        {success && <p className="inscricao-alert inscricao-alert-success">{success}</p>}
       </div>
 
       {!loading && !error && modalidadesExibidas.length === 0 && (
@@ -223,8 +180,9 @@ function Inscricao() {
                   ) : (
                     <div className="inscricao-course-grid">
                       {cursos.map((turma) => {
-                        const destacado = selectedTurmaId === turma.id;
-                        const jaInscrito = turmasInscritas.has(Number(turma.id));
+                        const turmaId = Number(turma.id);
+                        const destacado = selectedTurmaId === turmaId;
+                        const jaInscrito = turmasInscritas.has(turmaId);
 
                         return (
                           <article
@@ -249,18 +207,19 @@ function Inscricao() {
                               </div>
                             </dl>
 
-                            <button
-                              type="button"
-                              className="inscricao-action"
-                              onClick={() => handleInscricao(turma)}
-                              disabled={jaInscrito || inscrevendoTurmaId === turma.id}
-                            >
-                              {jaInscrito
-                                ? 'Inscrito'
-                                : inscrevendoTurmaId === turma.id
-                                  ? 'Inscrevendo...'
-                                  : 'Inscrever-se'}
-                            </button>
+                            {jaInscrito ? (
+                              <Link to={`/acesso-turma/${turmaId}`} className="inscricao-action">
+                                Acessar sala
+                              </Link>
+                            ) : (
+                              <Link
+                                to={`/curso/${turmaId}`}
+                                state={{ turma, modalidade }}
+                                className="inscricao-action"
+                              >
+                                Inscrever-se
+                              </Link>
+                            )}
                           </article>
                         );
                       })}
