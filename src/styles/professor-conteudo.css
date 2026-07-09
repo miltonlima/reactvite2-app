@@ -54,6 +54,35 @@
   color: #991b1b;
 }
 
+.professor-toast {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 80;
+  min-width: 140px;
+  padding: 10px 14px;
+  border: 1px solid #a7f3d0;
+  border-radius: 10px;
+  background: #ecfdf5;
+  color: #065f46;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
+  animation: professor-toast-in 0.18s ease-out;
+}
+
+@keyframes professor-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .professor-toolbar {
   border: 1px solid #dbeafe;
   border-radius: 12px;

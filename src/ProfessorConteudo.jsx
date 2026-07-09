@@ -171,6 +171,7 @@ function ProfessorConteudo() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
 
   const [novoModulo, setNovoModulo] = useState({ titulo: '', descricao: '', ordem: 1, active: true });
   const [novaAula, setNovaAula] = useState({
@@ -200,6 +201,12 @@ function ProfessorConteudo() {
     }
     loadConteudoTurma(Number(turmaId));
   }, [turmaId]);
+
+  useEffect(() => {
+    if (!toastMessage) return undefined;
+    const timer = window.setTimeout(() => setToastMessage(''), 2600);
+    return () => window.clearTimeout(timer);
+  }, [toastMessage]);
 
   function handleTurmaChange(value) {
     setError('');
@@ -397,8 +404,7 @@ function ProfessorConteudo() {
         }),
       });
 
-      setSuccess('Aula atualizada.');
-      await loadConteudoTurma(Number(turmaId));
+      setToastMessage('Aula salva');
     } catch (err) {
       setError(err.message || 'Não foi possível atualizar aula.');
     } finally {
@@ -489,6 +495,12 @@ function ProfessorConteudo() {
 
   return (
     <div className="professor-page">
+      {toastMessage && (
+        <div className="professor-toast" role="status" aria-live="polite">
+          {toastMessage}
+        </div>
+      )}
+
       <header className="professor-hero">
         <span className="professor-kicker">Painel do Professor</span>
         <h1>Conteúdo do Curso</h1>
