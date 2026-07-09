@@ -250,6 +250,7 @@ function Layout() {
     birthDate: '',
     sex: '',
     email: '',
+    password: '',
   });
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError, setProfileError] = useState('');
@@ -293,6 +294,7 @@ function Layout() {
       birthDate: toInputDate(getUserValue(user, 'birth_date', 'birthDate')),
       sex: normalizeSexCode(getUserValue(user, 'sex', 'sexo')),
       email: getUserValue(user, 'email'),
+      password: '',
     });
     setProfileError('');
     setProfileSuccess('');
@@ -332,6 +334,10 @@ function Layout() {
         sex: profileForm.sex.trim(),
         email: getUserValue(user, 'email'),
       };
+      const password = profileForm.password.trim();
+      if (password) {
+        payload.password = password;
+      }
 
       const response = await request(`/api/alunos/${userId}`, {
         method: 'PUT',
@@ -355,10 +361,11 @@ function Layout() {
         statusCode: 200,
         metadata: {
           profileUserId: userId,
-          updatedFields: ['fullName', 'birthDate', 'sex'],
+          updatedFields: password ? ['fullName', 'birthDate', 'sex', 'password'] : ['fullName', 'birthDate', 'sex'],
         },
       });
       setProfileSuccess(response?.mensagem || 'Cadastro atualizado com sucesso.');
+      setProfileForm((current) => ({ ...current, password: '' }));
     } catch (error) {
       await logProfileEvent({
         user,
@@ -366,7 +373,7 @@ function Layout() {
         statusCode: error.status || 0,
         metadata: {
           profileUserId: userId,
-          updatedFields: ['fullName', 'birthDate', 'sex'],
+          updatedFields: profileForm.password.trim() ? ['fullName', 'birthDate', 'sex', 'password'] : ['fullName', 'birthDate', 'sex'],
           reason: error.message || 'profile_update_error',
         },
       });
@@ -496,6 +503,19 @@ function Layout() {
                   value={profileForm.email}
                   disabled
                   readOnly
+                />
+              </label>
+
+              <label>
+                Nova senha
+                <input
+                  name="password"
+                  type="password"
+                  value={profileForm.password}
+                  onChange={handleProfileInputChange}
+                  placeholder="Deixe em branco para manter a senha atual"
+                  minLength={4}
+                  autoComplete="new-password"
                 />
               </label>
 
