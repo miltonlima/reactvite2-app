@@ -367,6 +367,11 @@
   box-shadow: 0 8px 18px rgba(14, 165, 233, 0.08);
 }
 
+.professor-column:first-of-type .create-card > textarea,
+.module-card > .saved-field:nth-of-type(2) {
+  display: none;
+}
+
 .module-index-label {
   color: #94a3b8;
   font-size: 11px;
