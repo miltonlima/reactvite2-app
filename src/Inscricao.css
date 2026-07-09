@@ -7,6 +7,10 @@
   box-sizing: border-box;
 }
 
+.dashboard-main:has(.inscricao-page) {
+  overflow-y: visible;
+}
+
 .inscricao-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
