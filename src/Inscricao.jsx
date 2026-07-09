@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { API_BASE } from './config/apiBase';
+import './Inscricao.css';
 
 async function request(path, options = {}) {
   const hasBody = typeof options.body !== 'undefined';
@@ -116,6 +117,11 @@ function Inscricao() {
     return modalidades.filter((m) => Number(m.id) === selectedModalidadeId);
   }, [modalidades, selectedModalidadeId]);
 
+  const totalModalidadesComCursos = useMemo(
+    () => modalidades.filter((modalidade) => (turmasPorModalidade.get(Number(modalidade.id)) || []).length > 0).length,
+    [modalidades, turmasPorModalidade]
+  );
+
   async function handleInscricao(turma) {
     try {
       setSuccess('');
@@ -157,117 +163,115 @@ function Inscricao() {
   }
 
   return (
-    <div style={{ padding: 20, textAlign: 'left' }}>
-      <header style={{ marginBottom: 16 }}>
-        <h1 style={{ margin: 0 }}>Cursos Disponíveis para Inscrição</h1>
-        <p style={{ margin: '8px 0 0' }}>
-          Selecione um curso ativo para concluir a inscrição.
-        </p>
-        <div style={{ marginTop: 10 }}>
-          <Link to="/page17" className="secondary-link">Voltar para catálogo</Link>
+    <div className="inscricao-page">
+      <header className="inscricao-hero">
+        <div className="inscricao-hero-copy">
+          <span className="inscricao-kicker">Inscrições abertas</span>
+          <h1>Cursos disponíveis para inscrição</h1>
+          <p>
+            Escolha uma turma ativa, confira o período do curso e conclua sua inscrição em poucos segundos.
+          </p>
+          <Link to="/page17" className="inscricao-back-link">Voltar para catálogo</Link>
+        </div>
+
+        <div className="inscricao-summary" aria-label="Resumo das inscrições">
+          <article>
+            <span>Cursos ativos</span>
+            <strong>{turmasAtivas.length}</strong>
+          </article>
+          <article>
+            <span>Modalidades</span>
+            <strong>{totalModalidadesComCursos}</strong>
+          </article>
+          <article>
+            <span>Minhas inscrições</span>
+            <strong>{turmasInscritas.size}</strong>
+          </article>
         </div>
       </header>
 
-      {loading && <p>Carregando cursos disponíveis...</p>}
-      {error && <p className="error">Erro: {error}</p>}
-      {success && <p className="success">{success}</p>}
+      <div className="inscricao-feedback" aria-live="polite">
+        {loading && <p className="inscricao-state">Carregando cursos disponíveis...</p>}
+        {error && <p className="inscricao-alert inscricao-alert-error">Erro: {error}</p>}
+        {success && <p className="inscricao-alert inscricao-alert-success">{success}</p>}
+      </div>
 
       {!loading && !error && modalidadesExibidas.length === 0 && (
-        <p>Nenhuma modalidade encontrada para inscrição.</p>
+        <p className="inscricao-empty">Nenhuma modalidade encontrada para inscrição.</p>
       )}
 
-      {!loading && !error && modalidadesExibidas.map((modalidade) => {
-        const cursos = turmasPorModalidade.get(Number(modalidade.id)) || [];
+      {!loading && !error && (
+        <div className="inscricao-modalidades">
+          {modalidadesExibidas.map((modalidade) => {
+            const cursos = turmasPorModalidade.get(Number(modalidade.id)) || [];
 
-        return (
-          <section
-            key={modalidade.id}
-            style={{
-              marginBottom: 18,
-              border: '1px solid #d1d5db',
-              borderRadius: 10,
-              overflow: 'hidden',
-              background: '#fff',
-            }}
-          >
-            <header
-              style={{
-                background: '#0f766e',
-                color: '#fff',
-                padding: '12px 14px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: 8,
-                flexWrap: 'wrap',
-              }}
-            >
-              <strong>{modalidade.courseName}</strong>
-              <span style={{ fontSize: 13, opacity: 0.95 }}>
-                {cursos.length} {cursos.length === 1 ? 'curso' : 'cursos'} disponíveis
-              </span>
-            </header>
+            return (
+              <section key={modalidade.id} className="inscricao-section">
+                <header className="inscricao-section-header">
+                  <div>
+                    <span>Modalidade</span>
+                    <h2>{modalidade.courseName}</h2>
+                  </div>
+                  <span className="inscricao-count">
+                    {cursos.length} {cursos.length === 1 ? 'curso' : 'cursos'} disponíveis
+                  </span>
+                </header>
 
-            <div style={{ padding: 14 }}>
-              {cursos.length === 0 ? (
-                <p style={{ margin: 0 }}>Ainda não há cursos ativos vinculados a esta modalidade.</p>
-              ) : (
-                <div
-                  style={{
-                    display: 'grid',
-                    gap: 10,
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                  }}
-                >
-                  {cursos.map((turma) => {
-                    const destacado = selectedTurmaId === turma.id;
-                    const jaInscrito = turmasInscritas.has(Number(turma.id));
-                    return (
-                      <article
-                        key={turma.id}
-                        style={{
-                          border: destacado ? '2px solid #2563eb' : '1px solid #e5e7eb',
-                          borderRadius: 8,
-                          padding: 12,
-                          display: 'grid',
-                          gap: 8,
-                          background: '#f8fafc',
-                        }}
-                      >
-                        <strong>{turma.nomeTurma}</strong>
-                        <span>Inicio: {formatDate(turma.dataInicio)}</span>
-                        <span>Fim: {formatDate(turma.dataFim)}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleInscricao(turma)}
-                          disabled={jaInscrito || inscrevendoTurmaId === turma.id}
-                          style={{
-                            background: jaInscrito ? '#dcfce7' : '#2563eb',
-                            color: jaInscrito ? '#166534' : '#fff',
-                            border: jaInscrito ? '1px solid #bbf7d0' : 'none',
-                            borderRadius: 6,
-                            padding: '8px 10px',
-                            textAlign: 'center',
-                            fontWeight: 600,
-                            cursor: jaInscrito || inscrevendoTurmaId === turma.id ? 'default' : 'pointer',
-                            opacity: inscrevendoTurmaId === turma.id ? 0.75 : 1,
-                          }}
-                        >
-                          {jaInscrito
-                            ? 'Inscrito'
-                            : inscrevendoTurmaId === turma.id
-                              ? 'Inscrevendo...'
-                              : 'Inscrever-se'}
-                        </button>
-                      </article>
-                    );
-                  })}
+                <div className="inscricao-section-body">
+                  {cursos.length === 0 ? (
+                    <p className="inscricao-empty">Ainda não há cursos ativos vinculados a esta modalidade.</p>
+                  ) : (
+                    <div className="inscricao-course-grid">
+                      {cursos.map((turma) => {
+                        const destacado = selectedTurmaId === turma.id;
+                        const jaInscrito = turmasInscritas.has(Number(turma.id));
+
+                        return (
+                          <article
+                            key={turma.id}
+                            className={`inscricao-course-card${destacado ? ' is-highlighted' : ''}${jaInscrito ? ' is-enrolled' : ''}`}
+                          >
+                            <div className="inscricao-course-top">
+                              <span className="inscricao-course-status">
+                                {jaInscrito ? 'Inscrito' : destacado ? 'Selecionado' : 'Disponível'}
+                              </span>
+                              <strong>{turma.nomeTurma}</strong>
+                            </div>
+
+                            <dl className="inscricao-dates">
+                              <div>
+                                <dt>Início</dt>
+                                <dd>{formatDate(turma.dataInicio)}</dd>
+                              </div>
+                              <div>
+                                <dt>Fim</dt>
+                                <dd>{formatDate(turma.dataFim)}</dd>
+                              </div>
+                            </dl>
+
+                            <button
+                              type="button"
+                              className="inscricao-action"
+                              onClick={() => handleInscricao(turma)}
+                              disabled={jaInscrito || inscrevendoTurmaId === turma.id}
+                            >
+                              {jaInscrito
+                                ? 'Inscrito'
+                                : inscrevendoTurmaId === turma.id
+                                  ? 'Inscrevendo...'
+                                  : 'Inscrever-se'}
+                            </button>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </section>
-        );
-      })}
+              </section>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
