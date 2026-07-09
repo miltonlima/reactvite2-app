@@ -6,6 +6,10 @@
   text-align: left;
 }
 
+.dashboard-main:has(.student-home-page) {
+  overflow-y: visible;
+}
+
 .student-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
