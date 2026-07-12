@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { API_BASE } from './config/apiBase';
+import './Home2.css';
+
+const SUMMARY_CARDS = [
+  { key: 'alunos', label: 'Alunos', caption: 'Usuários cadastrados' },
+  { key: 'modalidades', label: 'Modalidades', caption: 'Áreas de ensino' },
+  { key: 'cursos', label: 'Cursos', caption: 'Turmas disponíveis' },
+  { key: 'avaliacoes', label: 'Avaliações', caption: 'Respostas enviadas' },
+];
 
 function normalizeCollection(data, key) {
   if (Array.isArray(data)) return data;
@@ -22,34 +30,47 @@ async function request(path) {
   return body;
 }
 
+function getValue(item, ...keys) {
+  for (const key of keys) {
+    if (item?.[key] !== undefined && item?.[key] !== null) return item[key];
+  }
+  return 0;
+}
+
 function formatNumber(value) {
   return new Intl.NumberFormat('pt-BR').format(Number(value) || 0);
 }
 
-function ChartPlaceholder({ values }) {
-  const bars = values.length > 0 ? values : [0];
-  const max = Math.max(...bars, 1);
+function formatPercent(value) {
+  return Number(value || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+}
+
+function formatDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('pt-BR');
+}
+
+function ChartPlaceholder({ items }) {
+  const max = Math.max(...items.map((item) => Number(item.value) || 0), 1);
 
   return (
-    <div className="chart-placeholder">
-      <svg
-        viewBox={`0 0 ${bars.length * 28} ${max}`}
-        width="100%"
-        height={160}
-        preserveAspectRatio="none"
-      >
-        {bars.map((value, index) => (
-          <rect
-            key={index}
-            x={index * 28 + 8}
-            y={max - value}
-            width={12}
-            height={value || 1}
-            fill="#4f46e5"
-            rx={3}
-          />
-        ))}
-      </svg>
+    <div className="home-chart-bars" aria-label="Resumo geral em gráfico de barras">
+      {items.map((item) => {
+        const value = Number(item.value) || 0;
+        const height = Math.max(6, Math.round((value / max) * 100));
+
+        return (
+          <div className="home-chart-item" key={item.key}>
+            <div className="home-chart-track">
+              <div className="home-chart-fill" style={{ '--bar-size': `${height}%` }} />
+            </div>
+            <strong>{formatNumber(value)}</strong>
+            <span>{item.label}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -109,68 +130,85 @@ function Home2() {
     };
   }, []);
 
-  const chartValues = useMemo(
-    () => [summary.alunos, summary.modalidades, summary.cursos, summary.avaliacoes],
+  const summaryCards = useMemo(
+    () => SUMMARY_CARDS.map((card) => ({ ...card, value: summary[card.key] })),
     [summary]
   );
 
   return (
-    <div style={{ padding: '20px' }}>
-      <div className="dashboard-stats">
-        <div className="card primary">
-          <div>Alunos</div>
-          <div className="card-value">{loading ? '...' : formatNumber(summary.alunos)}</div>
+    <main className="home-dashboard-page">
+      <header className="home-dashboard-hero">
+        <div>
+          <span className="home-dashboard-kicker">Painel administrativo</span>
+          <h1>Resumo da plataforma</h1>
+          <p>Acompanhe os principais números do ambiente de ensino em uma visão rápida.</p>
         </div>
-        <div className="card-metric">
-          <div>Modalidades</div>
-          <div className="card-value">{loading ? '...' : formatNumber(summary.modalidades)}</div>
-        </div>
-        <div className="card-metric">
-          <div>Cursos</div>
-          <div className="card-value">{loading ? '...' : formatNumber(summary.cursos)}</div>
-        </div>
-        <div className="card-metric">
-          <div>Avaliações</div>
-          <div className="card-value">{loading ? '...' : formatNumber(summary.avaliacoes)}</div>
-        </div>
-      </div>
+        <span className={`home-dashboard-status ${loading ? 'is-loading' : ''}`}>
+          {loading ? 'Atualizando dados' : 'Dados atualizados'}
+        </span>
+      </header>
 
-      {error && (
-        <p className="error" style={{ marginTop: 16 }}>
-          Erro: {error}
-        </p>
-      )}
+      {error && <p className="home-dashboard-error">Erro: {error}</p>}
 
-      <div className="dashboard-graphs">
-        <div className="graph">
-          <h3>Resumo geral</h3>
-          <ChartPlaceholder values={chartValues} />
-        </div>
-      </div>
+      <section className="home-stat-grid" aria-label="Indicadores principais">
+        {summaryCards.map((card, index) => (
+          <article className={`home-stat-card ${index === 0 ? 'is-primary' : ''}`} key={card.key}>
+            <span>{card.label}</span>
+            <strong>{loading ? '...' : formatNumber(card.value)}</strong>
+            <p>{card.caption}</p>
+          </article>
+        ))}
+      </section>
 
-      <div className="dashboard-activity-full">
-        <h3>Avaliações recentes</h3>
-        {loading && <p style={{ padding: '0 12px 12px', margin: 0 }}>Carregando dados...</p>}
-        {!loading && recentEvaluations.length === 0 && (
-          <p style={{ padding: '0 12px 12px', margin: 0 }}>Nenhuma avaliação registrada.</p>
-        )}
-        {!loading && recentEvaluations.length > 0 && (
-          <ul>
-            {recentEvaluations.map((item) => (
-              <li key={item.id}>
-                <div className="user-name">{item.alunoNome || item.aluno_nome || 'Aluno não informado'}</div>
-                <div className="user-action">
-                  {formatNumber(item.totalCorretas ?? item.total_corretas ?? 0)} de{' '}
-                  {formatNumber(item.totalPerguntas ?? item.total_perguntas ?? 0)} acertos
-                  {' · '}
-                  {Number(item.percentual ?? 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+      <section className="home-dashboard-main">
+        <article className="home-panel">
+          <div className="home-panel-header">
+            <div>
+              <span>Visão geral</span>
+              <h2>Distribuição dos dados</h2>
+            </div>
+          </div>
+          <ChartPlaceholder items={summaryCards} />
+        </article>
+
+        <article className="home-panel">
+          <div className="home-panel-header">
+            <div>
+              <span>Histórico</span>
+              <h2>Avaliações recentes</h2>
+            </div>
+          </div>
+
+          {loading && <p className="home-empty-state">Carregando dados...</p>}
+          {!loading && recentEvaluations.length === 0 && (
+            <p className="home-empty-state">Nenhuma avaliação registrada.</p>
+          )}
+          {!loading && recentEvaluations.length > 0 && (
+            <div className="home-evaluation-list">
+              {recentEvaluations.map((item) => {
+                const totalCorretas = getValue(item, 'totalCorretas', 'total_corretas');
+                const totalPerguntas = getValue(item, 'totalPerguntas', 'total_perguntas');
+                const percentual = getValue(item, 'percentual');
+                const createdAt = item.createdAt || item.created_at;
+
+                return (
+                  <div className="home-evaluation-item" key={item.id}>
+                    <div>
+                      <strong>{item.alunoNome || item.aluno_nome || 'Aluno não informado'}</strong>
+                      <span>
+                        {formatNumber(totalCorretas)} de {formatNumber(totalPerguntas)} acertos
+                        {createdAt ? ` · ${formatDate(createdAt)}` : ''}
+                      </span>
+                    </div>
+                    <b>{formatPercent(percentual)}%</b>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </article>
+      </section>
+    </main>
   );
 }
 
