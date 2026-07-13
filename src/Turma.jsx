@@ -272,6 +272,13 @@ function Turma() {
     });
   }, [sortConfig, turmas]);
 
+  const activeCoursesCount = useMemo(
+    () => turmas.filter((item) => item.active).length,
+    [turmas]
+  );
+
+  const inactiveCoursesCount = turmas.length - activeCoursesCount;
+
   function handleCreateInputChange(event) {
     const { name, type, checked, value } = event.target;
     setForm((current) => ({
@@ -531,17 +538,36 @@ function Turma() {
     <div className="turma-report-page">
       <header className="turma-report-header">
         <div>
-          <h1>Relatório de Cursos</h1>
-          <p>Cadastro, manutenção e exclusão de cursos.</p>
+          <span className="turma-report-kicker">Gestão acadêmica</span>
+          <h1>Cursos</h1>
+          <p>Cadastre, edite e acompanhe os cursos disponíveis na plataforma.</p>
         </div>
         <div className="turma-report-header-right">
-          <span className="turma-report-badge">Total: {turmas.length}</span>
           <button type="button" className="turma-primary-action" onClick={openCreateModal}>
             Novo curso
           </button>
           <Link to="/page17" className="secondary-link">Voltar ao Dashboard</Link>
         </div>
       </header>
+
+      <section className="turma-summary-grid" aria-label="Resumo de cursos">
+        <article className="turma-summary-card is-total">
+          <span>Total de cursos</span>
+          <strong>{turmas.length}</strong>
+        </article>
+        <article className="turma-summary-card">
+          <span>Cursos ativos</span>
+          <strong>{activeCoursesCount}</strong>
+        </article>
+        <article className="turma-summary-card">
+          <span>Cursos inativos</span>
+          <strong>{inactiveCoursesCount}</strong>
+        </article>
+        <article className="turma-summary-card">
+          <span>Modalidades</span>
+          <strong>{modalidades.length}</strong>
+        </article>
+      </section>
 
       {error && <p className="error">Erro: {error}</p>}
       {success && <p className="success">{success}</p>}
