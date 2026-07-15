@@ -573,19 +573,53 @@ body {
 }
 
 .profile-image-field {
+  position: relative;
   grid-column: 1 / -1;
 }
 
+.profile-image-label {
+  color: #334155;
+  font-weight: 700;
+}
+
 .profile-form .profile-image-field input[type="file"] {
-  min-height: auto;
-  padding: 10px 12px;
+  position: absolute;
+  inset: 26px 0 0;
+  width: 100%;
+  height: calc(100% - 26px);
+  opacity: 0;
   cursor: pointer;
 }
 
-.profile-image-field span {
+.profile-file-control {
+  display: grid;
+  gap: 3px;
+  min-height: 48px;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #0f172a;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.profile-image-field:hover .profile-file-control,
+.profile-image-field:focus-within .profile-file-control {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.profile-file-control strong {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.profile-file-control small {
   color: #64748b;
   font-size: 0.82rem;
   font-weight: 500;
+  overflow-wrap: anywhere;
 }
 
 .profile-modal-actions {

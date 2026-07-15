@@ -608,7 +608,7 @@ function Layout() {
               </label>
 
               <label className="profile-image-field">
-                Imagem de perfil
+                <span className="profile-image-label">Imagem de perfil</span>
                 <input
                   name="profileImage"
                   type="file"
@@ -616,8 +616,9 @@ function Layout() {
                   onChange={handleProfileImageChange}
                   disabled={profileSaving}
                 />
-                <span>
-                  {profileForm.profileImageName || 'JPG, PNG, WEBP ou GIF até 1 MB.'}
+                <span className="profile-file-control">
+                  <strong>Escolher imagem</strong>
+                  <small>{profileForm.profileImageName || 'JPG, PNG, WEBP ou GIF até 1 MB.'}</small>
                 </span>
               </label>
 
