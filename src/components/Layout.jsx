@@ -4,6 +4,9 @@ import { AuthContext } from './AuthContext';
 import SidebarMenu from './SidebarMenu';
 import { API_BASE } from '../config/apiBase';
 
+const MAX_PROFILE_IMAGE_BYTES = 1024 * 1024;
+const PROFILE_IMAGE_ACCEPT = 'image/png,image/jpeg,image/webp,image/gif';
+
 function toInputDate(value) {
   if (!value) return '';
   if (typeof value === 'string' && value.length >= 10) {
@@ -103,6 +106,13 @@ function getUserType(user) {
     user?.role ||
     ''
   ).trim().toLowerCase();
+}
+
+function resolveUserPhoto(user) {
+  const photo = getUserValue(user, 'img_perfil', 'imgPerfil');
+  if (!photo) return '';
+  if (/^(https?:|data:|blob:)/i.test(photo)) return photo;
+  return `${API_BASE}${String(photo).startsWith('/') ? photo : `/${photo}`}`;
 }
 
 function isAlunoUser(userType) {
@@ -251,6 +261,8 @@ function Layout() {
     sex: '',
     email: '',
     password: '',
+    profileImage: null,
+    profileImageName: '',
   });
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError, setProfileError] = useState('');
@@ -261,6 +273,7 @@ function Layout() {
   const userName = user?.full_name || 'Usuário';
   const userEmail = user?.email || '';
   const userType = getUserType(user);
+  const userPhoto = resolveUserPhoto(user);
 
   useEffect(() => {
     if (!user) {
@@ -295,6 +308,8 @@ function Layout() {
       sex: normalizeSexCode(getUserValue(user, 'sex', 'sexo')),
       email: getUserValue(user, 'email'),
       password: '',
+      profileImage: null,
+      profileImageName: '',
     });
     setProfileError('');
     setProfileSuccess('');
@@ -312,6 +327,36 @@ function Layout() {
   function handleProfileInputChange(event) {
     const { name, value } = event.target;
     setProfileForm((current) => ({ ...current, [name]: value }));
+  }
+
+  function handleProfileImageChange(event) {
+    const file = event.target.files?.[0] || null;
+
+    if (!file) {
+      setProfileForm((current) => ({ ...current, profileImage: null, profileImageName: '' }));
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      event.target.value = '';
+      setProfileError('Selecione um arquivo de imagem válido.');
+      setProfileForm((current) => ({ ...current, profileImage: null, profileImageName: '' }));
+      return;
+    }
+
+    if (file.size > MAX_PROFILE_IMAGE_BYTES) {
+      event.target.value = '';
+      setProfileError('A imagem de perfil deve ter no máximo 1 MB.');
+      setProfileForm((current) => ({ ...current, profileImage: null, profileImageName: '' }));
+      return;
+    }
+
+    setProfileError('');
+    setProfileForm((current) => ({
+      ...current,
+      profileImage: file,
+      profileImageName: file.name,
+    }));
   }
 
   async function handleSaveProfile(event) {
@@ -339,18 +384,48 @@ function Layout() {
         payload.password = password;
       }
 
-      const response = await request(`/api/alunos/${userId}`, {
-        method: 'PUT',
-        body: JSON.stringify(payload),
-      });
+      let response;
+      if (profileForm.profileImage) {
+        const formData = new FormData();
+        formData.append('fullName', payload.fullName);
+        formData.append('birthDate', payload.birthDate);
+        formData.append('sex', payload.sex);
+        formData.append('email', payload.email);
+        if (payload.password) {
+          formData.append('password', payload.password);
+        }
+        formData.append('imgPerfil', profileForm.profileImage);
+
+        const uploadResponse = await fetch(`${API_BASE}/api/alunos/${userId}`, {
+          method: 'PUT',
+          body: formData,
+        });
+        const isJson = uploadResponse.headers.get('content-type')?.includes('application/json');
+        response = isJson ? await uploadResponse.json() : null;
+
+        if (!uploadResponse.ok) {
+          const message = response?.mensagem || response?.message || response?.detail || uploadResponse.statusText;
+          const error = new Error(message);
+          error.status = uploadResponse.status;
+          throw error;
+        }
+      } else {
+        response = await request(`/api/alunos/${userId}`, {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        });
+      }
 
       const updatedAluno = response?.aluno || response?.Aluno || response;
+      const updatedImgPerfil = updatedAluno?.imgPerfil || updatedAluno?.img_perfil || user?.img_perfil || user?.imgPerfil || '';
       const nextUser = {
         ...user,
         full_name: updatedAluno?.fullName || updatedAluno?.full_name || payload.fullName,
         birth_date: updatedAluno?.birthDate || updatedAluno?.birth_date || payload.birthDate,
         sex: updatedAluno?.sex || updatedAluno?.Sex || payload.sex,
         email: updatedAluno?.email || updatedAluno?.Email || payload.email,
+        img_perfil: updatedImgPerfil,
+        imgPerfil: updatedImgPerfil,
       };
 
       localStorage.setItem('user', JSON.stringify(nextUser));
@@ -361,11 +436,17 @@ function Layout() {
         statusCode: 200,
         metadata: {
           profileUserId: userId,
-          updatedFields: password ? ['fullName', 'birthDate', 'sex', 'password'] : ['fullName', 'birthDate', 'sex'],
+          updatedFields: [
+            'fullName',
+            'birthDate',
+            'sex',
+            ...(password ? ['password'] : []),
+            ...(profileForm.profileImage ? ['imgPerfil'] : []),
+          ],
         },
       });
       setProfileSuccess(response?.mensagem || 'Cadastro atualizado com sucesso.');
-      setProfileForm((current) => ({ ...current, password: '' }));
+      setProfileForm((current) => ({ ...current, password: '', profileImage: null, profileImageName: '' }));
     } catch (error) {
       await logProfileEvent({
         user,
@@ -373,7 +454,13 @@ function Layout() {
         statusCode: error.status || 0,
         metadata: {
           profileUserId: userId,
-          updatedFields: profileForm.password.trim() ? ['fullName', 'birthDate', 'sex', 'password'] : ['fullName', 'birthDate', 'sex'],
+          updatedFields: [
+            'fullName',
+            'birthDate',
+            'sex',
+            ...(profileForm.password.trim() ? ['password'] : []),
+            ...(profileForm.profileImage ? ['imgPerfil'] : []),
+          ],
           reason: error.message || 'profile_update_error',
         },
       });
@@ -405,6 +492,7 @@ function Layout() {
           userName={userName}
           userEmail={userEmail}
           userType={userType}
+          userPhoto={userPhoto}
           isMobileOpen={sidebarOpen}
           onNavigate={() => setSidebarOpen(false)}
           onProfileClick={handleOpenProfileModal}
@@ -517,6 +605,20 @@ function Layout() {
                   minLength={4}
                   autoComplete="new-password"
                 />
+              </label>
+
+              <label className="profile-image-field">
+                Imagem de perfil
+                <input
+                  name="profileImage"
+                  type="file"
+                  accept={PROFILE_IMAGE_ACCEPT}
+                  onChange={handleProfileImageChange}
+                  disabled={profileSaving}
+                />
+                <span>
+                  {profileForm.profileImageName || 'JPG, PNG, WEBP ou GIF até 1 MB.'}
+                </span>
               </label>
 
               <div className="profile-modal-actions">
