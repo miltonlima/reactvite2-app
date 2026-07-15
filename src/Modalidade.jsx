@@ -44,13 +44,23 @@ function Modalidade() {
 
   const cursosPorModalidade = useMemo(() => {
     const grouped = new Map();
+
     for (const turma of turmas) {
       const modalidadeId = Number(turma.modalidadeId);
       const current = grouped.get(modalidadeId) || [];
       grouped.set(modalidadeId, [...current, turma]);
     }
+
     return grouped;
   }, [turmas]);
+
+  const sortedModalidades = useMemo(() => (
+    [...modalidades].sort((a, b) => String(a.courseName || '').localeCompare(String(b.courseName || ''), 'pt-BR'))
+  ), [modalidades]);
+
+  const modalidadesComCursos = useMemo(() => (
+    modalidades.filter((item) => (cursosPorModalidade.get(Number(item.id)) || []).length > 0).length
+  ), [cursosPorModalidade, modalidades]);
 
   async function loadModalidades() {
     try {
@@ -153,14 +163,33 @@ function Modalidade() {
     <div className="modalidade-report-page">
       <header className="modalidade-report-header">
         <div>
-          <h1>Relatório de Modalidades</h1>
-          <p>Cadastro, manutenção e exclusão de modalidades.</p>
+          <span className="modalidade-report-kicker">Catálogo acadêmico</span>
+          <h1>Modalidades</h1>
+          <p>Organize as áreas de ensino e visualize os cursos associados.</p>
         </div>
         <div className="modalidade-report-header-right">
-          <span className="modalidade-report-badge">Total: {modalidades.length}</span>
           <Link to="/page17" className="secondary-link">Voltar ao Dashboard</Link>
         </div>
       </header>
+
+      <section className="modalidade-summary-grid" aria-label="Resumo de modalidades">
+        <article className="modalidade-summary-card is-total">
+          <span>Total de modalidades</span>
+          <strong>{modalidades.length}</strong>
+        </article>
+        <article className="modalidade-summary-card">
+          <span>Com cursos</span>
+          <strong>{modalidadesComCursos}</strong>
+        </article>
+        <article className="modalidade-summary-card">
+          <span>Sem cursos</span>
+          <strong>{Math.max(modalidades.length - modalidadesComCursos, 0)}</strong>
+        </article>
+        <article className="modalidade-summary-card">
+          <span>Cursos associados</span>
+          <strong>{turmas.length}</strong>
+        </article>
+      </section>
 
       <section className="modalidade-report-create">
         <form onSubmit={handleCreate} className="modalidade-create-inline-form">
@@ -193,14 +222,15 @@ function Modalidade() {
             </tr>
           </thead>
           <tbody>
-            {modalidades.length === 0 ? (
+            {sortedModalidades.length === 0 ? (
               <tr>
                 <td colSpan={4} className="td-empty">Nenhuma modalidade cadastrada.</td>
               </tr>
             ) : (
-              modalidades.map((item) => {
+              sortedModalidades.map((item) => {
                 const isEditing = editingId === item.id;
                 const cursos = cursosPorModalidade.get(Number(item.id)) || [];
+
                 return (
                   <tr key={item.id}>
                     <td data-label="ID">{item.id}</td>
