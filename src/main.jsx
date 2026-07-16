@@ -30,6 +30,7 @@ import Turma from './Turma.jsx'
 import Avaliacao from './Avaliacao.jsx'
 import BancoQuestoes from './BancoQuestoes.jsx'
 import ProvaBanco from './ProvaBanco.jsx'
+import LogsSistema from './LogsSistema.jsx'
 import Inscricao from './Inscricao.jsx'
 import AcessoTurma from './AcessoTurma.jsx'
 import ProfessorConteudo from './ProfessorConteudo.jsx'
@@ -72,6 +73,7 @@ const TurmaPage = withTitle(Turma, 'Cursos')
 const AvaliacaoPage = withTitle(Avaliacao, 'Avaliações');
 const BancoQuestoesPage = withTitle(BancoQuestoes, 'Banco de questões');
 const ProvaBancoPage = withTitle(ProvaBanco, 'Prova / Banco');
+const LogsSistemaPage = withTitle(LogsSistema, 'Logs do sistema');
 const InscricaoPage = withTitle(Inscricao, 'Inscrições');
 const AcessoTurmaPage = withTitle(AcessoTurma, 'Acesso do Curso');
 const ProfessorConteudoPage = withTitle(ProfessorConteudo, 'Professor - Conteúdo');
@@ -115,6 +117,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/avaliacao" element={<AvaliacaoPage />} />
           <Route path="/banco-questoes" element={<BancoQuestoesPage />} />
           <Route path="/prova-banco" element={<ProvaBancoPage />} />
+          <Route path="/logs" element={<LogsSistemaPage />} />
           <Route path="/inscricao" element={<InscricaoPage />} />
           <Route path="/curso/:turmaId" element={<CursoDetalhePage />} />
           <Route path="/acesso-turma/:turmaId" element={<AcessoTurmaPage />} />

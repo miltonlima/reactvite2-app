@@ -67,7 +67,7 @@ function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, o
     { name: 'Mensagem', icon: '✉️', path: '/mensagem' },
     { name: 'Notificação', icon: '🔔', path: '#' },
     { name: 'Localização', icon: '📍', path: '#' },
-    { name: 'Logs', icon: '📊', path: '#' }
+    { name: 'Logs', icon: '📊', path: '/logs' }
   ].filter((item) => !isAlunoUser(userType) || alunoAllowedPaths.has(item.path));
 
   return (
