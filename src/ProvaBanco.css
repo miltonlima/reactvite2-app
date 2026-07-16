@@ -1,8 +1,16 @@
 .prova-banco-page {
   width: min(1180px, 100%);
+  max-width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 24px;
   text-align: left;
+}
+
+.prova-banco-page *,
+.prova-banco-page *::before,
+.prova-banco-page *::after {
+  box-sizing: border-box;
 }
 
 .prova-banco-header {
@@ -96,6 +104,7 @@
   margin: 2px 0 0;
   color: #0f172a;
   font-size: 1.15rem;
+  overflow-wrap: anywhere;
 }
 
 .prova-banco-list-header strong {
@@ -133,6 +142,7 @@
   color: #0f172a;
   font-size: 1rem;
   line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
 .prova-banco-question-card ul {
@@ -148,6 +158,8 @@
   align-items: flex-start;
   gap: 8px;
   color: #334155;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .prova-banco-question-card li span {
