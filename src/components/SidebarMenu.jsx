@@ -62,7 +62,7 @@ function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, o
     { name: 'Módulo / Aula', icon: '🧑', path: '/professor/conteudo' },
     { name: 'Prova', icon: '🎓', path: '/avaliacao' },
     { name: 'Banco de questões', icon: '📋', path: '/banco-questoes' },
-    { name: 'Prova / Questões', icon: '🧪', path: '/prova-questao' },
+    { name: 'Prova / Banco', icon: '🧪', path: '/prova-banco' },
     { name: 'Arquivo', icon: '📁', path: '/arquivo' },
     { name: 'Mensagem', icon: '✉️', path: '/mensagem' },
     { name: 'Notificação', icon: '🔔', path: '#' },
