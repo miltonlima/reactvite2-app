@@ -1052,10 +1052,17 @@ body {
   min-height: 44px;
   justify-self: stretch;
   background: #0f766e;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
 }
 
 .education-auth-form button:hover {
   background: #115e59;
+}
+
+.education-auth-form button:disabled {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
 }
 
 .education-auth-message {
