@@ -1,19 +1,123 @@
-// A lógica de autenticação, estado do usuário e o SidebarMenu foram movidos para o componente Layout.
-// Este componente agora apenas renderiza o conteúdo específico da página.
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_BASE } from './config/apiBase';
+
+let arquivoLastPageViewAt = 0;
+
+function getAccessSessionId() {
+  const storageKey = 'access_session_id';
+  const existing = localStorage.getItem(storageKey);
+  if (existing) return existing;
+
+  const nextId = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  localStorage.setItem(storageKey, nextId);
+  return nextId;
+}
+
+function getStoredUser() {
+  try {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function getClientUserAgent() {
+  if (typeof navigator === 'undefined') return null;
+
+  const baseUserAgent = navigator.userAgent || '';
+
+  try {
+    if (navigator.userAgentData?.getHighEntropyValues) {
+      const hints = await navigator.userAgentData.getHighEntropyValues([
+        'platform',
+        'platformVersion',
+        'model',
+        'uaFullVersion',
+        'fullVersionList',
+      ]);
+      const browserVersion = hints.fullVersionList?.map((item) => `${item.brand} ${item.version}`).join(', ') || hints.uaFullVersion;
+      const details = [
+        baseUserAgent,
+        hints.platform ? `platform=${hints.platform}` : '',
+        hints.platformVersion ? `platformVersion=${hints.platformVersion}` : '',
+        hints.model ? `model=${hints.model}` : '',
+        browserVersion ? `browser=${browserVersion}` : '',
+      ].filter(Boolean);
+
+      return details.join(' | ');
+    }
+  } catch {
+    return baseUserAgent || null;
+  }
+
+  return baseUserAgent || null;
+}
+
+function getClientPlatform() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgentData?.platform || navigator.platform || null;
+}
+
+async function logArquivoEvent({ action, statusCode = 200, httpMethod = 'POST', metadata = {} }) {
+  try {
+    const user = getStoredUser();
+    const clientUserAgent = await getClientUserAgent();
+    const clientPlatform = getClientPlatform();
+
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath: window.location.pathname,
+        pageTitle: 'Arquivos',
+        action,
+        httpMethod,
+        referrer: document.referrer || null,
+        userAgent: clientUserAgent,
+        statusCode,
+        metadata: {
+          source: 'Arquivo',
+          route: '/arquivo',
+          clientPlatform,
+          ...metadata,
+        },
+      }),
+    });
+  } catch (err) {
+    console.warn('Falha ao registrar log de arquivos:', err);
+  }
+}
 
 function Arquivo() {
+  useEffect(() => {
+    const now = Date.now();
+    if (now - arquivoLastPageViewAt < 1000) return;
+    arquivoLastPageViewAt = now;
+
+    logArquivoEvent({
+      action: 'page_view',
+      statusCode: 200,
+      httpMethod: 'GET',
+    });
+  }, []);
+
   return (
-    <>
-      {/* O div "dashboard" e o SidebarMenu são renderizados pelo componente Layout pai */}
-      <div style={{ padding: '20px' }}>
-        <h1>Página de Arquivos</h1>
-        <p>Esta é a página para gerenciar arquivos.</p>
-        <h1>🎓💼💻🏢🏠📘🗄🖥📝🔒🚀🗺🧪📊🔎✔️📃📗</h1>
-        {/* Este link deve levar de volta à página principal do dashboard, que é /page17 */}
-        <Link to="/page17">Voltar ao Dashboard</Link>
-      </div>
-    </>
+    <div style={{ padding: '20px' }}>
+      <h1>Página de Arquivos</h1>
+      <p>Esta é a página para gerenciar arquivos.</p>
+      <Link to="/page17">Voltar ao Dashboard</Link>
+    </div>
   );
 }
 
