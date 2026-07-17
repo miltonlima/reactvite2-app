@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import './BancoQuestoes.css';
 import { API_BASE } from './config/apiBase';
 
+let bancoQuestoesLastPageViewAt = 0;
+
 const emptyAlternative = (id, correta = false) => ({
   id,
   texto: '',
@@ -47,6 +49,101 @@ async function request(path, options = {}) {
   return data;
 }
 
+function getAccessSessionId() {
+  const storageKey = 'access_session_id';
+  const existing = localStorage.getItem(storageKey);
+  if (existing) return existing;
+
+  const nextId = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  localStorage.setItem(storageKey, nextId);
+  return nextId;
+}
+
+function getStoredUser() {
+  try {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function getClientUserAgent() {
+  if (typeof navigator === 'undefined') return null;
+
+  const baseUserAgent = navigator.userAgent || '';
+
+  try {
+    if (navigator.userAgentData?.getHighEntropyValues) {
+      const hints = await navigator.userAgentData.getHighEntropyValues([
+        'platform',
+        'platformVersion',
+        'model',
+        'uaFullVersion',
+        'fullVersionList',
+      ]);
+      const browserVersion = hints.fullVersionList?.map((item) => `${item.brand} ${item.version}`).join(', ') || hints.uaFullVersion;
+      const details = [
+        baseUserAgent,
+        hints.platform ? `platform=${hints.platform}` : '',
+        hints.platformVersion ? `platformVersion=${hints.platformVersion}` : '',
+        hints.model ? `model=${hints.model}` : '',
+        browserVersion ? `browser=${browserVersion}` : '',
+      ].filter(Boolean);
+
+      return details.join(' | ');
+    }
+  } catch {
+    return baseUserAgent || null;
+  }
+
+  return baseUserAgent || null;
+}
+
+function getClientPlatform() {
+  return typeof navigator === 'undefined' ? null : navigator.userAgentData?.platform || navigator.platform || null;
+}
+
+async function logBancoQuestoesEvent({ action, statusCode = 200, httpMethod = 'POST', metadata = {} }) {
+  try {
+    const user = getStoredUser();
+    const clientUserAgent = await getClientUserAgent();
+    const clientPlatform = getClientPlatform();
+
+    await fetch(`${API_BASE}/api/access-logs`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: Number(user?.id) || null,
+        userEmail: user?.email || null,
+        userName: user?.full_name || user?.fullName || user?.name || null,
+        userType: user?.tipo || user?.tipoUsuario || user?.userType || user?.perfil || user?.role || null,
+        sessionId: getAccessSessionId(),
+        pagePath: window.location.pathname,
+        pageTitle: 'Banco de questões',
+        action,
+        httpMethod,
+        referrer: document.referrer || null,
+        userAgent: clientUserAgent,
+        statusCode,
+        metadata: {
+          source: 'BancoQuestoes',
+          route: '/banco-questoes',
+          clientPlatform,
+          ...metadata,
+        },
+      }),
+    });
+  } catch (err) {
+    console.warn('Falha ao registrar log do banco de questões:', err);
+  }
+}
+
 function BancoQuestoes() {
   const [questions, setQuestions] = useState([]);
   const [search, setSearch] = useState('');
@@ -60,6 +157,16 @@ function BancoQuestoes() {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
+    const now = Date.now();
+    if (now - bancoQuestoesLastPageViewAt >= 1000) {
+      bancoQuestoesLastPageViewAt = now;
+      logBancoQuestoesEvent({
+        action: 'page_view',
+        statusCode: 200,
+        httpMethod: 'GET',
+      });
+    }
+
     loadQuestions();
   }, []);
 
