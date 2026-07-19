@@ -83,6 +83,11 @@
   color: #991b1b;
 }
 
+.prova-banco-message.success {
+  background: #ecfdf5;
+  color: #047857;
+}
+
 .prova-banco-questions {
   display: grid;
   gap: 14px;
@@ -112,6 +117,45 @@
   white-space: nowrap;
 }
 
+.prova-banco-copy-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.prova-banco-copy-actions small {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.prova-banco-copy-actions button {
+  min-height: 36px;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.prova-banco-copy-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.prova-banco-copy-actions .primary-copy-button {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
 .prova-banco-question-list {
   display: grid;
   gap: 12px;
@@ -124,6 +168,11 @@
   background: #ffffff;
 }
 
+.prova-banco-question-card.is-copied {
+  border-color: #bbf7d0;
+  background: #fbfefc;
+}
+
 .prova-banco-question-top {
   display: flex;
   align-items: center;
@@ -132,8 +181,40 @@
   margin-bottom: 8px;
 }
 
+.prova-banco-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: #334155;
+  cursor: pointer;
+}
+
+.prova-banco-check input {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #2563eb;
+}
+
+.prova-banco-check input:disabled {
+  cursor: not-allowed;
+}
+
+.prova-banco-check span {
+  min-width: 0;
+}
+
 .prova-banco-question-top small {
   color: #334155;
+  font-weight: 700;
+}
+
+.prova-banco-copied-note {
+  margin: 0 0 10px;
+  color: #64748b;
+  font-size: 0.82rem;
   font-weight: 700;
 }
 
@@ -192,6 +273,22 @@
 
 @media (max-width: 720px) {
   .prova-banco-list-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .prova-banco-copy-actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+@media (max-width: 460px) {
+  .prova-banco-copy-actions button {
+    flex: 1 1 145px;
+  }
+
+  .prova-banco-question-top {
     align-items: flex-start;
     flex-direction: column;
   }
