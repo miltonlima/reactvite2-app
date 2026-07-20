@@ -520,6 +520,14 @@ function Layout() {
           </header>
           {/* O Outlet renderiza o componente filho (ex: App17) diretamente aqui */}
           <Outlet />
+          <footer className="dashboard-footer">
+            <div className="dashboard-footer-line" />
+            <p>
+              Sistema de Atividades Educacionais
+              <span>Aprendizado, gestão e acompanhamento em um so lugar.</span>
+            </p>
+            <small>{new Date().getFullYear()} - Plataforma educacional</small>
+          </footer>
         </main>
       </div>
 

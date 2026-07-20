@@ -1,5 +1,4 @@
 .inscricao-page {
-  min-height: 100%;
   padding: 20px;
   background: #f8fafc;
   color: #0f172a;
@@ -9,6 +8,10 @@
 
 .dashboard-main:has(.inscricao-page) {
   overflow-y: visible;
+}
+
+.dashboard-main:has(.inscricao-page) .dashboard-footer {
+  margin-top: 12px;
 }
 
 .inscricao-hero {

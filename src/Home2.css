@@ -1,9 +1,16 @@
 .home-dashboard-page {
-  min-height: 100%;
   padding: 22px;
   color: #0f172a;
   text-align: left;
   background: #f6f8fb;
+}
+
+.dashboard-main:has(.home-dashboard-page) {
+  overflow-y: visible;
+}
+
+.dashboard-main:has(.home-dashboard-page) .dashboard-footer {
+  margin-top: 12px;
 }
 
 .home-dashboard-hero {

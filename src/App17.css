@@ -1,5 +1,4 @@
 .student-home-page {
-  min-height: 100%;
   padding: 20px;
   background: #f8fafc;
   color: #0f172a;
@@ -8,6 +7,10 @@
 
 .dashboard-main:has(.student-home-page) {
   overflow-y: visible;
+}
+
+.dashboard-main:has(.student-home-page) .dashboard-footer {
+  margin-top: 12px;
 }
 
 .student-hero {
