@@ -289,7 +289,7 @@ body {
   overflow-y: auto;
   background: #f1f5f9;
   min-width: 0;
-  padding-bottom: 20px;
+  padding-bottom: 0;
 }
 
 .dashboard-footer {
@@ -297,7 +297,7 @@ body {
   justify-items: center;
   gap: 6px;
   width: 100%;
-  margin: 28px auto 14px;
+  margin: 28px auto 0;
   padding: 18px 18px 16px;
   box-sizing: border-box;
   color: #e5e7eb;
