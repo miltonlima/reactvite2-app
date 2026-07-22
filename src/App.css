@@ -296,9 +296,10 @@ body {
   display: grid;
   justify-items: center;
   gap: 6px;
-  width: min(840px, calc(100% - 32px));
+  width: 100%;
   margin: 28px auto 14px;
   padding: 18px 18px 16px;
+  box-sizing: border-box;
   color: #e5e7eb;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.08);
