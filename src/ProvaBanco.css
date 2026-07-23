@@ -300,6 +300,89 @@
   opacity: 0.55;
 }
 
+.prova-banco-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.prova-banco-confirm-modal {
+  width: min(430px, 100%);
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+  text-align: left;
+}
+
+.prova-banco-confirm-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 900;
+}
+
+.prova-banco-confirm-modal h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.1rem;
+}
+
+.prova-banco-confirm-modal p {
+  margin: 6px 0 10px;
+  color: #64748b;
+}
+
+.prova-banco-confirm-modal strong {
+  display: block;
+  color: #334155;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.prova-banco-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.prova-banco-confirm-actions button {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.prova-banco-confirm-actions button:first-child {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+}
+
+.prova-banco-confirm-actions button.danger {
+  border: none;
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.prova-banco-confirm-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .prova-banco-copied-note {
   margin: 0 0 10px;
   color: #64748b;

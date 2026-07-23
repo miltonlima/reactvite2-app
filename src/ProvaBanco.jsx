@@ -151,6 +151,7 @@ function ProvaBanco() {
   const [loadingCursoQuestions, setLoadingCursoQuestions] = useState(false);
   const [copying, setCopying] = useState(false);
   const [deletingQuestionId, setDeletingQuestionId] = useState(null);
+  const [questionToDelete, setQuestionToDelete] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -173,9 +174,7 @@ function ProvaBanco() {
     setSuccess('');
     setQuestoesCurso([]);
 
-    if (!cursoId) {
-      return;
-    }
+    if (!cursoId) return;
 
     loadQuestoesCurso(Number(cursoId));
   }, [cursoId]);
@@ -257,12 +256,8 @@ function ProvaBanco() {
 
   function updateQueryParams(nextModalidadeId, nextCursoId, replace = false) {
     const params = new URLSearchParams();
-    if (nextModalidadeId) {
-      params.set('modalidadeId', String(nextModalidadeId));
-    }
-    if (nextCursoId) {
-      params.set('turmaId', String(nextCursoId));
-    }
+    if (nextModalidadeId) params.set('modalidadeId', String(nextModalidadeId));
+    if (nextCursoId) params.set('turmaId', String(nextCursoId));
     setSearchParams(params, { replace });
   }
 
@@ -346,22 +341,30 @@ function ProvaBanco() {
     }
   }
 
-  async function deleteCourseQuestion(question) {
+  function openDeleteModal(question) {
     if (!cursoId || !question?.id) return;
+    setQuestionToDelete(question);
+  }
 
-    const shouldDelete = window.confirm('Remover esta questão do banco do curso?');
-    if (!shouldDelete) return;
+  function closeDeleteModal() {
+    if (deletingQuestionId) return;
+    setQuestionToDelete(null);
+  }
+
+  async function confirmDeleteCourseQuestion() {
+    if (!cursoId || !questionToDelete?.id) return;
 
     try {
-      setDeletingQuestionId(Number(question.id));
+      setDeletingQuestionId(Number(questionToDelete.id));
       setError('');
       setSuccess('');
 
-      const result = await request(`/api/turmas/${cursoId}/perguntas-curso/${question.id}`, {
+      const result = await request(`/api/turmas/${cursoId}/perguntas-curso/${questionToDelete.id}`, {
         method: 'DELETE',
       });
 
       await loadQuestoesCurso(Number(cursoId));
+      setQuestionToDelete(null);
       setSuccess(result?.mensagem || 'Pergunta removida do banco do curso.');
 
       logProvaBancoEvent({
@@ -371,8 +374,8 @@ function ProvaBanco() {
         metadata: {
           turmaId: Number(cursoId),
           modalidadeId: Number(modalidadeId) || null,
-          perguntaCursoId: Number(question.id),
-          enunciado: question.enunciado || null,
+          perguntaCursoId: Number(questionToDelete.id),
+          enunciado: questionToDelete.enunciado || null,
         },
       });
     } catch (err) {
@@ -530,12 +533,12 @@ function ProvaBanco() {
                           <button
                             type="button"
                             className="prova-banco-delete-button"
-                            onClick={() => deleteCourseQuestion(questao)}
+                            onClick={() => openDeleteModal(questao)}
                             disabled={copying || deletingQuestionId === Number(questao.id)}
                             title="Excluir questão do curso"
                             aria-label="Excluir questão do curso"
                           >
-                            {deletingQuestionId === Number(questao.id) ? '...' : 'Excluir'}
+                            Excluir
                           </button>
                         </div>
                       </div>
@@ -555,6 +558,33 @@ function ProvaBanco() {
             </section>
           </div>
         </section>
+      )}
+
+      {questionToDelete && (
+        <div className="prova-banco-modal-backdrop" role="presentation" onMouseDown={closeDeleteModal}>
+          <section
+            className="prova-banco-confirm-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-course-question-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="prova-banco-confirm-icon">!</div>
+            <div>
+              <h2 id="delete-course-question-title">Excluir questão do curso?</h2>
+              <p>Esta ação remove apenas o vínculo desta questão com a turma selecionada.</p>
+              <strong>{questionToDelete.enunciado}</strong>
+            </div>
+            <div className="prova-banco-confirm-actions">
+              <button type="button" onClick={closeDeleteModal} disabled={Boolean(deletingQuestionId)}>
+                Cancelar
+              </button>
+              <button type="button" className="danger" onClick={confirmDeleteCourseQuestion} disabled={Boolean(deletingQuestionId)}>
+                {deletingQuestionId ? 'Excluindo...' : 'Excluir'}
+              </button>
+            </div>
+          </section>
+        </div>
       )}
     </main>
   );
