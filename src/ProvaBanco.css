@@ -375,7 +375,8 @@
 .prova-banco-confirm-actions button.danger {
   border: none;
   background: #dc2626;
-  color: #ffffff;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .prova-banco-confirm-actions button:disabled {
