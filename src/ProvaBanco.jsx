@@ -144,6 +144,7 @@ function ProvaBanco() {
   const [loading, setLoading] = useState(true);
   const [loadingCursoQuestions, setLoadingCursoQuestions] = useState(false);
   const [copying, setCopying] = useState(false);
+  const [deletingQuestionId, setDeletingQuestionId] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -164,9 +165,9 @@ function ProvaBanco() {
   useEffect(() => {
     setSelectedQuestionIds(new Set());
     setSuccess('');
+    setQuestoesCurso([]);
 
     if (!cursoId) {
-      setQuestoesCurso([]);
       return;
     }
 
@@ -304,6 +305,45 @@ function ProvaBanco() {
       setError(err.message || 'Não foi possível copiar as perguntas para o curso.');
     } finally {
       setCopying(false);
+    }
+  }
+
+  async function deleteCourseQuestion(question) {
+    if (!cursoId || !question?.id) return;
+
+    const shouldDelete = window.confirm('Remover esta questão do banco do curso?');
+    if (!shouldDelete) return;
+
+    try {
+      setDeletingQuestionId(Number(question.id));
+      setError('');
+      setSuccess('');
+
+      const result = await request(`/api/turmas/${cursoId}/perguntas-curso/${question.id}`, {
+        method: 'DELETE',
+      });
+
+      await loadQuestoesCurso(Number(cursoId));
+      setSuccess(result?.mensagem || 'Pergunta removida do banco do curso.');
+
+      logProvaBancoEvent({
+        action: 'delete_course_question',
+        statusCode: 200,
+        httpMethod: 'DELETE',
+        metadata: {
+          turmaId: Number(cursoId),
+          modalidadeId: Number(modalidadeId) || null,
+          perguntaCursoId: Number(question.id),
+          enunciado: question.enunciado || null,
+        },
+      });
+    } catch (err) {
+      if (err.status === 404) {
+        await loadQuestoesCurso(Number(cursoId));
+      }
+      setError(err.message || 'Não foi possível remover a pergunta do curso.');
+    } finally {
+      setDeletingQuestionId(null);
     }
   }
 
@@ -447,7 +487,19 @@ function ProvaBanco() {
                     <article className="prova-banco-question-card course-question" key={questao.id}>
                       <div className="prova-banco-question-top">
                         <span>Questão do curso #{index + 1}</span>
-                        <small>{formatDifficulty(questao.dificuldade)}</small>
+                        <div className="prova-banco-course-actions">
+                          <small>{formatDifficulty(questao.dificuldade)}</small>
+                          <button
+                            type="button"
+                            className="prova-banco-delete-button"
+                            onClick={() => deleteCourseQuestion(questao)}
+                            disabled={copying || deletingQuestionId === Number(questao.id)}
+                            title="Excluir questão do curso"
+                            aria-label="Excluir questão do curso"
+                          >
+                            {deletingQuestionId === Number(questao.id) ? '...' : 'Excluir'}
+                          </button>
+                        </div>
                       </div>
                       <h3>{questao.enunciado}</h3>
                       <ul>

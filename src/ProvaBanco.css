@@ -271,6 +271,35 @@
   font-weight: 700;
 }
 
+.prova-banco-course-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.prova-banco-delete-button {
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid #fecaca;
+  border-radius: 999px;
+  background: #fff7f7;
+  color: #991b1b;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.prova-banco-delete-button:hover {
+  background: #fee2e2;
+}
+
+.prova-banco-delete-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .prova-banco-copied-note {
   margin: 0 0 10px;
   color: #64748b;
