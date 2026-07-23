@@ -285,6 +285,8 @@ body {
 }
 
 .dashboard-main {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   overflow-y: auto;
   background: #f1f5f9;
@@ -292,8 +294,14 @@ body {
   padding-bottom: 0;
 }
 
+.dashboard-content-shell {
+  flex: 1 0 auto;
+  min-width: 0;
+}
+
 .dashboard-footer {
   display: grid;
+  flex-shrink: 0;
   justify-items: center;
   gap: 6px;
   width: 100%;

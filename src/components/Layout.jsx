@@ -519,7 +519,9 @@ function Layout() {
             <button onClick={handleLogout} className="logout-button">Sair</button>
           </header>
           {/* O Outlet renderiza o componente filho (ex: App17) diretamente aqui */}
-          <Outlet />
+          <div className="dashboard-content-shell">
+            <Outlet />
+          </div>
           <footer className="dashboard-footer">
             <div className="dashboard-footer-line" />
             <p>
