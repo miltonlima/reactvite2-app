@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import './ProvaBanco.css';
 import { API_BASE } from './config/apiBase';
 
@@ -18,7 +19,9 @@ async function request(path, options = {}) {
   const body = isJson ? await response.json() : null;
 
   if (!response.ok) {
-    throw new Error(body?.mensagem || body?.detail || body?.message || response.statusText);
+    const error = new Error(body?.mensagem || body?.detail || body?.message || response.statusText);
+    error.status = response.status;
+    throw error;
   }
 
   return body;
@@ -134,13 +137,16 @@ function formatDifficulty(value) {
 }
 
 function ProvaBanco() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialModalidadeId = searchParams.get('modalidadeId') || '';
+  const initialCursoId = searchParams.get('turmaId') || searchParams.get('cursoId') || '';
   const [modalidades, setModalidades] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [questoes, setQuestoes] = useState([]);
   const [questoesCurso, setQuestoesCurso] = useState([]);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState(() => new Set());
-  const [modalidadeId, setModalidadeId] = useState('');
-  const [cursoId, setCursoId] = useState('');
+  const [modalidadeId, setModalidadeId] = useState(initialModalidadeId);
+  const [cursoId, setCursoId] = useState(initialCursoId);
   const [loading, setLoading] = useState(true);
   const [loadingCursoQuestions, setLoadingCursoQuestions] = useState(false);
   const [copying, setCopying] = useState(false);
@@ -173,6 +179,17 @@ function ProvaBanco() {
 
     loadQuestoesCurso(Number(cursoId));
   }, [cursoId]);
+
+  useEffect(() => {
+    if (!cursoId || modalidadeId || cursos.length === 0) return;
+
+    const cursoSelecionado = cursos.find((curso) => Number(curso.id) === Number(cursoId));
+    if (!cursoSelecionado?.modalidadeId) return;
+
+    const nextModalidadeId = String(cursoSelecionado.modalidadeId);
+    setModalidadeId(nextModalidadeId);
+    updateQueryParams(nextModalidadeId, cursoId, true);
+  }, [cursoId, modalidadeId, cursos]);
 
   async function loadData() {
     try {
@@ -238,12 +255,33 @@ function ProvaBanco() {
 
   const selectedQuestionsCount = selectedQuestionIds.size;
 
+  function updateQueryParams(nextModalidadeId, nextCursoId, replace = false) {
+    const params = new URLSearchParams();
+    if (nextModalidadeId) {
+      params.set('modalidadeId', String(nextModalidadeId));
+    }
+    if (nextCursoId) {
+      params.set('turmaId', String(nextCursoId));
+    }
+    setSearchParams(params, { replace });
+  }
+
   function handleModalidadeChange(event) {
-    setModalidadeId(event.target.value);
+    const nextModalidadeId = event.target.value;
+    setModalidadeId(nextModalidadeId);
     setCursoId('');
     setQuestoesCurso([]);
     setSelectedQuestionIds(new Set());
     setSuccess('');
+    updateQueryParams(nextModalidadeId, '');
+  }
+
+  function handleCursoChange(event) {
+    const nextCursoId = event.target.value;
+    setCursoId(nextCursoId);
+    setSelectedQuestionIds(new Set());
+    setSuccess('');
+    updateQueryParams(modalidadeId, nextCursoId);
   }
 
   function toggleQuestionSelection(questionId) {
@@ -372,7 +410,7 @@ function ProvaBanco() {
 
         <label>
           Curso
-          <select value={cursoId} onChange={(event) => setCursoId(event.target.value)} disabled={loading || copying || !modalidadeId}>
+          <select value={cursoId} onChange={handleCursoChange} disabled={loading || copying || !modalidadeId}>
             <option value="">Selecione um curso</option>
             {cursosDaModalidade.map((curso) => (
               <option key={curso.id} value={curso.id}>
