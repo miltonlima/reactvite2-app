@@ -227,6 +227,10 @@ function ProvaBanco() {
       .sort((a, b) => Number(b.id) - Number(a.id))
   ), [questoes]);
 
+  const courseQuestions = useMemo(() => (
+    [...questoesCurso].sort((a, b) => Number(b.id) - Number(a.id))
+  ), [questoesCurso]);
+
   const copiedQuestionKeys = useMemo(() => (
     new Set(questoesCurso.map((questao) => normalizeText(questao.enunciado)))
   ), [questoesCurso]);
@@ -307,9 +311,9 @@ function ProvaBanco() {
     <main className="prova-banco-page">
       <section className="prova-banco-header">
         <span>Prova / Banco</span>
-        <h1>Selecionar questões por curso</h1>
+        <h1>Banco geral e banco do curso</h1>
         <p>
-          Escolha uma modalidade e depois um curso para copiar questões do banco geral para o banco do curso.
+          Escolha uma modalidade e um curso para visualizar as questões gerais à esquerda e as questões vinculadas ao curso à direita.
         </p>
       </section>
 
@@ -358,8 +362,8 @@ function ProvaBanco() {
               <h2>{selectedCurso?.nomeTurma || 'Curso'}</h2>
             </div>
             <div className="prova-banco-copy-actions">
-              <strong>{activeQuestions.length} questão(ões)</strong>
-              <small>{loadingCursoQuestions ? 'Verificando...' : `${questoesCurso.length} no curso`}</small>
+              <strong>{selectedQuestionsCount} selecionada(s)</strong>
+              <small>{loadingCursoQuestions ? 'Verificando...' : `${courseQuestions.length} no curso`}</small>
               <button type="button" onClick={selectAllAvailableQuestions} disabled={copying || loadingCursoQuestions}>
                 Marcar disponíveis
               </button>
@@ -374,44 +378,92 @@ function ProvaBanco() {
             </div>
           </div>
 
-          {activeQuestions.length === 0 ? (
-            <p className="prova-banco-empty">Nenhuma questão ativa cadastrada no banco.</p>
-          ) : (
-            <div className="prova-banco-question-list">
-              {activeQuestions.map((questao, index) => {
-                const alreadyCopied = copiedQuestionKeys.has(normalizeText(questao.enunciado));
+          <div className="prova-banco-columns">
+            <section className="prova-banco-column">
+              <header className="prova-banco-column-header">
+                <div>
+                  <span>Banco geral</span>
+                  <h2>Perguntas e alternativas</h2>
+                </div>
+                <strong>{activeQuestions.length}</strong>
+              </header>
 
-                return (
-                  <article className={`prova-banco-question-card${alreadyCopied ? ' is-copied' : ''}`} key={questao.id}>
-                    <div className="prova-banco-question-top">
-                      <label className="prova-banco-check">
-                        <input
-                          type="checkbox"
-                          checked={selectedQuestionIds.has(Number(questao.id))}
-                          disabled={copying || loadingCursoQuestions || alreadyCopied}
-                          onChange={() => toggleQuestionSelection(Number(questao.id))}
-                        />
-                        <span>Questão #{index + 1}</span>
-                      </label>
-                      <small>{formatDifficulty(questao.dificuldade)}</small>
-                    </div>
-                    {alreadyCopied && (
-                      <p className="prova-banco-copied-note">Já está no banco deste curso.</p>
-                    )}
-                    <h3>{questao.enunciado}</h3>
-                    <ul>
-                      {(questao.alternativas || []).map((alternativa) => (
-                        <li key={alternativa.id} className={alternativa.correta ? 'correct' : ''}>
-                          <span>{alternativa.ordem}</span>
-                          {alternativa.texto}
-                        </li>
-                      ))}
-                    </ul>
-                  </article>
-                );
-              })}
-            </div>
-          )}
+              {activeQuestions.length === 0 ? (
+                <p className="prova-banco-empty">Nenhuma questão ativa cadastrada no banco geral.</p>
+              ) : (
+                <div className="prova-banco-question-list">
+                  {activeQuestions.map((questao, index) => {
+                    const alreadyCopied = copiedQuestionKeys.has(normalizeText(questao.enunciado));
+
+                    return (
+                      <article className={`prova-banco-question-card${alreadyCopied ? ' is-copied' : ''}`} key={questao.id}>
+                        <div className="prova-banco-question-top">
+                          <label className="prova-banco-check">
+                            <input
+                              type="checkbox"
+                              checked={selectedQuestionIds.has(Number(questao.id))}
+                              disabled={copying || loadingCursoQuestions || alreadyCopied}
+                              onChange={() => toggleQuestionSelection(Number(questao.id))}
+                            />
+                            <span>Questão #{index + 1}</span>
+                          </label>
+                          <small>{formatDifficulty(questao.dificuldade)}</small>
+                        </div>
+                        {alreadyCopied && (
+                          <p className="prova-banco-copied-note">Já está no banco deste curso.</p>
+                        )}
+                        <h3>{questao.enunciado}</h3>
+                        <ul>
+                          {(questao.alternativas || []).map((alternativa) => (
+                            <li key={alternativa.id} className={alternativa.correta ? 'correct' : ''}>
+                              <span>{alternativa.ordem}</span>
+                              {alternativa.texto}
+                            </li>
+                          ))}
+                        </ul>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+
+            <section className="prova-banco-column course-bank">
+              <header className="prova-banco-column-header">
+                <div>
+                  <span>Banco do curso</span>
+                  <h2>Perguntas vinculadas à turma</h2>
+                </div>
+                <strong>{courseQuestions.length}</strong>
+              </header>
+
+              {loadingCursoQuestions ? (
+                <p className="prova-banco-empty">Carregando questões vinculadas...</p>
+              ) : courseQuestions.length === 0 ? (
+                <p className="prova-banco-empty">Nenhuma questão vinculada a este curso ainda.</p>
+              ) : (
+                <div className="prova-banco-question-list">
+                  {courseQuestions.map((questao, index) => (
+                    <article className="prova-banco-question-card course-question" key={questao.id}>
+                      <div className="prova-banco-question-top">
+                        <span>Questão do curso #{index + 1}</span>
+                        <small>{formatDifficulty(questao.dificuldade)}</small>
+                      </div>
+                      <h3>{questao.enunciado}</h3>
+                      <ul>
+                        {(questao.alternativas || []).map((alternativa) => (
+                          <li key={alternativa.id} className={alternativa.correta ? 'correct' : ''}>
+                            <span>{alternativa.ordem}</span>
+                            {alternativa.texto}
+                          </li>
+                        ))}
+                      </ul>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
         </section>
       )}
     </main>
