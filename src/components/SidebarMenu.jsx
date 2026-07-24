@@ -60,8 +60,8 @@ function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, o
     { name: 'Curso', icon: '📗', path: '/turma' },
     { name: 'Inscrição', icon: '📝', path: '/inscricao' },
     { name: 'Módulo / Aula', icon: '🧑', path: '/professor/conteudo' },
-    { name: 'Quiz', icon: '❔', path: '/avaliacao' },
-    { name: 'Prova', icon: '🎓', path: '/avaliacao' },
+    { name: 'Quiz', icon: '❔', path: '/avaliacao', activeKey: 'quiz' },
+    { name: 'Prova', icon: '🎓', path: '/avaliacao', activeKey: 'prova' },
     { name: 'Banco de Questões', icon: '📋', path: '/banco-questoes' },
     { name: 'Prova / Banco', icon: '🧪', path: '/prova-banco' },
     { name: 'Arquivo', icon: '📁', path: '/arquivo' },
@@ -85,14 +85,21 @@ function SidebarMenu({ userName, userEmail, userType, userPhoto, isMobileOpen, o
       </div>
       <nav>
         {menuItems.map(item => {
+          const selectedMenu = location.state?.activeMenu;
+          const isSharedAvaliacaoItem = item.path === '/avaliacao' && item.activeKey;
           const isActive = item.path !== '#' && (
-            location.pathname === item.path ||
-            (item.path !== '/page17' && location.pathname.startsWith(`${item.path}/`))
+            isSharedAvaliacaoItem
+              ? location.pathname === '/avaliacao' && (selectedMenu ? selectedMenu === item.activeKey : item.activeKey === 'prova')
+              : (
+                  location.pathname === item.path ||
+                  (item.path !== '/page17' && location.pathname.startsWith(`${item.path}/`))
+                )
           );
 
           return (
             <Link
               to={item.path}
+              state={item.activeKey ? { activeMenu: item.activeKey } : undefined}
               key={item.name}
               className={`item ${isActive ? 'active' : ''}`}
               style={{ textDecoration: 'none', color: 'inherit' }}
